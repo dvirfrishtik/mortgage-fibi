@@ -135,6 +135,50 @@
       background: transparent;
       border-bottom: none;
       padding: 16px 28px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .doc-page-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .doc-page-btn {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text-muted);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .doc-page-btn:hover:not(:disabled) {
+      border-color: var(--navy);
+      color: var(--navy);
+      background: var(--navy-50);
+    }
+    .doc-page-btn:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+    .doc-page-indicator {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      min-width: 40px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
     }
 
     /* Static task row */
@@ -741,7 +785,11 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">תצוגה מקדימה — <span id="previewTitle">ייפוי כוח מתמשך</span></div>
-          <span class="doc-code" id="previewCode">משכ 542</span>
+          <div class="doc-page-nav">
+            <button type="button" class="doc-page-btn" id="previewPagePrev" onclick="changePreviewPage(-1)" aria-label="דף קודם" disabled>&lt;</button>
+            <span class="doc-page-indicator" id="previewPageIndicator">1/1</span>
+            <button type="button" class="doc-page-btn" id="previewPageNext" onclick="changePreviewPage(1)" aria-label="דף הבא" disabled>&gt;</button>
+          </div>
         </div>
         <div class="doc-preview-body">
 
@@ -1341,30 +1389,52 @@
   }
 
   const docs = {
-    poa:      { name: 'ייפוי כוח מתמשך',            code: 'משכ 542', previewId: 'preview-poa' },
-    id601:    { name: 'תעודת זהות',                  code: 'משכ 601', previewId: 'preview-generic' },
-    id612:    { name: 'תלושי שכר 3 חודשים אחרונים',  code: 'משכ 612', previewId: 'preview-generic' },
-    id604:    { name: 'אישור יתרות בנקאי',            code: 'משכ 604', previewId: 'preview-generic' },
-    id603:    { name: 'אישור מס הכנסה',               code: 'משכ 603', previewId: 'preview-generic' },
-    id630:    { name: 'אישור עו"ד על הנכס',           code: 'משכ 630', previewId: 'preview-generic' },
-    tabu:     { name: 'נסח טאבו',                     code: 'משכ 632', previewId: 'preview-tabu' },
-    contract: { name: 'חוזה רכישה חתום',              code: 'משכ 635', previewId: 'preview-contract' },
-    id344:    { name: 'הסכם הלוואה',                  code: 'משכ 344', previewId: 'preview-generic' },
-    id329:    { name: 'תנאים עיקריים',                code: 'משכ 329', previewId: 'preview-generic' },
-    id327:    { name: 'לוח סילוקין',                  code: 'משכ 327', previewId: 'preview-generic' },
-    id318:    { name: 'הרשאה לחיוב חשבון',            code: 'משכ 318', previewId: 'preview-generic' },
-    id331:    { name: 'ביטוח חיים — הצמדה למשכנתא',   code: 'משכ 331', previewId: 'preview-generic' },
-    id342:    { name: 'הסכמת בן/בת זוג',              code: 'משכ 342', previewId: 'preview-generic' },
-    id330:    { name: 'גילוי נאות',                   code: 'משכ 330', previewId: 'preview-generic' },
-    id332:    { name: 'סיכום תנאים',                  code: 'משכ 332', previewId: 'preview-generic' },
-    id338:    { name: 'דף מידע על ביטוח',              code: 'משכ 338', previewId: 'preview-generic' },
-    id341:    { name: 'הסבר זכויות לווה',              code: 'משכ 341', previewId: 'preview-generic' },
-    id345:    { name: 'פירוט עלויות נלוות',            code: 'משכ 345', previewId: 'preview-generic' }
+    poa:      { name: 'ייפוי כוח מתמשך',            code: 'משכ 542', previewId: 'preview-poa', pages: 1 },
+    id601:    { name: 'תעודת זהות',                  code: 'משכ 601', previewId: 'preview-generic', pages: 1 },
+    id612:    { name: 'תלושי שכר 3 חודשים אחרונים',  code: 'משכ 612', previewId: 'preview-generic', pages: 1 },
+    id604:    { name: 'אישור יתרות בנקאי',            code: 'משכ 604', previewId: 'preview-generic', pages: 1 },
+    id603:    { name: 'אישור מס הכנסה',               code: 'משכ 603', previewId: 'preview-generic', pages: 1 },
+    id630:    { name: 'אישור עו"ד על הנכס',           code: 'משכ 630', previewId: 'preview-generic', pages: 1 },
+    tabu:     { name: 'נסח טאבו',                     code: 'משכ 632', previewId: 'preview-tabu', pages: 1 },
+    contract: { name: 'חוזה רכישה חתום',              code: 'משכ 635', previewId: 'preview-contract', pages: 1 },
+    id344:    { name: 'הסכם הלוואה',                  code: 'משכ 344', previewId: 'preview-generic', pages: 1 },
+    id329:    { name: 'תנאים עיקריים',                code: 'משכ 329', previewId: 'preview-generic', pages: 1 },
+    id327:    { name: 'לוח סילוקין',                  code: 'משכ 327', previewId: 'preview-generic', pages: 1 },
+    id318:    { name: 'הרשאה לחיוב חשבון',            code: 'משכ 318', previewId: 'preview-generic', pages: 1 },
+    id331:    { name: 'ביטוח חיים — הצמדה למשכנתא',   code: 'משכ 331', previewId: 'preview-generic', pages: 1 },
+    id342:    { name: 'הסכמת בן/בת זוג',              code: 'משכ 342', previewId: 'preview-generic', pages: 1 },
+    id330:    { name: 'גילוי נאות',                   code: 'משכ 330', previewId: 'preview-generic', pages: 1 },
+    id332:    { name: 'סיכום תנאים',                  code: 'משכ 332', previewId: 'preview-generic', pages: 1 },
+    id338:    { name: 'דף מידע על ביטוח',              code: 'משכ 338', previewId: 'preview-generic', pages: 1 },
+    id341:    { name: 'הסבר זכויות לווה',              code: 'משכ 341', previewId: 'preview-generic', pages: 1 },
+    id345:    { name: 'פירוט עלויות נלוות',            code: 'משכ 345', previewId: 'preview-generic', pages: 1 }
   };
+
+  let previewCurrentDocId = 'poa';
+  let previewCurrentPage = 1;
+
+  function updatePreviewPageNav() {
+    const doc = docs[previewCurrentDocId];
+    const total = doc?.pages || 1;
+    previewCurrentPage = Math.min(Math.max(1, previewCurrentPage), total);
+    document.getElementById('previewPageIndicator').textContent = `${previewCurrentPage}/${total}`;
+    document.getElementById('previewPagePrev').disabled = previewCurrentPage <= 1;
+    document.getElementById('previewPageNext').disabled = previewCurrentPage >= total;
+  }
+
+  function changePreviewPage(delta) {
+    const doc = docs[previewCurrentDocId];
+    const total = doc?.pages || 1;
+    previewCurrentPage = Math.min(Math.max(1, previewCurrentPage + delta), total);
+    updatePreviewPageNav();
+  }
 
   function selectDocument(id) {
     const doc = docs[id];
     if (!doc) return;
+
+    previewCurrentDocId = id;
+    previewCurrentPage = 1;
 
     document.querySelectorAll('.inbox-row').forEach(r => r.classList.remove('active'));
     const row = document.querySelector(`.inbox-row[data-doc="${id}"]`);
@@ -1377,10 +1447,11 @@
     }
 
     document.getElementById('previewTitle').textContent = doc.name;
-    document.getElementById('previewCode').textContent = doc.code;
+    updatePreviewPageNav();
   }
 
   initCapsuleSelects();
+  updatePreviewPageNav();
 </script>
 </body>
 </html>
