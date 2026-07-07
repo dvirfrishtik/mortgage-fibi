@@ -106,7 +106,17 @@
        shrinks to fit .left-col instead of growing and letting .left-col's
        own overflow-y:auto scroll, so opened accordions were clipped with
        no way to scroll to them. */
-    .left-col > .card { flex-shrink: 0; }
+    .left-col > .card { flex-shrink: 0; box-shadow: none; }
+    .left-col > .card:has(.task-check-wrap.open),
+    .left-col > .card:has(.task-check-wrap.success) {
+      overflow: visible;
+    }
+    #openTasksBody:has(.task-check-wrap.open),
+    #openTasksBody:has(.task-check-wrap.success),
+    #doneTasksBody:has(.task-check-wrap.open),
+    #doneTasksBody:has(.task-check-wrap.success) {
+      overflow: visible;
+    }
 
     /* RIGHT — the document group: preview + inbox framed as one unit,
        flush to the right wall and the bottom, only the top-left corner
@@ -123,7 +133,7 @@
       border-right: none;
       border-top-left-radius: var(--radius-lg);
       overflow: hidden;
-      box-shadow: -2px 0 12px rgba(27,42,107,0.06);
+      box-shadow: none;
     }
     /* Detail pane (preview) — merges into the region (no card chrome of its
        own); its body scrolls internally rather than the whole pane. */
@@ -232,7 +242,71 @@
       background-size: contain;
       transition: opacity 0.15s;
     }
-    .task-check:hover .task-check-icon { opacity: 1; }
+    .task-check:hover .task-check-icon {
+      opacity: 1;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8' fill='none'%3E%3Cpath d='M1 4.2L3.6 6.8L9 1.2' stroke='%231B2A6B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+
+    .task-check--done {
+      border-color: var(--navy);
+      background: var(--navy);
+      cursor: pointer;
+    }
+    .task-check--done:hover {
+      border-color: var(--navy-dark);
+      background: var(--navy-dark);
+    }
+    .task-check--done .task-check-icon {
+      opacity: 1;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8' fill='none'%3E%3Cpath d='M1 4.2L3.6 6.8L9 1.2' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+
+    .task-row-static.task-row-actionable,
+    .task-row-static.task-row-done {
+      transition:
+        opacity 0.32s ease,
+        transform 0.32s ease,
+        max-height 0.34s ease,
+        padding 0.34s ease,
+        margin 0.34s ease,
+        border-color 0.32s ease;
+      max-height: 160px;
+    }
+    .task-row-static.task-slot-exit,
+    .task-row-static.task-slot-enter {
+      overflow: hidden;
+    }
+    .task-row-static.task-row-actionable:has(.task-check-wrap.open),
+    .task-row-static.task-row-done:has(.task-check-wrap.open),
+    .task-row-static.task-row-actionable:has(.task-check-wrap.success),
+    .task-row-static.task-row-done:has(.task-check-wrap.success) {
+      position: relative;
+      z-index: 5;
+      overflow: visible;
+    }
+    .task-row-static.task-slot-exit {
+      opacity: 0;
+      transform: translateX(18px);
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      border-bottom-color: transparent;
+      pointer-events: none;
+    }
+    .task-row-static.task-slot-enter {
+      opacity: 0;
+      transform: translateX(-18px);
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    .task-row-static.task-slot-enter.task-slot-enter-active {
+      opacity: 1;
+      transform: translateX(0);
+      max-height: 160px;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
 
     .task-confirm-popover {
       display: none;
@@ -248,6 +322,54 @@
       padding: 14px;
     }
     .task-check-wrap.open .task-confirm-popover { display: block; }
+    .task-confirm-main { display: block; }
+    .task-confirm-success {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 10px 4px 6px;
+    }
+    .task-check-wrap.success .task-confirm-main { display: none; }
+    .task-check-wrap.success .task-confirm-success { display: flex; }
+    .task-success-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--navy-50);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      animation: taskSuccessPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .task-success-check {
+      width: 18px;
+      height: 14px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='14' viewBox='0 0 18 14' fill='none'%3E%3Cpath d='M1.5 7.2L6.5 12.2L16.5 1.8' stroke='%231B2A6B' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      animation: taskSuccessCheck 0.35s ease 0.2s both;
+    }
+    .task-success-text {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      animation: taskSuccessFade 0.4s ease 0.25s both;
+    }
+    @keyframes taskSuccessPop {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes taskSuccessCheck {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes taskSuccessFade {
+      0% { opacity: 0; transform: translateY(6px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
     .task-confirm-text {
       font-size: 13px;
       font-weight: 600;
@@ -314,14 +436,14 @@
       background: var(--navy);
       border-bottom: 1px solid rgba(255,255,255,0.15);
     }
-    .docs-sidebar .card-title { color: white; }
+    .docs-sidebar .card-title { color: white; font-size: 15px; }
     .add-doc-btn {
-      width: 26px; height: 26px;
+      width: 28px; height: 28px;
       border-radius: 50%;
       border: none;
       background: var(--yellow);
       color: var(--navy);
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 700;
       line-height: 1;
       cursor: pointer;
@@ -337,8 +459,8 @@
       flex-shrink: 0;
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
+      gap: 10px;
+      padding: 12px 16px;
       border-bottom: 1px solid var(--border-light);
       background: var(--surface);
     }
@@ -350,13 +472,13 @@
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 99px;
-      padding: 6px 12px;
+      padding: 8px 14px;
     }
     .inbox-search input {
       border: none;
       outline: none;
       background: transparent;
-      font-size: 12px;
+      font-size: 13px;
       width: 100%;
       direction: rtl;
       font-family: inherit;
@@ -371,8 +493,8 @@
       position: relative;
       flex-shrink: 0;
     }
-    .capsule-select--filter { min-width: 132px; }
-    .capsule-select:not(.capsule-select--filter) { min-width: 120px; }
+    .capsule-select--filter { min-width: 140px; }
+    .capsule-select:not(.capsule-select--filter) { min-width: 128px; }
 
     .capsule-select-trigger {
       display: flex;
@@ -380,20 +502,28 @@
       justify-content: center;
       gap: 6px;
       width: 100%;
-      border: none;
+      border: 1px solid var(--border);
       border-radius: 99px;
-      min-height: 32px;
-      padding: 7px 12px;
-      font-size: 11px;
-      font-weight: 700;
+      min-height: 28px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
       font-family: inherit;
-      line-height: 1.3;
+      line-height: 1.2;
       cursor: pointer;
       white-space: nowrap;
-      transition: box-shadow 0.15s;
+      background-color: var(--surface);
+      color: var(--text-body);
+      transition: box-shadow 0.15s, border-color 0.15s;
     }
-    .capsule-select-trigger:hover { box-shadow: var(--shadow-sm); }
-    .capsule-select.open .capsule-select-trigger { box-shadow: var(--shadow); }
+    .capsule-select-trigger:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: var(--border);
+    }
+    .capsule-select.open .capsule-select-trigger {
+      box-shadow: var(--shadow);
+      border-color: var(--navy-100);
+    }
 
     .capsule-select-label {
       display: inline-flex;
@@ -402,8 +532,8 @@
       gap: 6px;
     }
     .capsule-select-chevron {
-      width: 10px;
-      height: 6px;
+      width: 11px;
+      height: 7px;
       flex-shrink: 0;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236B7280' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
@@ -412,17 +542,6 @@
       transition: transform 0.2s;
     }
     .capsule-select.open .capsule-select-chevron { transform: rotate(180deg); }
-
-    .capsule-select.filter-neutral .capsule-select-trigger {
-      background-color: var(--bg);
-      color: var(--navy);
-      border: 1px solid var(--border);
-    }
-    .capsule-select.pending .capsule-select-trigger      { background-color: var(--orange-bg); color: var(--orange); }
-    .capsule-select.open-status .capsule-select-trigger  { background-color: var(--navy-50); color: var(--navy); }
-    .capsule-select.complete .capsule-select-trigger     { background-color: var(--green-bg); color: var(--green); }
-    .capsule-select.not-relevant .capsule-select-trigger { background-color: var(--bg); color: var(--text-faint); border: 1px solid var(--border); }
-    .capsule-select.missing .capsule-select-trigger      { background-color: var(--red-bg); color: var(--red); }
 
     .capsule-select-menu {
       display: none;
@@ -450,8 +569,8 @@
       text-align: right;
       border: none;
       background: transparent;
-      padding: 9px 14px;
-      font-size: 12px;
+      padding: 10px 14px;
+      font-size: 13px;
       font-family: inherit;
       font-weight: 600;
       color: var(--text-body);
@@ -482,38 +601,44 @@
 
     .inbox-list { display: flex; flex-direction: column; flex: 1; overflow-y: auto; min-height: 0; }
     .docs-sidebar .category-header {
-      padding: 10px 14px;
+      padding: 12px 16px;
       background: var(--bg);
       border-bottom: 1px solid var(--border-light);
     }
-    .docs-sidebar .category-name { font-size: 12px; line-height: 1.35; }
+    .docs-sidebar .category-name { font-size: 13px; line-height: 1.4; }
+    .docs-sidebar .category-badge { font-size: 12px; padding: 3px 9px; }
+    .docs-sidebar .chevron { width: 11px; height: 7px; }
     .docs-sidebar .category-body { padding: 0; }
     .docs-sidebar .category-body .inbox-row:last-child { border-bottom: none; }
     .docs-sidebar .category:last-child { border-bottom: none; }
     .inbox-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 11px 16px;
+      gap: 11px;
+      padding: 13px 16px;
       border-bottom: 1px solid var(--border-light);
       cursor: pointer;
       transition: background 0.12s;
     }
     .inbox-row:last-child { border-bottom: none; }
-    .inbox-row:hover { background: var(--navy-50); }
-    .inbox-row.active { background: var(--bg); border-right: 3px solid var(--navy); padding-right: 13px; }
+    .inbox-row:hover { background: #F5F6F8; }
+    .inbox-row.active {
+      background: #F0F1F4;
+      border-right: 3px solid var(--border);
+      padding-right: 15px;
+    }
     .inbox-dot {
-      width: 8px;
-      height: 8px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
       flex-shrink: 0;
       background: var(--navy-100);
     }
-    .inbox-row.active .inbox-dot { background: var(--navy); }
+    .inbox-row.active .inbox-dot { background: var(--text-faint); }
     .inbox-info { flex: 1; min-width: 0; }
-    .inbox-name { font-size: 13px; font-weight: 600; color: var(--text-body); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .inbox-row.active .inbox-name { color: var(--navy); }
-    .inbox-code { font-size: 11px; color: var(--text-faint); margin-top: 1px; font-family: monospace; }
+    .inbox-name { font-size: 14px; font-weight: 600; color: var(--text-body); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .inbox-row.active .inbox-name { color: var(--text-body); font-weight: 600; }
+    .inbox-code { font-size: 12px; color: var(--text-faint); margin-top: 2px; font-family: monospace; }
 
     /* ── DOCUMENT PREVIEW (center column) ── */
     .doc-preview-body { padding: 24px 28px; flex: 1; min-height: 0; overflow-y: auto; }
@@ -543,7 +668,7 @@
 <body>
 
 <header class="header">
-  <div class="header-logo">בנק <span class="accent">הבינלאומי</span><span class="header-divider">|</span> מערכת משכנתאות</div>
+  <div class="header-logo"><img src="logo-habeinleumi.png" alt="הבינלאומי — משקיעים בך" class="header-logo-img"></div>
   <div class="header-user">
     <span>שלום, דנה לוי</span>
     <div class="avatar">ד</div>
@@ -597,9 +722,15 @@
                 <span class="task-check-icon"></span>
               </button>
               <div class="task-confirm-popover">
-                <p class="task-confirm-text">לסמן את המשימה כבוצעה?</p>
-                <button type="button" class="task-confirm-yes" onclick="completeTask(this, event)">כן, המשימה בוצעה</button>
-                <button type="button" class="task-confirm-cancel" onclick="closeTaskConfirm(this, event)">ביטול</button>
+                <div class="task-confirm-main">
+                  <p class="task-confirm-text">לסמן את המשימה כבוצעה?</p>
+                  <button type="button" class="task-confirm-yes" onclick="completeTask(this, event)">כן, המשימה בוצעה</button>
+                  <button type="button" class="task-confirm-cancel" onclick="closeTaskConfirm(this, event)">ביטול</button>
+                </div>
+                <div class="task-confirm-success" aria-live="polite">
+                  <div class="task-success-icon"><span class="task-success-check"></span></div>
+                  <p class="task-success-text">המשימה סומנה כבוצעה!</p>
+                </div>
               </div>
             </div>
             <div class="task-info">
@@ -613,9 +744,15 @@
                 <span class="task-check-icon"></span>
               </button>
               <div class="task-confirm-popover">
-                <p class="task-confirm-text">לסמן את המשימה כבוצעה?</p>
-                <button type="button" class="task-confirm-yes" onclick="completeTask(this, event)">כן, המשימה בוצעה</button>
-                <button type="button" class="task-confirm-cancel" onclick="closeTaskConfirm(this, event)">ביטול</button>
+                <div class="task-confirm-main">
+                  <p class="task-confirm-text">לסמן את המשימה כבוצעה?</p>
+                  <button type="button" class="task-confirm-yes" onclick="completeTask(this, event)">כן, המשימה בוצעה</button>
+                  <button type="button" class="task-confirm-cancel" onclick="closeTaskConfirm(this, event)">ביטול</button>
+                </div>
+                <div class="task-confirm-success" aria-live="polite">
+                  <div class="task-success-icon"><span class="task-success-check"></span></div>
+                  <p class="task-success-text">המשימה סומנה כבוצעה!</p>
+                </div>
               </div>
             </div>
             <div class="task-info">
@@ -629,9 +766,15 @@
                 <span class="task-check-icon"></span>
               </button>
               <div class="task-confirm-popover">
-                <p class="task-confirm-text">לסמן את המשימה כבוצעה?</p>
-                <button type="button" class="task-confirm-yes" onclick="completeTask(this, event)">כן, המשימה בוצעה</button>
-                <button type="button" class="task-confirm-cancel" onclick="closeTaskConfirm(this, event)">ביטול</button>
+                <div class="task-confirm-main">
+                  <p class="task-confirm-text">לסמן את המשימה כבוצעה?</p>
+                  <button type="button" class="task-confirm-yes" onclick="completeTask(this, event)">כן, המשימה בוצעה</button>
+                  <button type="button" class="task-confirm-cancel" onclick="closeTaskConfirm(this, event)">ביטול</button>
+                </div>
+                <div class="task-confirm-success" aria-live="polite">
+                  <div class="task-success-icon"><span class="task-success-check"></span></div>
+                  <p class="task-success-text">המשימה סומנה כבוצעה!</p>
+                </div>
               </div>
             </div>
             <div class="task-info">
@@ -674,30 +817,6 @@
               <div class="task-info">
                 <div class="task-name">התאמת סכום עסקה</div>
                 <div class="task-desc">לוודא כי הסכום הנקוב בחוזה הרכישה תואם לסכום המשכנתא המבוקש.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Completed tasks — accordion, closed by default -->
-        <div class="category collapsed" id="doneCat">
-          <div class="category-header" onclick="toggleCat('doneCat')">
-            <div class="category-name">משימות שבוצעו <span class="category-badge complete" id="doneTasksBadge">2</span></div>
-            <span class="chevron"></span>
-          </div>
-          <div class="category-body" id="doneTasksBody">
-            <div class="task-row-static">
-              <div class="task-bullet"></div>
-              <div class="task-info">
-                <div class="task-name done">איסוף פרטי לווה ראשוני</div>
-                <div class="task-desc">נאספו פרטי הלווה והעסקה בשלב פתיחת התיק.</div>
-              </div>
-            </div>
-            <div class="task-row-static">
-              <div class="task-bullet"></div>
-              <div class="task-info">
-                <div class="task-name done">שליחת הודעת פתיחת תיק ללקוח</div>
-                <div class="task-desc">נשלחה הודעת פתיחה עם רשימת המסמכים הראשונית.</div>
               </div>
             </div>
           </div>
@@ -768,6 +887,52 @@
                 justify-content: center;
                 gap: 6px;
               " id="copyBtn">העתק טקסט</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Completed tasks — accordion, closed by default -->
+        <div class="category collapsed" id="doneCat">
+          <div class="category-header" onclick="toggleCat('doneCat')">
+            <div class="category-name">משימות שבוצעו <span class="category-badge complete" id="doneTasksBadge">2</span></div>
+            <span class="chevron"></span>
+          </div>
+          <div class="category-body" id="doneTasksBody">
+            <div class="task-row-static task-row-done">
+              <div class="task-check-wrap task-check-wrap--done">
+                <button type="button" class="task-check task-check--done" aria-label="החזר משימה לביצוע" onclick="toggleTaskConfirm(this, event)">
+                  <span class="task-check-icon"></span>
+                </button>
+                <div class="task-confirm-popover">
+                  <div class="task-confirm-main">
+                    <p class="task-confirm-text">להחזיר את המשימה לביצוע?</p>
+                    <button type="button" class="task-confirm-yes" onclick="restoreTask(this, event)">כן, החזר לביצוע</button>
+                    <button type="button" class="task-confirm-cancel" onclick="closeTaskConfirm(this, event)">ביטול</button>
+                  </div>
+                </div>
+              </div>
+              <div class="task-info">
+                <div class="task-name done">איסוף פרטי לווה ראשוני</div>
+                <div class="task-desc">נאספו פרטי הלווה והעסקה בשלב פתיחת התיק.</div>
+              </div>
+            </div>
+            <div class="task-row-static task-row-done">
+              <div class="task-check-wrap task-check-wrap--done">
+                <button type="button" class="task-check task-check--done" aria-label="החזר משימה לביצוע" onclick="toggleTaskConfirm(this, event)">
+                  <span class="task-check-icon"></span>
+                </button>
+                <div class="task-confirm-popover">
+                  <div class="task-confirm-main">
+                    <p class="task-confirm-text">להחזיר את המשימה לביצוע?</p>
+                    <button type="button" class="task-confirm-yes" onclick="restoreTask(this, event)">כן, החזר לביצוע</button>
+                    <button type="button" class="task-confirm-cancel" onclick="closeTaskConfirm(this, event)">ביטול</button>
+                  </div>
+                </div>
+              </div>
+              <div class="task-info">
+                <div class="task-name done">שליחת הודעת פתיחת תיק ללקוח</div>
+                <div class="task-desc">נשלחה הודעת פתיחה עם רשימת המסמכים הראשונית.</div>
+              </div>
             </div>
           </div>
         </div>
@@ -1183,7 +1348,9 @@
   }
 
   function closeAllTaskConfirms() {
-    document.querySelectorAll('.task-check-wrap.open').forEach(w => w.classList.remove('open'));
+    document.querySelectorAll('.task-check-wrap.open, .task-check-wrap.success').forEach(w => {
+      w.classList.remove('open', 'success');
+    });
   }
 
   function toggleTaskConfirm(btn, e) {
@@ -1196,12 +1363,96 @@
 
   function closeTaskConfirm(btn, e) {
     e.stopPropagation();
-    btn.closest('.task-check-wrap').classList.remove('open');
+    const wrap = btn.closest('.task-check-wrap');
+    wrap.classList.remove('open', 'success');
+  }
+
+  function completeConfirmPopoverHtml() {
+    return `
+      <div class="task-confirm-main">
+        <p class="task-confirm-text">לסמן את המשימה כבוצעה?</p>
+        <button type="button" class="task-confirm-yes" onclick="completeTask(this, event)">כן, המשימה בוצעה</button>
+        <button type="button" class="task-confirm-cancel" onclick="closeTaskConfirm(this, event)">ביטול</button>
+      </div>
+      <div class="task-confirm-success" aria-live="polite">
+        <div class="task-success-icon"><span class="task-success-check"></span></div>
+        <p class="task-success-text">המשימה סומנה כבוצעה!</p>
+      </div>
+    `;
+  }
+
+  function restoreConfirmPopoverHtml() {
+    return `
+      <div class="task-confirm-main">
+        <p class="task-confirm-text">להחזיר את המשימה לביצוע?</p>
+        <button type="button" class="task-confirm-yes" onclick="restoreTask(this, event)">כן, החזר לביצוע</button>
+        <button type="button" class="task-confirm-cancel" onclick="closeTaskConfirm(this, event)">ביטול</button>
+      </div>
+    `;
+  }
+
+  function createOpenTaskRow(name, desc) {
+    const row = document.createElement('div');
+    row.className = 'task-row-static task-row-actionable';
+    row.innerHTML = `
+      <div class="task-check-wrap">
+        <button type="button" class="task-check" aria-label="סמן משימה כבוצעה" onclick="toggleTaskConfirm(this, event)">
+          <span class="task-check-icon"></span>
+        </button>
+        <div class="task-confirm-popover">${completeConfirmPopoverHtml()}</div>
+      </div>
+      <div class="task-info">
+        <div class="task-name">${name}</div>
+        <div class="task-desc">${desc}</div>
+      </div>
+    `;
+    return row;
+  }
+
+  function createDoneTaskRow(name, desc) {
+    const row = document.createElement('div');
+    row.className = 'task-row-static task-row-done';
+    row.innerHTML = `
+      <div class="task-check-wrap task-check-wrap--done">
+        <button type="button" class="task-check task-check--done" aria-label="החזר משימה לביצוע" onclick="toggleTaskConfirm(this, event)">
+          <span class="task-check-icon"></span>
+        </button>
+        <div class="task-confirm-popover">${restoreConfirmPopoverHtml()}</div>
+      </div>
+      <div class="task-info">
+        <div class="task-name done">${name}</div>
+        <div class="task-desc">${desc}</div>
+      </div>
+    `;
+    return row;
+  }
+
+  function playTaskSlotEnter(row) {
+    row.classList.add('task-slot-enter');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => row.classList.add('task-slot-enter-active'));
+    });
+    setTimeout(() => row.classList.remove('task-slot-enter', 'task-slot-enter-active'), 380);
+  }
+
+  function moveTaskRow(row, createRow, targetBody, onMoved, insertAtEnd) {
+    row.classList.add('task-slot-exit');
+    setTimeout(() => {
+      const name = row.querySelector('.task-name').textContent;
+      const desc = row.querySelector('.task-desc').textContent;
+      row.remove();
+      const newRow = createRow(name, desc);
+      if (insertAtEnd) targetBody.appendChild(newRow);
+      else targetBody.prepend(newRow);
+      playTaskSlotEnter(newRow);
+      if (onMoved) onMoved();
+      updateTaskBadges();
+    }, 320);
   }
 
   function updateTaskBadges() {
     const openCount = document.querySelectorAll('#openTasksBody .task-row-actionable').length;
-    const doneCount = document.querySelectorAll('#doneTasksBody .task-row-static').length;
+    const doneCount = document.querySelectorAll('#doneTasksBody .task-row-done').length;
     document.getElementById('openTasksBadge').textContent = openCount;
     document.getElementById('doneTasksBadge').textContent = doneCount;
   }
@@ -1211,27 +1462,27 @@
     const row = btn.closest('.task-row-actionable');
     if (!row) return;
 
-    const name = row.querySelector('.task-name').textContent;
-    const desc = row.querySelector('.task-desc').textContent;
+    const wrap = btn.closest('.task-check-wrap');
+    wrap.classList.add('success');
+
+    setTimeout(() => {
+      wrap.classList.remove('open', 'success');
+      moveTaskRow(row, createDoneTaskRow, document.getElementById('doneTasksBody'), () => {
+        const doneCat = document.getElementById('doneCat');
+        if (doneCat.classList.contains('collapsed')) {
+          doneCat.classList.remove('collapsed');
+        }
+      }, false);
+    }, 1100);
+  }
+
+  function restoreTask(btn, e) {
+    e.stopPropagation();
+    const row = btn.closest('.task-row-done');
+    if (!row) return;
+
     closeAllTaskConfirms();
-
-    const doneRow = document.createElement('div');
-    doneRow.className = 'task-row-static';
-    doneRow.innerHTML = `
-      <div class="task-bullet"></div>
-      <div class="task-info">
-        <div class="task-name done">${name}</div>
-        <div class="task-desc">${desc}</div>
-      </div>
-    `;
-    document.getElementById('doneTasksBody').prepend(doneRow);
-    row.remove();
-    updateTaskBadges();
-
-    const doneCat = document.getElementById('doneCat');
-    if (doneCat.classList.contains('collapsed')) {
-      doneCat.classList.remove('collapsed');
-    }
+    moveTaskRow(row, createOpenTaskRow, document.getElementById('openTasksBody'), null, true);
   }
 
   document.addEventListener('click', e => {
@@ -1261,16 +1512,6 @@
     invalid: 'missing'
   };
 
-  const CAPSULE_CLASS = {
-    pending: 'pending',
-    inprogress: 'open-status',
-    done: 'complete',
-    notrelevant: 'not-relevant',
-    valid: 'complete',
-    invalid: 'missing',
-    all: 'filter-neutral'
-  };
-
   function getCapsuleWrap(select) {
     return select.previousElementSibling?.classList?.contains('capsule-select')
       ? select.previousElementSibling
@@ -1284,16 +1525,9 @@
   function syncCapsuleFromSelect(wrap, select) {
     if (!wrap) return;
     const value = select.value;
-    const isFilter = select.classList.contains('filter-status-select');
-    wrap.classList.remove('pending', 'open-status', 'complete', 'not-relevant', 'missing', 'filter-neutral');
-    wrap.classList.add(CAPSULE_CLASS[value] || 'filter-neutral');
     const labelEl = wrap.querySelector('.capsule-select-label');
     const labelText = select.options[select.selectedIndex].text;
-    if (isFilter) {
-      labelEl.innerHTML = statusDotHtml(value) + `<span>${labelText}</span>`;
-    } else {
-      labelEl.textContent = labelText;
-    }
+    labelEl.innerHTML = statusDotHtml(value) + `<span>${labelText}</span>`;
     wrap.querySelectorAll('.capsule-select-option').forEach(btn => {
       btn.classList.toggle('selected', btn.dataset.value === value);
     });
@@ -1336,9 +1570,7 @@
         btn.type = 'button';
         btn.className = 'capsule-select-option' + (opt.selected ? ' selected' : '');
         btn.dataset.value = opt.value;
-        btn.innerHTML = isFilter
-          ? statusDotHtml(opt.value) + `<span>${opt.text}</span>`
-          : opt.text;
+        btn.innerHTML = statusDotHtml(opt.value) + `<span>${opt.text}</span>`;
         btn.addEventListener('click', e => {
           e.stopPropagation();
           select.value = opt.value;
