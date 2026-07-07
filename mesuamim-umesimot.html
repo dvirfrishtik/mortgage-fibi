@@ -232,6 +232,10 @@
       border-color: var(--navy);
       background: var(--navy-50);
     }
+    .task-row-actionable:hover .task-check {
+      border-color: var(--navy);
+      background: var(--navy-50);
+    }
     .task-check-icon {
       width: 10px;
       height: 8px;
@@ -246,6 +250,10 @@
       opacity: 1;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8' fill='none'%3E%3Cpath d='M1 4.2L3.6 6.8L9 1.2' stroke='%231B2A6B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     }
+    .task-row-actionable:hover .task-check .task-check-icon {
+      opacity: 1;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8' fill='none'%3E%3Cpath d='M1 4.2L3.6 6.8L9 1.2' stroke='%231B2A6B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
 
     .task-check--done {
       border-color: var(--navy);
@@ -256,6 +264,10 @@
       border-color: var(--navy-dark);
       background: var(--navy-dark);
     }
+    .task-row-done:hover .task-check--done {
+      border-color: var(--navy-dark);
+      background: var(--navy-dark);
+    }
     .task-check--done .task-check-icon {
       opacity: 1;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8' fill='none'%3E%3Cpath d='M1 4.2L3.6 6.8L9 1.2' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
@@ -263,6 +275,7 @@
 
     .task-row-static.task-row-actionable,
     .task-row-static.task-row-done {
+      cursor: pointer;
       transition:
         opacity 0.32s ease,
         transform 0.32s ease,
@@ -716,7 +729,7 @@
           <div class="category-name">משימות לביצוע <span class="category-badge partial" id="openTasksBadge">3</span></div>
         </div>
         <div class="category-body" id="openTasksBody">
-          <div class="task-row-static task-row-actionable">
+          <div class="task-row-static task-row-actionable" onclick="onTaskRowClick(this, event)">
             <div class="task-check-wrap">
               <button type="button" class="task-check" aria-label="סמן משימה כבוצעה" onclick="toggleTaskConfirm(this, event)">
                 <span class="task-check-icon"></span>
@@ -738,7 +751,7 @@
               <div class="task-desc">יש לבצע שאילתא במערכת תנופה ולוודא אין שעבודים קיימים על הנכס.</div>
             </div>
           </div>
-          <div class="task-row-static task-row-actionable">
+          <div class="task-row-static task-row-actionable" onclick="onTaskRowClick(this, event)">
             <div class="task-check-wrap">
               <button type="button" class="task-check" aria-label="סמן משימה כבוצעה" onclick="toggleTaskConfirm(this, event)">
                 <span class="task-check-icon"></span>
@@ -760,7 +773,7 @@
               <div class="task-desc">לבצע בדיקת אשראי מלאה של הלווה במערכת המרכזית.</div>
             </div>
           </div>
-          <div class="task-row-static task-row-actionable">
+          <div class="task-row-static task-row-actionable" onclick="onTaskRowClick(this, event)">
             <div class="task-check-wrap">
               <button type="button" class="task-check" aria-label="סמן משימה כבוצעה" onclick="toggleTaskConfirm(this, event)">
                 <span class="task-check-icon"></span>
@@ -898,7 +911,7 @@
             <span class="chevron"></span>
           </div>
           <div class="category-body" id="doneTasksBody">
-            <div class="task-row-static task-row-done">
+            <div class="task-row-static task-row-done" onclick="onTaskRowClick(this, event)">
               <div class="task-check-wrap task-check-wrap--done">
                 <button type="button" class="task-check task-check--done" aria-label="החזר משימה לביצוע" onclick="toggleTaskConfirm(this, event)">
                   <span class="task-check-icon"></span>
@@ -916,7 +929,7 @@
                 <div class="task-desc">נאספו פרטי הלווה והעסקה בשלב פתיחת התיק.</div>
               </div>
             </div>
-            <div class="task-row-static task-row-done">
+            <div class="task-row-static task-row-done" onclick="onTaskRowClick(this, event)">
               <div class="task-check-wrap task-check-wrap--done">
                 <button type="button" class="task-check task-check--done" aria-label="החזר משימה לביצוע" onclick="toggleTaskConfirm(this, event)">
                   <span class="task-check-icon"></span>
@@ -1353,6 +1366,12 @@
     });
   }
 
+  function onTaskRowClick(row, e) {
+    if (e.target.closest('.task-confirm-popover')) return;
+    const btn = row.querySelector('.task-check');
+    if (btn) toggleTaskConfirm(btn, e);
+  }
+
   function toggleTaskConfirm(btn, e) {
     e.stopPropagation();
     const wrap = btn.closest('.task-check-wrap');
@@ -1394,6 +1413,7 @@
   function createOpenTaskRow(name, desc) {
     const row = document.createElement('div');
     row.className = 'task-row-static task-row-actionable';
+    row.setAttribute('onclick', 'onTaskRowClick(this, event)');
     row.innerHTML = `
       <div class="task-check-wrap">
         <button type="button" class="task-check" aria-label="סמן משימה כבוצעה" onclick="toggleTaskConfirm(this, event)">
@@ -1412,6 +1432,7 @@
   function createDoneTaskRow(name, desc) {
     const row = document.createElement('div');
     row.className = 'task-row-static task-row-done';
+    row.setAttribute('onclick', 'onTaskRowClick(this, event)');
     row.innerHTML = `
       <div class="task-check-wrap task-check-wrap--done">
         <button type="button" class="task-check task-check--done" aria-label="החזר משימה לביצוע" onclick="toggleTaskConfirm(this, event)">
@@ -1486,7 +1507,7 @@
   }
 
   document.addEventListener('click', e => {
-    if (e.target.closest('.task-check-wrap')) return;
+    if (e.target.closest('.task-row-actionable, .task-row-done')) return;
     closeAllTaskConfirms();
   });
 
