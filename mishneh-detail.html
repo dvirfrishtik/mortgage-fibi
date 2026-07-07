@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>פירוט תת-מסלול — בנק הבינלאומי</title>
+  <link rel="stylesheet" href="snifit.css">
+  <style>
+    /* ── HERO BAND ── */
+    .hero-band {
+      background: var(--navy);
+      color: white;
+      padding: 20px 32px 0;
+    }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      opacity: 0.7;
+      margin-bottom: 6px;
+    }
+    .hero-meta a { color: var(--yellow); text-decoration: none; }
+    .hero-meta .sep { opacity: 0.4; }
+    .hero-track {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .hero-sub {
+      font-size: 13px;
+      opacity: 0.75;
+      margin-bottom: 16px;
+    }
+    .hero-kpi-row {
+      display: flex;
+      gap: 0;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+    .hero-kpi {
+      flex: 1;
+      padding: 14px 20px;
+      border-left: 1px solid rgba(255,255,255,0.12);
+    }
+    .hero-kpi:last-child { border-left: none; }
+    .hero-kpi:first-child { padding-right: 0; }
+    .kpi-label {
+      font-size: 11px;
+      opacity: 0.65;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .kpi-value {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .kpi-value.accent { color: var(--yellow); }
+    .kpi-value.small { font-size: 15px; }
+    .kpi-note {
+      font-size: 11px;
+      opacity: 0.55;
+      margin-top: 2px;
+    }
+
+    /* ── PAGE BODY ── */
+    .body-wrap {
+      padding: 24px 32px;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .left-col { display: flex; flex-direction: column; gap: 20px; }
+    .right-col { display: flex; flex-direction: column; gap: 20px; }
+
+    /* ── DATA SECTION CARD ── */
+    .data-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+    .data-card-header {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-light);
+      background: var(--navy-50);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .data-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .data-card-title .icon { font-size: 14px; }
+
+    /* ── DATA GRID ── */
+    .data-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .data-item {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-light);
+      border-left: 1px solid var(--border-light);
+    }
+    .data-item:nth-child(odd) { border-left: none; }
+    .data-item.full-width {
+      grid-column: 1 / -1;
+      border-left: none;
+    }
+    .data-item:nth-last-child(-n+2):not(.full-width) { border-bottom: none; }
+    .data-item.full-width:last-child { border-bottom: none; }
+    .field-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+      font-weight: 500;
+    }
+    .field-value {
+      font-size: 13px;
+      color: var(--text-body);
+      font-weight: 600;
+    }
+    .field-value.mono { font-family: monospace; font-size: 12px; }
+    .field-value.highlight { color: var(--navy); }
+
+    /* ── RATES TABLE ── */
+    .rates-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .rates-table thead tr {
+      background: var(--navy-50);
+      border-bottom: 1px solid var(--border);
+    }
+    .rates-table th {
+      padding: 9px 16px;
+      text-align: right;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .rates-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+    }
+    .rates-table tr:last-child td { border-bottom: none; }
+    .rates-table tr:hover td { background: var(--navy-50); }
+    .rates-table td.label-cell { color: var(--text-muted); font-size: 12px; }
+    .rates-table td.value-cell { font-weight: 600; color: var(--navy); }
+
+    /* ── PAYMENTS TABLE ── */
+    .payments-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .payments-table thead tr {
+      background: var(--navy-50);
+      border-bottom: 1px solid var(--border);
+    }
+    .payments-table th {
+      padding: 9px 16px;
+      text-align: right;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .payments-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+    }
+    .payments-table tr:last-child td { border-bottom: none; }
+    .payments-table tr:hover td { background: var(--navy-50); }
+    .payment-amount { font-weight: 700; color: var(--navy); font-size: 14px; }
+    .payment-footnote {
+      padding: 10px 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-light);
+      background: var(--bg);
+      line-height: 1.5;
+    }
+
+    /* ── BALANCE CARD ── */
+    .balance-row {
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .balance-row:last-child { border-bottom: none; }
+    .balance-label { font-size: 12px; color: var(--text-muted); }
+    .balance-value { font-size: 13px; font-weight: 600; color: var(--navy); }
+    .balance-row.total {
+      background: var(--navy-50);
+    }
+    .balance-row.total .balance-label { font-weight: 700; color: var(--navy); font-size: 13px; }
+    .balance-row.total .balance-value { font-size: 16px; font-weight: 700; color: var(--navy); }
+
+    /* ── FEE / INSURANCE ROW ── */
+    .fee-row {
+      padding: 11px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .fee-row:last-child { border-bottom: none; }
+    .fee-label { font-size: 13px; color: var(--text-body); }
+    .fee-value { font-size: 13px; font-weight: 600; color: var(--navy); }
+
+    /* ── CHANGE DATE NOTICE ── */
+    .notice-box {
+      margin: 12px 20px;
+      padding: 12px 14px;
+      background: var(--yellow-50);
+      border: 1px solid var(--yellow-light);
+      border-right: 3px solid var(--yellow);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      color: var(--text-body);
+      line-height: 1.5;
+    }
+    .notice-box strong { color: var(--navy); }
+
+    /* ── TAG ── */
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 10px;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+    .tag.blue { background: var(--navy-50); color: var(--navy); }
+    .tag.green { background: var(--green-bg); color: var(--green); }
+  </style>
+</head>
+<body>
+
+<!-- ── GLOBAL HEADER ── -->
+<header class="header">
+  <div class="header-logo">בנק <span class="accent">הבינלאומי</span><span class="header-divider">|</span> מערכת משכנתאות</div>
+  <div class="header-user">
+    <span>שלום, דנה לוי</span>
+    <div class="avatar">ד</div>
+  </div>
+</header>
+
+<!-- ── HERO BAND ── -->
+<div class="hero-band">
+  <div class="hero-meta">
+    <a href="dashboard.html">לוח בקרה</a>
+    <span class="sep">›</span>
+    <span>יוסי ורד — 41-8954930</span>
+    <span class="sep">›</span>
+    <span>תת-מסלול 1</span>
+  </div>
+  <div class="hero-track">הלוואות לא צמודות — פריים</div>
+  <div class="hero-sub">רכישת דירה יד שנייה &nbsp;·&nbsp; שפיצר &nbsp;·&nbsp; פרטית</div>
+
+  <div class="hero-kpi-row">
+    <div class="hero-kpi">
+      <div class="kpi-label">יתרה לסילוק</div>
+      <div class="kpi-value accent">15,626.10 ₪</div>
+      <div class="kpi-note">קרן + ריבית בלבד</div>
+    </div>
+    <div class="hero-kpi">
+      <div class="kpi-label">תשלום חודשי</div>
+      <div class="kpi-value">2,463.98 ₪</div>
+      <div class="kpi-note">קרן, ריבית והצמדה</div>
+    </div>
+    <div class="hero-kpi">
+      <div class="kpi-label">ריבית נוכחית</div>
+      <div class="kpi-value small">4.900%</div>
+      <div class="kpi-note">פריים − 0.60%</div>
+    </div>
+    <div class="hero-kpi">
+      <div class="kpi-label">מועד סיום</div>
+      <div class="kpi-value small">10.12.2029</div>
+      <div class="kpi-note">יום פרעון: 10 לחודש</div>
+    </div>
+    <div class="hero-kpi">
+      <div class="kpi-label">שינוי ריבית קרוב</div>
+      <div class="kpi-value small">15.10.2027</div>
+      <div class="kpi-note">כל שינוי של בנק ישראל</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAGE BODY ── -->
+<div class="body-wrap">
+
+  <!-- ═══ LEFT COLUMN ═══ -->
+  <div class="left-col">
+
+    <!-- פרטי הלוואה -->
+    <div class="data-card">
+      <div class="data-card-header">
+        <div class="data-card-title"><span class="icon">📋</span> פרטי הלוואה</div>
+      </div>
+      <div class="data-grid">
+        <div class="data-item">
+          <div class="field-label">מועד מתן הלוואה</div>
+          <div class="field-value">16.11.2016</div>
+        </div>
+        <div class="data-item">
+          <div class="field-label">המועד הצפוי לתשלום האחרון</div>
+          <div class="field-value">10.12.2029</div>
+        </div>
+        <div class="data-item">
+          <div class="field-label">סוג ריבית</div>
+          <div class="field-value highlight">משתנה פריים (עוגן + מרווח)</div>
+        </div>
+        <div class="data-item">
+          <div class="field-label">ריבית נוכחית</div>
+          <div class="field-value highlight">4.900%</div>
+        </div>
+        <div class="data-item">
+          <div class="field-label">בסיס ההצמדה</div>
+          <div class="field-value">1976 — צמוד למדד המחירים לצרכן</div>
+        </div>
+        <div class="data-item">
+          <div class="field-label">יום פרעון</div>
+          <div class="field-value">10 לחודש</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ריביות ומדדים -->
+    <div class="data-card">
+      <div class="data-card-header">
+        <div class="data-card-title"><span class="icon">📈</span> ריביות ומדדים</div>
+      </div>
+
+      <div class="notice-box">
+        <strong>שינוי ריבית קרוב:</strong> הריבית הבסיסית משתנה עם שינוי ריבית בנק ישראל.<br>
+        מועד שינוי קרוב: <strong>15.10.2027</strong> &nbsp;·&nbsp; תשלום ראשון לפי ריבית חדשה: <strong>15.11.2027</strong><br>
+        מועד יציאה: 30 הימים שלפני 15.10.2027
+      </div>
+
+      <table class="rates-table">
+        <thead>
+          <tr>
+            <th>שדה</th>
+            <th>ערך נוכחי</th>
+            <th>ליום מתן ההלוואה</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label-cell">בסיס קביעת הריבית — עוגן</td>
+            <td class="value-cell">5.500%</td>
+            <td>1.600%</td>
+          </tr>
+          <tr>
+            <td class="label-cell">בסיס קביעת הריבית — עוגן מתואמת</td>
+            <td class="value-cell">5.500%</td>
+            <td>1.600%</td>
+          </tr>
+          <tr>
+            <td class="label-cell">שיעור תוספת (מרווח)</td>
+            <td class="value-cell">−0.600%</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td class="label-cell">ריבית</td>
+            <td class="value-cell">4.900%</td>
+            <td>1.000%</td>
+          </tr>
+          <tr>
+            <td class="label-cell">ריבית מתואמת</td>
+            <td class="value-cell">4.900%</td>
+            <td>1.000%</td>
+          </tr>
+          <tr>
+            <td class="label-cell">תדירות שינוי ריבית</td>
+            <td class="value-cell" colspan="2">60 חודשים</td>
+          </tr>
+          <tr>
+            <td class="label-cell">מדד בסיס</td>
+            <td class="value-cell" colspan="2">1,789,413.62 נק'</td>
+          </tr>
+          <tr>
+            <td class="label-cell">מדד יסוד (בסיס 2016)</td>
+            <td class="value-cell" colspan="2">100.44497 נק'</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 6 תשלומים אחרונים -->
+    <div class="data-card">
+      <div class="data-card-header">
+        <div class="data-card-title"><span class="icon">🗓</span> 6 תשלומים אחרונים <sup style="font-size:10px; color:var(--text-muted)">*</sup></div>
+      </div>
+      <table class="payments-table">
+        <thead>
+          <tr>
+            <th>חודש</th>
+            <th>סכום</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>אפריל 2026</td>
+            <td><span class="payment-amount">2,463.98 ₪</span></td>
+          </tr>
+          <tr>
+            <td>מרץ 2026</td>
+            <td><span class="payment-amount">2,463.98 ₪</span></td>
+          </tr>
+          <tr>
+            <td>פברואר 2026</td>
+            <td><span class="payment-amount">2,463.98 ₪</span></td>
+          </tr>
+          <tr>
+            <td>ינואר 2026</td>
+            <td><span class="payment-amount">2,467.65 ₪</span></td>
+          </tr>
+          <tr>
+            <td>דצמבר 2025</td>
+            <td><span class="payment-amount">2,470.09 ₪</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="payment-footnote">
+        * תשלום קרן, ריבית, הפרשי הצמדה על הקרן ועל הריבית בהתאם להסכם ההלוואה. לא כולל עמלות פירעון מוקדם, פיגורים, הוצאות משפטיות ושכ"ט עו"ד.
+      </div>
+    </div>
+
+  </div><!-- /left-col -->
+
+  <!-- ═══ RIGHT COLUMN ═══ -->
+  <div class="right-col">
+
+    <!-- יתרות -->
+    <div class="data-card">
+      <div class="data-card-header">
+        <div class="data-card-title"><span class="icon">💰</span> יתרות</div>
+      </div>
+      <div class="balance-row">
+        <span class="balance-label">סכום תת הלוואה מקורי</span>
+        <span class="balance-value">49,000.00 ₪</span>
+      </div>
+      <div class="balance-row">
+        <span class="balance-label">יתרת קרן</span>
+        <span class="balance-value">15,573.83 ₪</span>
+      </div>
+      <div class="balance-row">
+        <span class="balance-label">יתרת ריבית</span>
+        <span class="balance-value">52.27 ₪</span>
+      </div>
+      <div class="balance-row total">
+        <span class="balance-label">יתרה לסילוק <sup>1</sup></span>
+        <span class="balance-value">15,626.10 ₪</span>
+      </div>
+    </div>
+
+    <!-- פרטים נוספים -->
+    <div class="data-card">
+      <div class="data-card-header">
+        <div class="data-card-title"><span class="icon">🔖</span> פרטים נוספים</div>
+      </div>
+      <div class="data-grid" style="grid-template-columns: 1fr;">
+        <div class="data-item full-width">
+          <div class="field-label">מספר הלוואה</div>
+          <div class="field-value mono">41-8954930-01-39</div>
+        </div>
+        <div class="data-item full-width">
+          <div class="field-label">מספר משנה</div>
+          <div class="field-value">1</div>
+        </div>
+        <div class="data-item full-width">
+          <div class="field-label">סוג הלוואה</div>
+          <div class="field-value"><span class="tag blue">פרטית</span></div>
+        </div>
+        <div class="data-item full-width">
+          <div class="field-label">תקופה מקורית</div>
+          <div class="field-value">156 חודשים</div>
+        </div>
+        <div class="data-item full-width">
+          <div class="field-label">מספר תשלומים בשנה</div>
+          <div class="field-value">12</div>
+        </div>
+        <div class="data-item full-width">
+          <div class="field-label">מועד תשלום ראשון</div>
+          <div class="field-value">10.01.2017</div>
+        </div>
+        <div class="data-item full-width">
+          <div class="field-label">הריבית הכוללת החזויה <sup>5</sup></div>
+          <div class="field-value highlight">4.433%</div>
+        </div>
+        <div class="data-item full-width">
+          <div class="field-label">שיעור הריבית לצורכי השוואה <sup>6</sup></div>
+          <div class="field-value">4.433%</div>
+        </div>
+        <div class="data-item full-width">
+          <div class="field-label">פרטי הוראת הקבע</div>
+          <div class="field-value mono" style="font-size:11px;">031-001-000-105030651</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- עמלות -->
+    <div class="data-card">
+      <div class="data-card-header">
+        <div class="data-card-title"><span class="icon">🧾</span> עמלות</div>
+      </div>
+      <div class="fee-row">
+        <span class="fee-label">עמלה תפעולית <sup>4</sup></span>
+        <span class="fee-value">60.00 ₪</span>
+      </div>
+      <div class="fee-row">
+        <span class="fee-label">מועד יציאה <sup>7</sup></span>
+        <span class="fee-value" style="font-size:12px;">30 הימים שלפני 15.10.2027</span>
+      </div>
+    </div>
+
+    <!-- ביטוח -->
+    <div class="data-card">
+      <div class="data-card-header">
+        <div class="data-card-title"><span class="icon">🛡</span> ביטוח</div>
+      </div>
+      <div class="fee-row">
+        <span class="fee-label">חברת ביטוח נכס</span>
+        <span class="fee-value"><span class="tag green">ביטוח חיצוני</span></span>
+      </div>
+    </div>
+
+    <!-- הערות משפטיות -->
+    <div class="data-card">
+      <div class="data-card-header">
+        <div class="data-card-title"><span class="icon">📝</span> הערות</div>
+      </div>
+      <div style="padding: 14px 20px; font-size: 11px; color: var(--text-muted); line-height: 1.7;">
+        <p><sup>1</sup> יתרה זו כוללת קרן, ריבית והצמדה בלבד. אינה כוללת עמלות פרעון מוקדם, עמלות נלוות, פיגורים, הוצאות משפטיות ושכ"ט עו"ד.</p>
+        <p style="margin-top:8px;"><sup>4</sup> ככל שיש הלוואות נוספות עם אותו מספר לווה, בפרעון מוקדם של כולן באותו מועד — תיגבה עמלה תפעולית אחת בלבד.</p>
+        <p style="margin-top:8px;"><sup>5</sup> הריבית הכוללת החזויה — העלות הממשית של האשראי — מחושבת לפי הוראות בנק ישראל.</p>
+        <p style="margin-top:8px;"><sup>6</sup> שיעור ריבית לצרכי השוואה: אם גבוה מהריבית הכוללת החזויה באישור העקרוני של ההלוואה החדשה — קיימת כדאיות למחזור.</p>
+        <p style="margin-top:8px;"><sup>7</sup> מועד יציאה: תקופה שבה פטורים מ"עמלת היוון" בפירעון מוקדם. מוגדרת ביחס למועד שינוי הריבית הקרוב.</p>
+      </div>
+    </div>
+
+  </div><!-- /right-col -->
+
+</div><!-- /body-wrap -->
+
+</body>
+</html>

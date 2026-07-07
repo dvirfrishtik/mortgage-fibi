@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מסמכים ומשימות — בנק הבינלאומי</title>
+  <link rel="stylesheet" href="snifit.css">
+  <style>
+    html, body { height: 100%; }
+    /* Fixed height (not min-height) + overflow:hidden: the page itself never
+       scrolls. Every panel below manages its own internal scrolling instead,
+       so the whole app always fits within one viewport height. */
+    body { margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+    /* The header/hero keep their natural height and never shrink
+       (flex-shrink:0) — only the row below them (.app-shell) flexes to
+       absorb the rest of the viewport height. */
+    .header, .hero-band { flex-shrink: 0; }
+
+    /* The header/hero/progress bar are full-width, normal-flow rows at the
+       top of the page. Only the area BELOW them is a flex row, so the
+       documents sidebar starts under the whole header block and stretches
+       to fill the rest of the viewport height — not fixed positioning, so
+       the page reflows normally at any width. */
+    .app-shell { display: flex; flex: 1; min-height: 0; align-items: stretch; }
+
+    /* ── HERO BAND (case details) — compact: 3 short lines instead of a
+       tall stack of rows, so it costs far less vertical space than the
+       content below it. ── */
+    .hero-band {
+      background: var(--navy);
+      color: white;
+      padding: 12px 32px;
+    }
+    .hero-back-link {
+      display: inline-block;
+      color: var(--white);
+      text-decoration: underline;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .hero-back-link:hover { opacity: 0.85; }
+    .hero-main-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 8px;
+    }
+    .hero-track {
+      font-size: 19px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    /* The progress bar sits inline on the far side of the title row
+       (the visual left edge, since it's last in this RTL flex row). */
+    .hero-progress {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .hero-progress-label { font-size: 13px; opacity: 0.75; white-space: nowrap; }
+    .hero-progress-track {
+      width: 140px;
+      height: 6px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .hero-progress-fill { height: 100%; background: var(--yellow); border-radius: 99px; }
+    .hero-progress-pct { font-size: 13px; font-weight: 700; color: var(--yellow); white-space: nowrap; }
+    .hero-kpi-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px 16px;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    .hero-kpi-line b { font-weight: 700; opacity: 1; }
+    .hero-kpi-line .accent { color: var(--yellow); font-weight: 700; }
+
+    /* ── PAGE BODY ──
+       Two regions sit in the .app-shell flex row:
+         • .tasks-region — משימות והנחיות, INDEPENDENT of which document is
+           selected, so it's a standalone card on the plain page background
+           (visual left).
+         • .doc-region — one framed unit holding the documents inbox (master)
+           and the preview (detail). Selecting a row in the inbox drives the
+           preview beside it, so they share a single border/frame to signal
+           they belong together (visual right, flush to the wall). */
+
+    /* LEFT — independent tasks card */
+    .tasks-region {
+      order: 2;
+      width: 320px;
+      flex-shrink: 0;
+      min-height: 0;
+      display: flex;
+      /* left = page margin (32), right = gap toward the doc group (20) */
+      padding: 24px 20px 24px 32px;
+    }
+    .left-col { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
+    /* .card has overflow:hidden (for its rounded corners), which makes its
+       flex auto-min-height resolve to 0 — without flex-shrink:0 it silently
+       shrinks to fit .left-col instead of growing and letting .left-col's
+       own overflow-y:auto scroll, so opened accordions were clipped with
+       no way to scroll to them. */
+    .left-col > .card { flex-shrink: 0; }
+
+    /* RIGHT — the document group: preview + inbox framed as one unit,
+       flush to the right wall and the bottom, only the top-left corner
+       exposed (and rounded). */
+    .doc-region {
+      order: 1;
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      margin-top: 24px;
+      display: flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-right: none;
+      border-top-left-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: -2px 0 12px rgba(27,42,107,0.06);
+    }
+    /* Detail pane (preview) — merges into the region (no card chrome of its
+       own); its body scrolls internally rather than the whole pane. */
+    .center-col { order: 2; flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+    .center-col > .card { flex: 1; min-height: 0; display: flex; flex-direction: column; border: none; border-radius: 0; box-shadow: none; background: transparent; }
+    /* Plain heading above the document — no navy-50 fill, no divider. */
+    .center-col > .card > .card-header {
+      flex-shrink: 0;
+      background: transparent;
+      border-bottom: none;
+      padding: 16px 28px 4px;
+    }
+
+    /* Static task row */
+    .task-row-static {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .task-row-static:last-child { border-bottom: none; }
+    .task-bullet {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--navy-100);
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+    .task-row-static .task-info { flex: 1; min-width: 0; }
+
+    /* Actionable task checkbox (משימות לביצוע) */
+    .task-check-wrap {
+      position: relative;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .task-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .task-check:hover {
+      border-color: var(--navy);
+      background: var(--navy-50);
+    }
+    .task-check-icon {
+      width: 10px;
+      height: 8px;
+      opacity: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8' fill='none'%3E%3Cpath d='M1 4.2L3.6 6.8L9 1.2' stroke='%2322863A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      transition: opacity 0.15s;
+    }
+    .task-check:hover .task-check-icon { opacity: 1; }
+
+    .task-confirm-popover {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      z-index: 400;
+      width: 228px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 14px;
+    }
+    .task-check-wrap.open .task-confirm-popover { display: block; }
+    .task-confirm-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    .task-confirm-yes {
+      width: 100%;
+      padding: 9px 12px;
+      background: var(--navy);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      margin-bottom: 6px;
+      transition: background 0.15s;
+    }
+    .task-confirm-yes:hover { background: var(--navy-dark); }
+    .task-confirm-cancel {
+      width: 100%;
+      padding: 8px 12px;
+      background: transparent;
+      color: var(--text-muted);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .task-confirm-cancel:hover { color: var(--navy); }
+
+    /* Non-collapsible "open tasks" group header (visual match with .category-header, no toggle) */
+    .group-header {
+      padding: 11px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .group-header .category-name { font-size: 13px; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+
+    /* ── DOCUMENTS INBOX (master pane inside .doc-region) — the list you
+       pick from; its border-left is the divider between it and the preview
+       detail pane on its left. The region frame provides the outer chrome. */
+    .docs-sidebar {
+      order: 1;
+      width: 380px;
+      flex-shrink: 0;
+      min-height: 0;
+      overflow: hidden;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+    .docs-sidebar .card-header {
+      flex-shrink: 0;
+      background: var(--navy);
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+    .docs-sidebar .card-title { color: white; }
+    .add-doc-btn {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      border: none;
+      background: var(--yellow);
+      color: var(--navy);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .add-doc-btn:hover { background: var(--yellow-dark); }
+
+    .inbox-filters {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-light);
+      background: var(--surface);
+    }
+    .inbox-search {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 6px 12px;
+    }
+    .inbox-search input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 12px;
+      width: 100%;
+      direction: rtl;
+      font-family: inherit;
+      color: var(--text-body);
+    }
+    .inbox-search input::placeholder { color: var(--text-faint); }
+
+    /* Custom capsule dropdowns — replaces native browser selects */
+    select.capsule-select-native { display: none; }
+
+    .capsule-select {
+      position: relative;
+      flex-shrink: 0;
+    }
+    .capsule-select--filter { min-width: 132px; }
+    .capsule-select:not(.capsule-select--filter) { min-width: 120px; }
+
+    .capsule-select-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      border: none;
+      border-radius: 99px;
+      min-height: 32px;
+      padding: 7px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: inherit;
+      line-height: 1.3;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: box-shadow 0.15s;
+    }
+    .capsule-select-trigger:hover { box-shadow: var(--shadow-sm); }
+    .capsule-select.open .capsule-select-trigger { box-shadow: var(--shadow); }
+
+    .capsule-select-label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .capsule-select-chevron {
+      width: 10px;
+      height: 6px;
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236B7280' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      transition: transform 0.2s;
+    }
+    .capsule-select.open .capsule-select-chevron { transform: rotate(180deg); }
+
+    .capsule-select.filter-neutral .capsule-select-trigger {
+      background-color: var(--bg);
+      color: var(--navy);
+      border: 1px solid var(--border);
+    }
+    .capsule-select.pending .capsule-select-trigger      { background-color: var(--orange-bg); color: var(--orange); }
+    .capsule-select.open-status .capsule-select-trigger  { background-color: var(--navy-50); color: var(--navy); }
+    .capsule-select.complete .capsule-select-trigger     { background-color: var(--green-bg); color: var(--green); }
+    .capsule-select.not-relevant .capsule-select-trigger { background-color: var(--bg); color: var(--text-faint); border: 1px solid var(--border); }
+    .capsule-select.missing .capsule-select-trigger      { background-color: var(--red-bg); color: var(--red); }
+
+    .capsule-select-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 100%;
+      width: max-content;
+      z-index: 300;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 6px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+    .capsule-select.open .capsule-select-menu { display: block; }
+
+    .capsule-select-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      text-align: right;
+      border: none;
+      background: transparent;
+      padding: 9px 14px;
+      font-size: 12px;
+      font-family: inherit;
+      font-weight: 600;
+      color: var(--text-body);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      transition: background 0.12s;
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-dot.all         { background: transparent; border: 1.5px solid var(--border); }
+    .status-dot.pending     { background: var(--orange); }
+    .status-dot.inprogress  { background: var(--navy); }
+    .status-dot.done        { background: var(--green); }
+    .status-dot.notrelevant { background: var(--text-faint); }
+    .status-dot.valid       { background: var(--green); }
+    .status-dot.invalid     { background: var(--red); }
+    .capsule-select-option:hover { background: var(--navy-50); color: var(--navy); }
+    .capsule-select-option.selected {
+      background: var(--navy-50);
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .inbox-list { display: flex; flex-direction: column; flex: 1; overflow-y: auto; min-height: 0; }
+    .docs-sidebar .category-header {
+      padding: 10px 14px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .docs-sidebar .category-name { font-size: 12px; line-height: 1.35; }
+    .docs-sidebar .category-body { padding: 0; }
+    .docs-sidebar .category-body .inbox-row:last-child { border-bottom: none; }
+    .docs-sidebar .category:last-child { border-bottom: none; }
+    .inbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .inbox-row:last-child { border-bottom: none; }
+    .inbox-row:hover { background: var(--navy-50); }
+    .inbox-row.active { background: var(--bg); border-right: 3px solid var(--navy); padding-right: 13px; }
+    .inbox-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--navy-100);
+    }
+    .inbox-row.active .inbox-dot { background: var(--navy); }
+    .inbox-info { flex: 1; min-width: 0; }
+    .inbox-name { font-size: 13px; font-weight: 600; color: var(--text-body); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .inbox-row.active .inbox-name { color: var(--navy); }
+    .inbox-code { font-size: 11px; color: var(--text-faint); margin-top: 1px; font-family: monospace; }
+
+    /* ── DOCUMENT PREVIEW (center column) ── */
+    .doc-preview-body { padding: 24px 28px; flex: 1; min-height: 0; overflow-y: auto; }
+    .legal-doc { background: #fff; font-size: 13px; line-height: 1.8; color: var(--text-body); }
+    .legal-doc-title { text-align: center; font-weight: 700; font-size: 15px; color: var(--navy); margin-bottom: 4px; }
+    .legal-doc-subtitle { text-align: center; font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+    .legal-doc-section-title { font-weight: 700; color: var(--navy); font-size: 13px; margin: 18px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .legal-doc-field { margin-bottom: 12px; display: flex; gap: 8px; align-items: baseline; }
+    .legal-doc-field .field-label { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+    .legal-doc-field .field-line { flex: 1; border-bottom: 1px dotted var(--text-faint); min-height: 16px; }
+    .legal-doc-checkbox { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
+
+    /* Real scanned document image + an overlay that flags a specific field, with hover explanation */
+    .doc-image-wrap { position: relative; }
+    .doc-image { width: 100%; display: block; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+    .issue-flag-overlay {
+      position: absolute;
+      background: rgba(230, 126, 34, 0.22);
+      border: 2px solid var(--orange);
+      border-radius: 2px;
+      cursor: help;
+    }
+    .issue-flag-overlay .tooltip-box { top: 100%; right: 0; margin-top: 8px; width: 240px; }
+    .issue-flag-overlay:hover .tooltip-box { display: block; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-logo">בנק <span class="accent">הבינלאומי</span><span class="header-divider">|</span> מערכת משכנתאות</div>
+  <div class="header-user">
+    <span>שלום, דנה לוי</span>
+    <div class="avatar">ד</div>
+  </div>
+</header>
+
+<!-- CASE DETAILS HERO — compact: title+progress share one row, and all
+     the case metadata is a single small line underneath. -->
+<div class="hero-band">
+  <a href="dashboard.html" class="hero-back-link">→ חזרה לרשימת התיקים</a>
+  <div class="hero-main-row">
+    <div class="hero-track">תיק #12345 — ישראל ישראלי</div>
+    <div class="hero-progress">
+      <span class="hero-progress-label">התקדמות כוללת</span>
+      <div class="hero-progress-track"><div class="hero-progress-fill" style="width:24%"></div></div>
+      <span class="hero-progress-pct">24%</span>
+      <span class="hero-progress-label"><strong>13</strong>/55</span>
+    </div>
+  </div>
+  <div class="hero-kpi-line">
+    <span>רכישת דירה יד שניה · ת.ז 023456789</span>
+    <span><b>סטטוס:</b> <span class="accent">בתהליך</span></span>
+    <span><b>פקיד מטפל:</b> דנה לוי</span>
+    <span><b>נוצר:</b> 05/06/2026</span>
+    <span><b>עודכן:</b> 07/07/2026</span>
+    <span><b>סוג בטוחה:</b> משכנתא</span>
+  </div>
+</div>
+
+<!-- Everything below the header/hero is a flex row: the tasks card on the
+     left (independent of the selection) and the document group on the right
+     (inbox + its preview), which stretches to the bottom of the viewport. -->
+<div class="app-shell">
+
+  <!-- LEFT: tasks & guidance — NOT tied to the selected document -->
+  <div class="tasks-region">
+    <div class="left-col">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">משימות והנחיות</div>
+        </div>
+
+        <!-- Open tasks — always expanded -->
+        <div class="group-header">
+          <div class="category-name">משימות לביצוע <span class="category-badge partial" id="openTasksBadge">3</span></div>
+        </div>
+        <div class="category-body" id="openTasksBody">
+          <div class="task-row-static task-row-actionable">
+            <div class="task-check-wrap">
+              <button type="button" class="task-check" aria-label="סמן משימה כבוצעה" onclick="toggleTaskConfirm(this, event)">
+                <span class="task-check-icon"></span>
+              </button>
+              <div class="task-confirm-popover">
+                <p class="task-confirm-text">לסמן את המשימה כבוצעה?</p>
+                <button type="button" class="task-confirm-yes" onclick="completeTask(this, event)">כן, המשימה בוצעה</button>
+                <button type="button" class="task-confirm-cancel" onclick="closeTaskConfirm(this, event)">ביטול</button>
+              </div>
+            </div>
+            <div class="task-info">
+              <div class="task-name">שאילתא 601 — פנקס משכון</div>
+              <div class="task-desc">יש לבצע שאילתא במערכת תנופה ולוודא אין שעבודים קיימים על הנכס.</div>
+            </div>
+          </div>
+          <div class="task-row-static task-row-actionable">
+            <div class="task-check-wrap">
+              <button type="button" class="task-check" aria-label="סמן משימה כבוצעה" onclick="toggleTaskConfirm(this, event)">
+                <span class="task-check-icon"></span>
+              </button>
+              <div class="task-confirm-popover">
+                <p class="task-confirm-text">לסמן את המשימה כבוצעה?</p>
+                <button type="button" class="task-confirm-yes" onclick="completeTask(this, event)">כן, המשימה בוצעה</button>
+                <button type="button" class="task-confirm-cancel" onclick="closeTaskConfirm(this, event)">ביטול</button>
+              </div>
+            </div>
+            <div class="task-info">
+              <div class="task-name">שאילתא 612 — בדיקת אשראי</div>
+              <div class="task-desc">לבצע בדיקת אשראי מלאה של הלווה במערכת המרכזית.</div>
+            </div>
+          </div>
+          <div class="task-row-static task-row-actionable">
+            <div class="task-check-wrap">
+              <button type="button" class="task-check" aria-label="סמן משימה כבוצעה" onclick="toggleTaskConfirm(this, event)">
+                <span class="task-check-icon"></span>
+              </button>
+              <div class="task-confirm-popover">
+                <p class="task-confirm-text">לסמן את המשימה כבוצעה?</p>
+                <button type="button" class="task-confirm-yes" onclick="completeTask(this, event)">כן, המשימה בוצעה</button>
+                <button type="button" class="task-confirm-cancel" onclick="closeTaskConfirm(this, event)">ביטול</button>
+              </div>
+            </div>
+            <div class="task-info">
+              <div class="task-name">פתיחת תיק בתנופה</div>
+              <div class="task-desc">לפתוח תיק עבור לקוח זה במערכת תנופה ולרשום מספר תיק.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Banker guidance — accordion, closed by default -->
+        <div class="category collapsed" id="bankerGuideCat">
+          <div class="category-header" onclick="toggleCat('bankerGuideCat')">
+            <div class="category-name">הנחיות לבנקאי <span class="category-badge partial">4</span></div>
+            <span class="chevron"></span>
+          </div>
+          <div class="category-body">
+            <div class="task-row-static">
+              <div class="task-bullet"></div>
+              <div class="task-info">
+                <div class="task-name">אימות חשבון ההלוואה</div>
+                <div class="task-desc">יש לוודא כי חשבון ההלוואה אומת מול אתר הבנק המלווה או מול נציג הבנק בטלפון.</div>
+              </div>
+            </div>
+            <div class="task-row-static">
+              <div class="task-bullet"></div>
+              <div class="task-info">
+                <div class="task-name">בדיקת גורם מלווה בנסח</div>
+                <div class="task-desc">לוודא כי הגורם המלווה (הבנק) אכן רשום כבעל המשכנתא בנסח הטאבו העדכני.</div>
+              </div>
+            </div>
+            <div class="task-row-static">
+              <div class="task-bullet"></div>
+              <div class="task-info">
+                <div class="task-name">בדיקת הערת אזהרה</div>
+                <div class="task-desc">יש לוודא רישום הערת אזהרה תקינה בנסח לטובת הבנק, בהתאם לתנאי ההלוואה.</div>
+              </div>
+            </div>
+            <div class="task-row-static">
+              <div class="task-bullet"></div>
+              <div class="task-info">
+                <div class="task-name">התאמת סכום עסקה</div>
+                <div class="task-desc">לוודא כי הסכום הנקוב בחוזה הרכישה תואם לסכום המשכנתא המבוקש.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Completed tasks — accordion, closed by default -->
+        <div class="category collapsed" id="doneCat">
+          <div class="category-header" onclick="toggleCat('doneCat')">
+            <div class="category-name">משימות שבוצעו <span class="category-badge complete" id="doneTasksBadge">2</span></div>
+            <span class="chevron"></span>
+          </div>
+          <div class="category-body" id="doneTasksBody">
+            <div class="task-row-static">
+              <div class="task-bullet"></div>
+              <div class="task-info">
+                <div class="task-name done">איסוף פרטי לווה ראשוני</div>
+                <div class="task-desc">נאספו פרטי הלווה והעסקה בשלב פתיחת התיק.</div>
+              </div>
+            </div>
+            <div class="task-row-static">
+              <div class="task-bullet"></div>
+              <div class="task-info">
+                <div class="task-name done">שליחת הודעת פתיחת תיק ללקוח</div>
+                <div class="task-desc">נשלחה הודעת פתיחה עם רשימת המסמכים הראשונית.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Client-facing text — accordion, closed by default -->
+        <div class="category collapsed" id="clientTextCat">
+          <div class="category-header" onclick="toggleCat('clientTextCat')">
+            <div class="category-name">טקסט ללקוח</div>
+            <span class="chevron"></span>
+          </div>
+          <div class="category-body">
+            <div style="padding: 4px 20px 16px;">
+              <div style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">
+                העתיקו את הטקסט למייל ושלחו ללקוח
+              </div>
+              <textarea id="emailText" style="
+                width: 100%;
+                min-height: 260px;
+                padding: 14px;
+                font-size: 13px;
+                line-height: 1.7;
+                color: var(--text-body);
+                border: 1.5px solid var(--border);
+                border-radius: var(--radius-sm);
+                resize: vertical;
+                direction: rtl;
+                font-family: inherit;
+                background: var(--navy-50);
+                outline: none;
+              ">שלום ישראל,
+
+תודה על הפגישה ועל בחירתך בבנק הבינלאומי לליווי תהליך המשכנתא שלך.
+אנחנו כאן בשבילך לכל שאלה ונשמח לעדכן אותך בכל שלב לאורך הדרך.
+
+לצורך המשך הטיפול בתיקך, נבקש ממך להעביר אלינו את המסמכים הבאים:
+
+• תעודת זהות (כולל ספח)
+• תלושי שכר – 3 חודשים אחרונים
+• אישור יתרות בנקאי
+• אישור מס הכנסה
+• אישור עו"ד על הנכס
+• נסח טאבו
+• חוזה רכישה חתום
+
+ניתן לשלוח את המסמכים כקבצים סרוקים בפורמט PDF או תמונה ברורה.
+
+ברגע שנקבל את המסמכים, נבצע את הבדיקה ונחזור אליך בהקדם עם עדכון מלא על המשך התהליך.
+אנחנו כאן לכל שאלה — אל תהסס/י לפנות אלינו בכל עת.
+
+בברכה,
+דנה לוי
+מחלקת משכנתאות | בנק הבינלאומי</textarea>
+              <button onclick="copyEmail()" style="
+                margin-top: 10px;
+                width: 100%;
+                padding: 9px;
+                background: var(--navy);
+                color: white;
+                border: none;
+                border-radius: var(--radius-sm);
+                font-size: 13px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: background 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+              " id="copyBtn">העתק טקסט</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.tasks-region -->
+
+  <!-- RIGHT: the document group — picking a row in the inbox drives the
+       preview beside it, so both live inside one framed .doc-region. -->
+  <div class="doc-region">
+
+    <!-- Detail pane: preview of the selected document -->
+    <div class="center-col">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">תצוגה מקדימה — <span id="previewTitle">ייפוי כוח מתמשך</span></div>
+          <span class="doc-code" id="previewCode">משכ 542</span>
+        </div>
+        <div class="doc-preview-body">
+
+          <!-- Sample doc 1: the real scanned power-of-attorney form, with the borrower's
+               surname flagged via an overlay positioned over the image -->
+          <div class="legal-doc" id="preview-poa" style="display:block;">
+            <div class="doc-image-wrap">
+              <img src="poa-sample.png" alt="ייפוי כוח מתמשך" class="doc-image">
+              <span class="issue-flag-overlay" style="top:28.2%; left:47%; width:10%; height:2.7%;">
+                <span class="tooltip-box">
+                  <div class="tooltip-title">מילוי לא תקין</div>
+                  <div class="tooltip-text">שם המשפחה של הלווה כפי שצוין כאן אינו תואם באופן מלא לשם שמופיע בתעודת הזהות שהועברה.</div>
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Sample doc 2: נסח טאבו -->
+          <div class="legal-doc" id="preview-tabu" style="display:none;">
+            <div class="legal-doc-title">נסח רישום מקרקעין (טאבו)</div>
+            <div class="legal-doc-subtitle">לשכת רישום המקרקעין</div>
+            <div class="legal-doc-section-title">פרטי הנכס</div>
+            <div class="legal-doc-field"><span class="field-label">גוש:</span><span class="field-line">6638</span></div>
+            <div class="legal-doc-field"><span class="field-label">חלקה:</span><span class="field-line">112</span></div>
+            <div class="legal-doc-field"><span class="field-label">תת-חלקה:</span><span class="field-line">7</span></div>
+            <div class="legal-doc-section-title">בעלים רשומים</div>
+            <div class="legal-doc-field"><span class="field-label">שם:</span><span class="field-line">ישראל ישראלי, ת.ז 023456789</span></div>
+            <div class="legal-doc-field"><span class="field-label">הערות אזהרה:</span><span class="field-line">אין</span></div>
+          </div>
+
+          <!-- Sample doc 3: חוזה רכישה חתום -->
+          <div class="legal-doc" id="preview-contract" style="display:none;">
+            <div class="legal-doc-title">חוזה מכר דירה</div>
+            <div class="legal-doc-subtitle">בין המוכר לבין הקונה</div>
+            <div class="legal-doc-section-title">צדדים להסכם</div>
+            <div class="legal-doc-field"><span class="field-label">קונה:</span><span class="field-line">ישראל ישראלי, ת.ז 023456789</span></div>
+            <div class="legal-doc-field"><span class="field-label">מוכר:</span><span class="field-line">רחל כהן, ת.ז 034567890</span></div>
+            <div class="legal-doc-section-title">תמורה</div>
+            <div class="legal-doc-field"><span class="field-label">סכום העסקה:</span><span class="field-line">1,850,000 ₪</span></div>
+            <div class="legal-doc-field"><span class="field-label">מועד מסירה:</span><span class="field-line">01/10/2026</span></div>
+          </div>
+
+          <!-- Generic fallback preview -->
+          <div class="legal-doc" id="preview-generic" style="display:none; text-align:center; padding-top:40px;">
+            <div class="legal-doc-title" id="genericTitle">מסמך</div>
+            <div class="legal-doc-subtitle" style="margin-top:8px;">תצוגה מקדימה מלאה אינה זמינה עבור מסמך זה בדמו זה.</div>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- /.center-col (detail pane) -->
+
+    <!-- Master pane: documents inbox, flush to the right wall -->
+    <div class="docs-sidebar">
+  <div class="card-header">
+    <div class="card-title">כל המסמכים (19)</div>
+    <button class="add-doc-btn" title="הוספת מסמך">+</button>
+  </div>
+  <div class="inbox-filters">
+    <div class="inbox-search">
+      <input type="text" id="docSearch" placeholder="חיפוש מסמך" oninput="filterDocuments()">
+    </div>
+    <select id="docStatusFilter" class="filter-status-select" onchange="filterDocuments()">
+      <option value="all">סטטוס</option>
+      <option value="pending">ממתין לטיפול</option>
+      <option value="inprogress">בתהליך</option>
+      <option value="done">טופל</option>
+      <option value="notrelevant">לא רלוונטי</option>
+      <option value="valid">תקין</option>
+      <option value="invalid">לא תקין</option>
+    </select>
+  </div>
+  <div class="inbox-list">
+    <div class="category" id="docsDeliveryCat">
+      <div class="category-header" onclick="toggleCat('docsDeliveryCat')">
+        <div class="category-name">מיועדים למסירה ללקוח <span class="category-badge">8</span></div>
+        <span class="chevron"></span>
+      </div>
+      <div class="category-body">
+        <div class="inbox-row active" data-doc="poa" onclick="selectDocument('poa')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">ייפוי כוח מתמשך</div>
+                <div class="inbox-code">משכ 542</div>
+              </div>
+              <select class="status-select missing" data-doc="poa" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending">ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid" selected>לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="id329" onclick="selectDocument('id329')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">תנאים עיקריים</div>
+                <div class="inbox-code">משכ 329</div>
+              </div>
+              <select class="status-select pending" data-doc="id329" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending" selected>ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="id327" onclick="selectDocument('id327')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">לוח סילוקין</div>
+                <div class="inbox-code">משכ 327</div>
+              </div>
+              <select class="status-select pending" data-doc="id327" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending" selected>ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="id332" onclick="selectDocument('id332')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">סיכום תנאים</div>
+                <div class="inbox-code">משכ 332</div>
+              </div>
+              <select class="status-select pending" data-doc="id332" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending" selected>ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="id338" onclick="selectDocument('id338')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">דף מידע על ביטוח</div>
+                <div class="inbox-code">משכ 338</div>
+              </div>
+              <select class="status-select pending" data-doc="id338" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending" selected>ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="id331" onclick="selectDocument('id331')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">ביטוח חיים — הצמדה למשכנתא</div>
+                <div class="inbox-code">משכ 331</div>
+              </div>
+              <select class="status-select not-relevant" data-doc="id331" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending">ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant" selected>לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="id341" onclick="selectDocument('id341')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">הסבר זכויות לווה</div>
+                <div class="inbox-code">משכ 341</div>
+              </div>
+              <select class="status-select pending" data-doc="id341" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending" selected>ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="id345" onclick="selectDocument('id345')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">פירוט עלויות נלוות</div>
+                <div class="inbox-code">משכ 345</div>
+              </div>
+              <select class="status-select pending" data-doc="id345" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending" selected>ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+      </div>
+    </div>
+    <div class="category" id="docsSignatureCat">
+      <div class="category-header" onclick="toggleCat('docsSignatureCat')">
+        <div class="category-name">מיועדים לחתימת לקוח <span class="category-badge">4</span></div>
+        <span class="chevron"></span>
+      </div>
+      <div class="category-body">
+        <div class="inbox-row" data-doc="id344" onclick="selectDocument('id344')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">הסכם הלוואה</div>
+                <div class="inbox-code">משכ 344</div>
+              </div>
+              <select class="status-select pending" data-doc="id344" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending" selected>ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="id330" onclick="selectDocument('id330')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">גילוי נאות</div>
+                <div class="inbox-code">משכ 330</div>
+              </div>
+              <select class="status-select pending" data-doc="id330" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending" selected>ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="id318" onclick="selectDocument('id318')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">הרשאה לחיוב חשבון</div>
+                <div class="inbox-code">משכ 318</div>
+              </div>
+              <select class="status-select pending" data-doc="id318" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending" selected>ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="id342" onclick="selectDocument('id342')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">הסכמת בן/בת זוג</div>
+                <div class="inbox-code">משכ 342</div>
+              </div>
+              <select class="status-select pending" data-doc="id342" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending" selected>ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+      </div>
+    </div>
+    <div class="category" id="docsReceiveCat">
+      <div class="category-header" onclick="toggleCat('docsReceiveCat')">
+        <div class="category-name">צריכים להתקבל מהלקוח <span class="category-badge">7</span></div>
+        <span class="chevron"></span>
+      </div>
+      <div class="category-body">
+        <div class="inbox-row" data-doc="id601" onclick="selectDocument('id601')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">תעודת זהות</div>
+                <div class="inbox-code">משכ 601</div>
+              </div>
+              <select class="status-select complete" data-doc="id601" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending">ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done" selected>טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="id612" onclick="selectDocument('id612')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">תלושי שכר 3 חודשים אחרונים</div>
+                <div class="inbox-code">משכ 612</div>
+              </div>
+              <select class="status-select pending" data-doc="id612" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending" selected>ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="id604" onclick="selectDocument('id604')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">אישור יתרות בנקאי</div>
+                <div class="inbox-code">משכ 604</div>
+              </div>
+              <select class="status-select pending" data-doc="id604" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending" selected>ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="id603" onclick="selectDocument('id603')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">אישור מס הכנסה</div>
+                <div class="inbox-code">משכ 603</div>
+              </div>
+              <select class="status-select not-relevant" data-doc="id603" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending">ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant" selected>לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="id630" onclick="selectDocument('id630')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">אישור עו"ד על הנכס</div>
+                <div class="inbox-code">משכ 630</div>
+              </div>
+              <select class="status-select pending" data-doc="id630" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending" selected>ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="tabu" onclick="selectDocument('tabu')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">נסח טאבו</div>
+                <div class="inbox-code">משכ 632</div>
+              </div>
+              <select class="status-select complete" data-doc="tabu" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending">ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done" selected>טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="contract" onclick="selectDocument('contract')">
+              <div class="inbox-dot"></div>
+              <div class="inbox-info">
+                <div class="inbox-name">חוזה רכישה חתום</div>
+                <div class="inbox-code">משכ 635</div>
+              </div>
+              <select class="status-select complete" data-doc="contract" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending">ממתין לטיפול</option>
+                <option value="inprogress">בתהליך</option>
+                <option value="done" selected>טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+                <option value="valid">תקין</option>
+                <option value="invalid">לא תקין</option>
+              </select>
+            </div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /.docs-sidebar -->
+</div><!-- /.doc-region -->
+</div><!-- /.app-shell -->
+
+<script>
+  function toggleCat(id) {
+    document.getElementById(id).classList.toggle('collapsed');
+  }
+
+  function closeAllTaskConfirms() {
+    document.querySelectorAll('.task-check-wrap.open').forEach(w => w.classList.remove('open'));
+  }
+
+  function toggleTaskConfirm(btn, e) {
+    e.stopPropagation();
+    const wrap = btn.closest('.task-check-wrap');
+    const isOpen = wrap.classList.contains('open');
+    closeAllTaskConfirms();
+    if (!isOpen) wrap.classList.add('open');
+  }
+
+  function closeTaskConfirm(btn, e) {
+    e.stopPropagation();
+    btn.closest('.task-check-wrap').classList.remove('open');
+  }
+
+  function updateTaskBadges() {
+    const openCount = document.querySelectorAll('#openTasksBody .task-row-actionable').length;
+    const doneCount = document.querySelectorAll('#doneTasksBody .task-row-static').length;
+    document.getElementById('openTasksBadge').textContent = openCount;
+    document.getElementById('doneTasksBadge').textContent = doneCount;
+  }
+
+  function completeTask(btn, e) {
+    e.stopPropagation();
+    const row = btn.closest('.task-row-actionable');
+    if (!row) return;
+
+    const name = row.querySelector('.task-name').textContent;
+    const desc = row.querySelector('.task-desc').textContent;
+    closeAllTaskConfirms();
+
+    const doneRow = document.createElement('div');
+    doneRow.className = 'task-row-static';
+    doneRow.innerHTML = `
+      <div class="task-bullet"></div>
+      <div class="task-info">
+        <div class="task-name done">${name}</div>
+        <div class="task-desc">${desc}</div>
+      </div>
+    `;
+    document.getElementById('doneTasksBody').prepend(doneRow);
+    row.remove();
+    updateTaskBadges();
+
+    const doneCat = document.getElementById('doneCat');
+    if (doneCat.classList.contains('collapsed')) {
+      doneCat.classList.remove('collapsed');
+    }
+  }
+
+  document.addEventListener('click', e => {
+    if (e.target.closest('.task-check-wrap')) return;
+    closeAllTaskConfirms();
+  });
+
+  function copyEmail() {
+    const text = document.getElementById('emailText').value;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = 'הועתק!';
+      btn.style.background = 'var(--green)';
+      setTimeout(() => {
+        btn.textContent = 'העתק טקסט';
+        btn.style.background = 'var(--navy)';
+      }, 2000);
+    });
+  }
+
+  const STATUS_CLASS = {
+    pending: 'pending',
+    inprogress: 'open',
+    done: 'complete',
+    notrelevant: 'not-relevant',
+    valid: 'complete',
+    invalid: 'missing'
+  };
+
+  const CAPSULE_CLASS = {
+    pending: 'pending',
+    inprogress: 'open-status',
+    done: 'complete',
+    notrelevant: 'not-relevant',
+    valid: 'complete',
+    invalid: 'missing',
+    all: 'filter-neutral'
+  };
+
+  function getCapsuleWrap(select) {
+    return select.previousElementSibling?.classList?.contains('capsule-select')
+      ? select.previousElementSibling
+      : null;
+  }
+
+  function statusDotHtml(value) {
+    return `<span class="status-dot ${value}"></span>`;
+  }
+
+  function syncCapsuleFromSelect(wrap, select) {
+    if (!wrap) return;
+    const value = select.value;
+    const isFilter = select.classList.contains('filter-status-select');
+    wrap.classList.remove('pending', 'open-status', 'complete', 'not-relevant', 'missing', 'filter-neutral');
+    wrap.classList.add(CAPSULE_CLASS[value] || 'filter-neutral');
+    const labelEl = wrap.querySelector('.capsule-select-label');
+    const labelText = select.options[select.selectedIndex].text;
+    if (isFilter) {
+      labelEl.innerHTML = statusDotHtml(value) + `<span>${labelText}</span>`;
+    } else {
+      labelEl.textContent = labelText;
+    }
+    wrap.querySelectorAll('.capsule-select-option').forEach(btn => {
+      btn.classList.toggle('selected', btn.dataset.value === value);
+    });
+  }
+
+  function closeAllCapsuleMenus() {
+    document.querySelectorAll('.capsule-select.open').forEach(el => el.classList.remove('open'));
+  }
+
+  function toggleCapsuleMenu(wrap) {
+    const isOpen = wrap.classList.contains('open');
+    closeAllCapsuleMenus();
+    if (!isOpen) wrap.classList.add('open');
+  }
+
+  function initCapsuleSelects() {
+    document.querySelectorAll('select.status-select, select.filter-status-select').forEach(select => {
+      if (select.dataset.capsuleInit) return;
+      select.dataset.capsuleInit = '1';
+      select.classList.add('capsule-select-native');
+
+      const isFilter = select.classList.contains('filter-status-select');
+      const wrap = document.createElement('div');
+      wrap.className = 'capsule-select' + (isFilter ? ' capsule-select--filter' : '');
+
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'capsule-select-trigger';
+      trigger.innerHTML =
+        '<span class="capsule-select-label"></span><span class="capsule-select-chevron"></span>';
+      trigger.addEventListener('click', e => {
+        e.stopPropagation();
+        toggleCapsuleMenu(wrap);
+      });
+
+      const menu = document.createElement('div');
+      menu.className = 'capsule-select-menu';
+      Array.from(select.options).forEach(opt => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'capsule-select-option' + (opt.selected ? ' selected' : '');
+        btn.dataset.value = opt.value;
+        btn.innerHTML = isFilter
+          ? statusDotHtml(opt.value) + `<span>${opt.text}</span>`
+          : opt.text;
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          select.value = opt.value;
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+          syncCapsuleFromSelect(wrap, select);
+          closeAllCapsuleMenus();
+        });
+        menu.appendChild(btn);
+      });
+
+      wrap.appendChild(trigger);
+      wrap.appendChild(menu);
+      select.parentNode.insertBefore(wrap, select);
+      syncCapsuleFromSelect(wrap, select);
+    });
+  }
+
+  document.addEventListener('click', closeAllCapsuleMenus);
+
+  function updateStatus(select) {
+    select.classList.remove('pending', 'open', 'complete', 'not-relevant', 'missing');
+    select.classList.add(STATUS_CLASS[select.value]);
+    syncCapsuleFromSelect(getCapsuleWrap(select), select);
+    filterDocuments();
+  }
+
+  function filterDocuments() {
+    const query = document.getElementById('docSearch').value.trim().toLowerCase();
+    const status = document.getElementById('docStatusFilter').value;
+    const filtering = query.length > 0 || status !== 'all';
+
+    document.querySelectorAll('.docs-sidebar .category').forEach(cat => {
+      let visible = 0;
+      cat.querySelectorAll('.inbox-row').forEach(row => {
+        const name = (row.querySelector('.inbox-name')?.textContent || '').toLowerCase();
+        const code = (row.querySelector('.inbox-code')?.textContent || '').toLowerCase();
+        const rowStatus = row.querySelector('.status-select')?.value || '';
+        const matchesSearch = !query || name.includes(query) || code.includes(query);
+        const matchesStatus = status === 'all' || rowStatus === status;
+        const show = matchesSearch && matchesStatus;
+        row.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      const badge = cat.querySelector('.category-badge');
+      if (badge) badge.textContent = visible;
+      cat.style.display = filtering && visible === 0 ? 'none' : '';
+    });
+  }
+
+  const docs = {
+    poa:      { name: 'ייפוי כוח מתמשך',            code: 'משכ 542', previewId: 'preview-poa' },
+    id601:    { name: 'תעודת זהות',                  code: 'משכ 601', previewId: 'preview-generic' },
+    id612:    { name: 'תלושי שכר 3 חודשים אחרונים',  code: 'משכ 612', previewId: 'preview-generic' },
+    id604:    { name: 'אישור יתרות בנקאי',            code: 'משכ 604', previewId: 'preview-generic' },
+    id603:    { name: 'אישור מס הכנסה',               code: 'משכ 603', previewId: 'preview-generic' },
+    id630:    { name: 'אישור עו"ד על הנכס',           code: 'משכ 630', previewId: 'preview-generic' },
+    tabu:     { name: 'נסח טאבו',                     code: 'משכ 632', previewId: 'preview-tabu' },
+    contract: { name: 'חוזה רכישה חתום',              code: 'משכ 635', previewId: 'preview-contract' },
+    id344:    { name: 'הסכם הלוואה',                  code: 'משכ 344', previewId: 'preview-generic' },
+    id329:    { name: 'תנאים עיקריים',                code: 'משכ 329', previewId: 'preview-generic' },
+    id327:    { name: 'לוח סילוקין',                  code: 'משכ 327', previewId: 'preview-generic' },
+    id318:    { name: 'הרשאה לחיוב חשבון',            code: 'משכ 318', previewId: 'preview-generic' },
+    id331:    { name: 'ביטוח חיים — הצמדה למשכנתא',   code: 'משכ 331', previewId: 'preview-generic' },
+    id342:    { name: 'הסכמת בן/בת זוג',              code: 'משכ 342', previewId: 'preview-generic' },
+    id330:    { name: 'גילוי נאות',                   code: 'משכ 330', previewId: 'preview-generic' },
+    id332:    { name: 'סיכום תנאים',                  code: 'משכ 332', previewId: 'preview-generic' },
+    id338:    { name: 'דף מידע על ביטוח',              code: 'משכ 338', previewId: 'preview-generic' },
+    id341:    { name: 'הסבר זכויות לווה',              code: 'משכ 341', previewId: 'preview-generic' },
+    id345:    { name: 'פירוט עלויות נלוות',            code: 'משכ 345', previewId: 'preview-generic' }
+  };
+
+  function selectDocument(id) {
+    const doc = docs[id];
+    if (!doc) return;
+
+    document.querySelectorAll('.inbox-row').forEach(r => r.classList.remove('active'));
+    const row = document.querySelector(`.inbox-row[data-doc="${id}"]`);
+    if (row) row.classList.add('active');
+
+    document.querySelectorAll('.legal-doc').forEach(p => p.style.display = 'none');
+    document.getElementById(doc.previewId).style.display = 'block';
+    if (doc.previewId === 'preview-generic') {
+      document.getElementById('genericTitle').textContent = doc.name;
+    }
+
+    document.getElementById('previewTitle').textContent = doc.name;
+    document.getElementById('previewCode').textContent = doc.code;
+  }
+
+  initCapsuleSelects();
+</script>
+</body>
+</html>

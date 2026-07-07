@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>שאלון — בנק הבינלאומי</title>
+  <link rel="stylesheet" href="snifit.css">
+  <style>
+    .main { padding: 32px; max-width: 720px; margin: 0 auto; }
+
+    .intro-banner {
+      background: var(--navy-50);
+      border: 1px solid var(--navy-100);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: var(--navy);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .question-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      margin-bottom: 14px;
+      transition: border-color 0.2s;
+    }
+    .question-card:focus-within { border-color: var(--navy-100); }
+
+    .question-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .question-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-body);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .question-hint { font-size: 12px; color: var(--text-muted); margin-top: -10px; margin-bottom: 14px; }
+
+    .radio-group { display: flex; flex-direction: column; gap: 10px; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-logo">בנק <span class="accent">הבינלאומי</span><span class="header-divider">|</span> מערכת משכנתאות</div>
+  <div class="header-user">
+    <span>שלום, דנה לוי</span>
+    <div class="avatar">ד</div>
+  </div>
+</header>
+
+<nav class="breadcrumb">
+  <a href="dashboard.html">לוח בקרה</a>
+  <span class="sep">›</span>
+  <a href="ptikhat-tik.html">תיק #12345 — ישראל ישראלי</a>
+  <span class="sep">›</span>
+  <span class="current">שאלון</span>
+</nav>
+
+<div class="steps-bar">
+  <div class="step done"><div class="step-num">✓</div>פרטי תיק</div>
+  <span class="step-arrow">‹</span>
+  <div class="step active"><div class="step-num">2</div>שאלון</div>
+  <span class="step-arrow">‹</span>
+  <div class="step"><div class="step-num">3</div>מסמכים ומשימות</div>
+</div>
+
+<div class="progress-bar-section">
+  <span class="progress-label">שאלה <strong id="currentQ">1</strong> מתוך 8</span>
+  <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:12.5%"></div></div>
+  <span class="progress-pct" id="progressPct">12%</span>
+</div>
+
+<div class="main">
+
+  <div class="intro-banner">
+    🤖 <span>על בסיס תשובותיך, המערכת תייצר עבורך רשימת מסמכים מדויקת לתיק זה.</span>
+    <span class="ai-badge" style="margin-right:auto; white-space:nowrap">AI</span>
+  </div>
+
+  <!-- Q1 -->
+  <div class="question-card">
+    <div class="question-num">שאלה 1</div>
+    <div class="question-text">האם הלקוח שכיר, עצמאי או שניהם?</div>
+    <div class="radio-group">
+      <label class="radio-option" onclick="selectRadio(this,'q1')">
+        <input type="radio" name="q1" value="employee"> שכיר
+      </label>
+      <label class="radio-option" onclick="selectRadio(this,'q1')">
+        <input type="radio" name="q1" value="self"> עצמאי
+      </label>
+      <label class="radio-option" onclick="selectRadio(this,'q1')">
+        <input type="radio" name="q1" value="both"> שכיר ועצמאי
+      </label>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question-card">
+    <div class="question-num">שאלה 2</div>
+    <div class="question-text">האם יש ללקוח הלוואה קיימת עם הוראת קבע פעילה?</div>
+    <div class="yesno-group">
+      <div class="yesno-btn yes" onclick="selectYesNo(this,'q2','yes'); showConditional('q2cond', true)">כן</div>
+      <div class="yesno-btn no" onclick="selectYesNo(this,'q2','no'); showConditional('q2cond', false)">לא</div>
+    </div>
+    <div class="conditional-block" id="q2cond">
+      <div class="conditional-label">האם ברצונך לנצל את ההוראה הקיימת?</div>
+      <div class="yesno-group">
+        <div class="yesno-btn yes" onclick="selectYesNo(this,'q2b','yes')">כן</div>
+        <div class="yesno-btn no" onclick="selectYesNo(this,'q2b','no')">לא</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question-card">
+    <div class="question-num">שאלה 3</div>
+    <div class="question-text">האם הלקוח נשוי / בזוגיות מוכרת?</div>
+    <div class="yesno-group">
+      <div class="yesno-btn yes" onclick="selectYesNo(this,'q3','yes')">כן</div>
+      <div class="yesno-btn no" onclick="selectYesNo(this,'q3','no')">לא</div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question-card">
+    <div class="question-num">שאלה 4</div>
+    <div class="question-text">האם יש ערבים להלוואה?</div>
+    <div class="yesno-group">
+      <div class="yesno-btn yes" onclick="selectYesNo(this,'q4','yes'); showConditional('q4cond', true)">כן</div>
+      <div class="yesno-btn no" onclick="selectYesNo(this,'q4','no'); showConditional('q4cond', false)">לא</div>
+    </div>
+    <div class="conditional-block" id="q4cond">
+      <div class="conditional-label">כמה ערבים?</div>
+      <input type="number" class="form-input" placeholder="מספר ערבים" min="1" max="10" style="width:120px">
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="question-card">
+    <div class="question-num">שאלה 5</div>
+    <div class="question-text">האם הנכס נרכש מקבלן או מיד שניה?</div>
+    <div class="radio-group">
+      <label class="radio-option" onclick="selectRadio(this,'q5')">
+        <input type="radio" name="q5" value="contractor"> מקבלן
+      </label>
+      <label class="radio-option" onclick="selectRadio(this,'q5')">
+        <input type="radio" name="q5" value="second"> יד שניה
+      </label>
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="question-card">
+    <div class="question-num">שאלה 6</div>
+    <div class="question-text">האם הלקוח מעוניין בביטוח חיים דרך הבנק?</div>
+    <div class="yesno-group">
+      <div class="yesno-btn yes" onclick="selectYesNo(this,'q6','yes')">כן</div>
+      <div class="yesno-btn no" onclick="selectYesNo(this,'q6','no')">לא — יביא פוליסה חיצונית</div>
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="question-card">
+    <div class="question-num">שאלה 7</div>
+    <div class="question-text">האם נעשה שימוש בתיווך נדל"ן?</div>
+    <div class="yesno-group">
+      <div class="yesno-btn yes" onclick="selectYesNo(this,'q7','yes')">כן</div>
+      <div class="yesno-btn no" onclick="selectYesNo(this,'q7','no')">לא</div>
+    </div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="question-card">
+    <div class="question-num">שאלה 8</div>
+    <div class="question-text">האם צפוי פירעון מוקדם של הלוואת גישור?</div>
+    <div class="yesno-group">
+      <div class="yesno-btn yes" onclick="selectYesNo(this,'q8','yes')">כן</div>
+      <div class="yesno-btn no" onclick="selectYesNo(this,'q8','no')">לא</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-bar">
+  <button class="btn-back" onclick="window.location.href='ptikhat-tik.html'">← חזרה</button>
+  <button class="btn-next" onclick="window.location.href='mesuamim-umesimot.html'">
+    המשך למסמכים ←
+  </button>
+</div>
+
+<script>
+  function selectRadio(label, name) {
+    document.querySelectorAll(`[name="${name}"]`).forEach(r => r.closest('.radio-option').classList.remove('selected'));
+    label.classList.add('selected');
+    updateProgress();
+  }
+
+  function selectYesNo(btn, name, val) {
+    const group = btn.closest('.yesno-group');
+    group.querySelectorAll('.yesno-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    updateProgress();
+  }
+
+  function showConditional(id, show) {
+    const el = document.getElementById(id);
+    el.classList.toggle('show', show);
+  }
+
+  function updateProgress() {
+    const answered = document.querySelectorAll('.yesno-btn.selected:not(.conditional-block .yesno-btn), .radio-option.selected').length;
+    const total = 8;
+    const unique = Math.min(answered, total);
+    const pct = Math.round((unique / total) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct + '%';
+    document.getElementById('currentQ').textContent = Math.min(unique + 1, total);
+  }
+</script>
+</body>
+</html>

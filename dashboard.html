@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>לוח בקרה — בנק הבינלאומי</title>
+  <link rel="stylesheet" href="snifit.css">
+  <style>
+    .page-header {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .page-title { font-size: 20px; font-weight: 700; color: var(--navy); }
+    .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .btn-new {
+      background: var(--navy);
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+    .btn-new:hover { background: var(--navy-dark); }
+
+    .stats-row {
+      padding: 20px 32px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .filters {
+      padding: 0 32px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      gap: 8px;
+      flex: 1;
+      max-width: 320px;
+    }
+    .search-box input {
+      border: none;
+      outline: none;
+      font-size: 13px;
+      width: 100%;
+      direction: rtl;
+      background: transparent;
+    }
+    .filter-btn {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      font-size: 13px;
+      color: var(--text-body);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { border-color: var(--navy); color: var(--navy); }
+    .filter-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+    .table-wrap { padding: 0 32px 32px; }
+    .table-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-logo">בנק <span class="accent">הבינלאומי</span><span class="header-divider">|</span> מערכת משכנתאות</div>
+  <div class="header-user">
+    <span>שלום, דנה לוי</span>
+    <div class="avatar">ד</div>
+  </div>
+</header>
+
+<div class="page-header">
+  <div>
+    <div class="page-title">לוח בקרה</div>
+    <div class="page-subtitle">התיקים שלך — עדכון אחרון: היום, 09:42</div>
+  </div>
+  <button class="btn-new" onclick="window.location.href='ptikhat-tik.html'">
+    + פתח תיק חדש
+  </button>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-label">סה"כ תיקים פעילים</div>
+    <div class="stat-value">24</div>
+    <div class="stat-sub">מכל סוגי העסקאות</div>
+  </div>
+  <div class="stat-card orange">
+    <div class="stat-label">ממתינים לטיפול</div>
+    <div class="stat-value">7</div>
+    <div class="stat-sub">מסמכים חסרים / בדיקה נדרשת</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-label">הושלמו החודש</div>
+    <div class="stat-value">5</div>
+    <div class="stat-sub">תיקים שנסגרו בהצלחה</div>
+  </div>
+  <div class="stat-card red">
+    <div class="stat-label">דחופים</div>
+    <div class="stat-value">2</div>
+    <div class="stat-sub">מעל 30 יום ללא עדכון</div>
+  </div>
+</div>
+
+<div class="filters">
+  <div class="search-box">
+    🔍
+    <input type="text" placeholder="חיפוש לפי שם לקוח או ת.ז...">
+  </div>
+  <button class="filter-btn active">הכל</button>
+  <button class="filter-btn">ממתין לטיפול</button>
+  <button class="filter-btn">בתהליך</button>
+  <button class="filter-btn">הושלם</button>
+</div>
+
+<div class="table-wrap">
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>לקוח</th>
+          <th>סוג עסקה</th>
+          <th>תאריך פתיחה</th>
+          <th>התקדמות מסמכים</th>
+          <th>סטטוס</th>
+          <th>פעולה</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr onclick="window.location.href='mesuamim-umesimot.html'">
+          <td>
+            <div class="client-name">ישראל ישראלי</div>
+            <div class="client-id">ת.ז 023456789 · #12345</div>
+          </td>
+          <td>רכישת דירה יד שניה</td>
+          <td>05/06/2026</td>
+          <td>
+            <div class="progress-mini">
+              <div class="progress-mini-track">
+                <div class="progress-mini-fill warn" style="width:33%"></div>
+              </div>
+              <span class="progress-mini-text">6/18</span>
+            </div>
+          </td>
+          <td><span class="badge review">⚠️ מסמכים חסרים</span></td>
+          <td><a class="action-link" href="mesuamim-umesimot.html">פתח תיק</a></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="client-name">רחל כהן</div>
+            <div class="client-id">ת.ז 034567890 · #12344</div>
+          </td>
+          <td>שיפוצים</td>
+          <td>03/06/2026</td>
+          <td>
+            <div class="progress-mini">
+              <div class="progress-mini-track">
+                <div class="progress-mini-fill done" style="width:100%"></div>
+              </div>
+              <span class="progress-mini-text">12/12</span>
+            </div>
+          </td>
+          <td><span class="badge complete">✓ הושלם</span></td>
+          <td><a class="action-link" href="#">צפה</a></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="client-name">משה לוי</div>
+            <div class="client-id">ת.ז 045678901 · #12343</div>
+          </td>
+          <td>רכישה מקבלן</td>
+          <td>01/06/2026</td>
+          <td>
+            <div class="progress-mini">
+              <div class="progress-mini-track">
+                <div class="progress-mini-fill" style="width:60%"></div>
+              </div>
+              <span class="progress-mini-text">13/22</span>
+            </div>
+          </td>
+          <td><span class="badge open">🔵 בתהליך</span></td>
+          <td><a class="action-link" href="#">פתח תיק</a></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="client-name">שרה אברהם</div>
+            <div class="client-id">ת.ז 056789012 · #12342</div>
+          </td>
+          <td>כיסוי חובות</td>
+          <td>29/05/2026</td>
+          <td>
+            <div class="progress-mini">
+              <div class="progress-mini-track">
+                <div class="progress-mini-fill warn" style="width:20%"></div>
+              </div>
+              <span class="progress-mini-text">3/16</span>
+            </div>
+          </td>
+          <td><span class="badge missing">🔴 דחוף</span></td>
+          <td><a class="action-link" href="#">פתח תיק</a></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="client-name">דוד ברקוביץ</div>
+            <div class="client-id">ת.ז 067890123 · #12341</div>
+          </td>
+          <td>בניה עצמית</td>
+          <td>27/05/2026</td>
+          <td>
+            <div class="progress-mini">
+              <div class="progress-mini-track">
+                <div class="progress-mini-fill" style="width:75%"></div>
+              </div>
+              <span class="progress-mini-text">18/24</span>
+            </div>
+          </td>
+          <td><span class="badge open">🔵 בתהליך</span></td>
+          <td><a class="action-link" href="#">פתח תיק</a></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="client-name">נועה גולדברג</div>
+            <div class="client-id">ת.ז 078901234 · #12340</div>
+          </td>
+          <td>רכישת דירה יד שניה</td>
+          <td>25/05/2026</td>
+          <td>
+            <div class="progress-mini">
+              <div class="progress-mini-track">
+                <div class="progress-mini-fill done" style="width:100%"></div>
+              </div>
+              <span class="progress-mini-text">20/20</span>
+            </div>
+          </td>
+          <td><span class="badge complete">✓ הושלם</span></td>
+          <td><a class="action-link" href="#">צפה</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</body>
+</html>
