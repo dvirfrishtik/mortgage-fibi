@@ -87,6 +87,46 @@ body {
   color: var(--navy); font-weight: 700; font-size: 12px;
 }
 
+/* ── Persona toggle (banker / HQ) ── */
+.persona-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.16);
+}
+.persona-toggle-label {
+  font-size: 12px;
+  opacity: 0.92;
+  white-space: nowrap;
+}
+.persona-toggle-seg {
+  display: inline-flex;
+  background: rgba(255,255,255,0.10);
+  border-radius: 999px;
+  padding: 2px;
+}
+.persona-toggle-btn {
+  border: none;
+  background: transparent;
+  color: white;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: background 0.12s, opacity 0.12s;
+}
+.persona-toggle-btn:hover { opacity: 1; }
+.persona-toggle-btn[aria-pressed="true"] {
+  background: rgba(255,255,255,0.22);
+  opacity: 1;
+}
+
 /* ── BREADCRUMB ── */
 .breadcrumb {
   background: white;

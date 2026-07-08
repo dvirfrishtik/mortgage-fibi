@@ -248,9 +248,13 @@
     .preview-action-icon {
       width: 18px;
       height: 18px;
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: contain;
+      flex-shrink: 0;
+      display: block;
+      color: #6B7280;
+    }
+    .preview-action-btn:hover .preview-action-icon,
+    .preview-action-btn.active .preview-action-icon {
+      color: var(--navy);
     }
     .preview-action-icon--menu {
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18' fill='none'%3E%3Ccircle cx='9' cy='4' r='1.3' fill='%236B7280'/%3E%3Ccircle cx='9' cy='9' r='1.3' fill='%236B7280'/%3E%3Ccircle cx='9' cy='14' r='1.3' fill='%236B7280'/%3E%3C/svg%3E");
@@ -258,45 +262,165 @@
     .preview-action-btn:hover .preview-action-icon--menu {
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18' fill='none'%3E%3Ccircle cx='9' cy='4' r='1.3' fill='%231B2A6B'/%3E%3Ccircle cx='9' cy='9' r='1.3' fill='%231B2A6B'/%3E%3Ccircle cx='9' cy='14' r='1.3' fill='%231B2A6B'/%3E%3C/svg%3E");
     }
-    .preview-action-icon--notes {
-      width: 18px;
-      height: 18px;
-      background-image: url('notes-file-icon.png');
-      filter: drop-shadow(0 1px 1px rgba(27, 42, 107, 0.12));
-    }
-    .preview-action-btn:hover .preview-action-icon--notes,
-    .preview-action-btn.active .preview-action-icon--notes {
-      filter: drop-shadow(0 1px 2px rgba(27, 42, 107, 0.2));
-    }
     .preview-action-btn--with-count {
       width: auto;
       min-width: 32px;
-      padding-inline: 4px;
-      gap: 2px;
+      padding-inline: 4px 6px;
+      gap: 5px;
+      overflow: visible;
+      flex-direction: row;
+    }
+    .preview-action-icon-wrap {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+    .preview-action-icon-wrap .preview-action-icon {
+      width: 18px;
+      height: 18px;
+    }
+    .preview-action-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .preview-action-btn:hover .preview-action-label,
+    .preview-action-btn.active .preview-action-label {
+      color: var(--navy);
     }
     .preview-action-btn--ai:hover,
     .preview-action-btn--ai.active {
       background: var(--navy-50);
     }
     .preview-action-icon--ai {
-      width: 18px;
-      height: 18px;
-      background-image: url('ai-sparkle.png');
+      color: #2563EB;
+    }
+    .preview-action-btn:hover .preview-action-icon--ai,
+    .preview-action-btn.active .preview-action-icon--ai {
+      color: #1D4ED8;
     }
     .preview-action-count {
-      min-width: 16px;
-      height: 16px;
-      padding: 0 4px;
+      position: absolute;
+      top: -3px;
+      inset-inline-end: -3px;
+      z-index: 2;
+      min-width: 14px;
+      height: 14px;
+      padding: 0 3px;
       border-radius: 99px;
       background: var(--navy);
       color: white;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
-      line-height: 16px;
+      line-height: 14px;
       text-align: center;
       font-variant-numeric: tabular-nums;
+      pointer-events: none;
+    }
+
+    /* HQ review status control (in preview header) */
+    .preview-hq-status {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      margin-inline-start: 0;
+    }
+    .preview-hq-status-wrap {
+      position: relative;
       flex-shrink: 0;
     }
+    .preview-hq-status-pill {
+      min-height: 28px;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 5px 12px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--navy);
+      white-space: nowrap;
+      transition: box-shadow 0.15s, border-color 0.15s;
+    }
+    .preview-hq-status-pill:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: var(--border);
+    }
+    .preview-hq-status-pill:disabled {
+      cursor: default;
+      opacity: 0.65;
+      background: var(--bg);
+      border-color: var(--border-light);
+      color: var(--text-muted);
+    }
+    .preview-hq-status-caret {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--text-muted);
+      transform: translateY(1px);
+    }
+    .preview-hq-status-pill:disabled .preview-hq-status-caret {
+      border-top-color: var(--text-faint);
+    }
+    .preview-hq-status-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      inset-inline-start: 0;
+      z-index: 320;
+      min-width: 210px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 6px;
+    }
+    .preview-hq-status-wrap.open .preview-hq-status-menu { display: block; }
+    .preview-hq-status-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      text-align: right;
+      border: none;
+      background: transparent;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-family: inherit;
+      font-weight: 700;
+      color: var(--text-body);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      transition: background 0.12s, color 0.12s;
+    }
+    .preview-hq-status-option:hover {
+      background: var(--navy-50);
+      color: var(--navy);
+    }
+    .preview-hq-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .preview-hq-status-dot.pending { background: var(--orange); }
+    .preview-hq-status-dot.valid { background: var(--green); }
+    .preview-hq-status-dot.invalid { background: var(--red); }
 
     .doc-page-nav {
       display: flex;
@@ -661,6 +785,13 @@
       border-bottom: 1px solid var(--border-light);
       background: var(--surface);
     }
+    .inbox-filter-label {
+      flex-shrink: 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-body);
+      white-space: nowrap;
+    }
     .inbox-search {
       flex: 1;
       min-width: 0;
@@ -883,16 +1014,15 @@
     .inbox-notes-icon {
       width: 16px;
       height: 16px;
-      background-image: url('notes-file-icon.png');
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: contain;
-      opacity: 0.72;
-      transition: opacity 0.12s;
+      display: block;
+      color: #6B7280;
+      opacity: 0.85;
+      transition: opacity 0.12s, color 0.12s;
     }
     .inbox-notes-btn:hover .inbox-notes-icon,
     .inbox-notes-btn.has-notes .inbox-notes-icon {
       opacity: 1;
+      color: var(--navy);
     }
     .inbox-notes-btn.has-notes::after {
       content: '';
@@ -1029,10 +1159,8 @@
       width: 16px;
       height: 16px;
       flex-shrink: 0;
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: contain;
-      background-image: url('ai-sparkle.png');
+      display: block;
+      color: #2563EB;
     }
     .doc-notes-title-ai {
       display: inline-flex;
@@ -1130,6 +1258,13 @@
 <header class="header">
   <div class="header-logo"><img src="logo-habeinleumi.svg" alt="הבינלאומי — משקיעים בך" class="header-logo-img"></div>
   <div class="header-user">
+    <div class="persona-toggle" id="personaToggle" aria-label="בחירת פרסונה">
+      <span class="persona-toggle-label">פרסונה:</span>
+      <span class="persona-toggle-seg" role="group" aria-label="פרסונה">
+        <button type="button" class="persona-toggle-btn" id="personaBankerBtn" aria-pressed="true" onclick="setPersona('banker')">בנקאי</button>
+        <button type="button" class="persona-toggle-btn" id="personaHqBtn" aria-pressed="false" onclick="setPersona('hq')">מטה</button>
+      </span>
+    </div>
     <span>שלום, דנה לוי</span>
     <div class="avatar">ד</div>
   </div>
@@ -1411,14 +1546,39 @@
         <div class="card-header">
           <div class="card-title">תצוגה מקדימה — <span id="previewTitle">ייפוי כוח מתמשך</span></div>
           <div class="preview-action-bar">
+            <div class="preview-hq-status" id="previewHqStatus">
+              <div class="preview-hq-status-wrap" id="previewHqStatusWrap">
+                <button type="button" class="preview-hq-status-pill" id="previewHqStatusBtn" aria-haspopup="menu" aria-expanded="false" onclick="togglePreviewHqStatusMenu(event)">
+                  <span id="previewHqStatusText">ממתין לבחינת מטה</span>
+                  <span class="preview-hq-status-caret" aria-hidden="true"></span>
+                </button>
+                <div class="preview-hq-status-menu" id="previewHqStatusMenu" role="menu">
+                  <button type="button" class="preview-hq-status-option" role="menuitem" onclick="setPreviewHqStatus(event, 'pending')">
+                    <span>ממתין לבחינת מטה</span><span class="preview-hq-status-dot pending" aria-hidden="true"></span>
+                  </button>
+                  <button type="button" class="preview-hq-status-option" role="menuitem" onclick="setPreviewHqStatus(event, 'valid')">
+                    <span>תקין</span><span class="preview-hq-status-dot valid" aria-hidden="true"></span>
+                  </button>
+                  <button type="button" class="preview-hq-status-option" role="menuitem" onclick="setPreviewHqStatus(event, 'invalid')">
+                    <span>לא תקין</span><span class="preview-hq-status-dot invalid" aria-hidden="true"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <span class="preview-action-divider" id="previewHqDivider" aria-hidden="true"></span>
             <button type="button" class="preview-action-btn preview-action-btn--with-count" id="previewNotesBtn" aria-label="הערות" aria-expanded="false" onclick="toggleDocNotesPanel()">
-              <span class="preview-action-icon preview-action-icon--notes"></span>
-              <span class="preview-action-count" id="previewNotesBadge">3</span>
+              <span class="preview-action-icon-wrap">
+                <svg class="preview-action-icon preview-action-icon--notes" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 2.5h7.2L14.5 5.6V14a1 1 0 01-1 1H4.5a1 1 0 01-1-1V3.5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.5 2.8V5.5H14.2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 8h6M6 10h4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+                <span class="preview-action-count" id="previewNotesBadge">3</span>
+              </span>
+              <span class="preview-action-label">הערות</span>
             </button>
-            <span class="preview-action-divider" aria-hidden="true"></span>
-            <button type="button" class="preview-action-btn preview-action-btn--with-count" id="previewAiBtn" aria-label="הערות AI" aria-expanded="false" onclick="toggleDocAiPanel()">
-              <span class="preview-action-icon preview-action-icon--ai"></span>
-              <span class="preview-action-count" id="previewAiBadge">2</span>
+            <button type="button" class="preview-action-btn preview-action-btn--with-count preview-action-btn--ai" id="previewAiBtn" aria-label="הערות AI" aria-expanded="false" onclick="toggleDocAiPanel()">
+              <span class="preview-action-icon-wrap">
+                <svg class="preview-action-icon preview-action-icon--ai" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 1.8 9.95 5.05 13.3 5.05 10.55 7.05 11.5 10.3 9 8.35 6.5 10.3 7.45 7.05 4.7 5.05 8.05 5.05 9 1.8Z" fill="currentColor"/><path d="M14.6 8.2 15.2 9.95 17 10.55 15.2 11.15 14.6 12.9 14 11.15 12.2 10.55 14 9.95 14.6 8.2Z" fill="currentColor" opacity=".75"/><path d="M4.4 11.7 4.85 13 6.1 13.45 4.85 13.9 4.4 15.2 3.95 13.9 2.7 13.45 3.95 13 4.4 11.7Z" fill="currentColor" opacity=".55"/></svg>
+                <span class="preview-action-count" id="previewAiBadge">2</span>
+              </span>
+              <span class="preview-action-label">AI</span>
             </button>
             <span class="preview-action-divider" aria-hidden="true"></span>
             <div class="preview-menu-wrap" id="previewMenuWrap">
@@ -1426,6 +1586,7 @@
                 <span class="preview-action-icon preview-action-icon--menu"></span>
               </button>
               <div class="preview-menu-dropdown" id="previewMenuDropdown" role="menu">
+                <button type="button" class="preview-menu-option" role="menuitem" onclick="handleSendDocumentEmail(event)">שליחת מסמך במייל</button>
                 <button type="button" class="preview-menu-option preview-menu-option--danger" role="menuitem" onclick="handleDeleteDocument(event)">מחיקת מסמך</button>
               </div>
             </div>
@@ -1515,11 +1676,12 @@
     <button class="add-doc-btn" title="הוספת מסמך"><span class="add-doc-plus">+</span><span>הוספת מסמך</span></button>
   </div>
   <div class="inbox-filters">
+    <div class="inbox-filter-label">סטטוס בנקאי</div>
     <div class="inbox-search">
       <input type="text" id="docSearch" placeholder="חיפוש מסמך" oninput="filterDocuments()">
     </div>
     <select id="docStatusFilter" class="filter-status-select" onchange="filterDocuments()">
-      <option value="all">סינון לפי: סטטוס</option>
+      <option value="all">סטטוס</option>
       <option value="pending">ממתין לטיפול</option>
       <option value="inprogress">בתהליך</option>
       <option value="done">טופל</option>
@@ -1541,13 +1703,13 @@
                 <div class="inbox-name">ייפוי כוח מתמשך</div>
                 <div class="inbox-code">משכ 542</div>
               </div>
-              <select class="status-select missing" data-doc="poa" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending">ממתין לטיפול</option>
+              <select class="status-select pending" data-doc="poa" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending" selected>ממתין לטיפול</option>
                 <option value="inprogress">בתהליך</option>
                 <option value="done">טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
                 <option value="valid">תקין</option>
-                <option value="invalid" selected>לא תקין</option>
+                <option value="invalid">לא תקין</option>
               </select>
             </div>
         <div class="inbox-row" data-doc="id329" onclick="selectDocument('id329')">
@@ -1556,10 +1718,10 @@
                 <div class="inbox-name">תנאים עיקריים</div>
                 <div class="inbox-code">משכ 329</div>
               </div>
-              <select class="status-select pending" data-doc="id329" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending" selected>ממתין לטיפול</option>
+              <select class="status-select complete" data-doc="id329" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending">ממתין לטיפול</option>
                 <option value="inprogress">בתהליך</option>
-                <option value="done">טופל</option>
+                <option value="done" selected>טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
                 <option value="valid">תקין</option>
                 <option value="invalid">לא תקין</option>
@@ -1844,6 +2006,10 @@
 </div><!-- /.app-shell -->
 
 <script>
+  const NOTES_ICON_SVG = '<svg class="inbox-notes-icon" width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 2.5h7.2L14.5 5.6V14a1 1 0 01-1 1H4.5a1 1 0 01-1-1V3.5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.5 2.8V5.5H14.2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 8h6M6 10h4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>';
+  const AI_ICON_SVG_SM = '<svg class="doc-note-ai-icon" width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 1.8 9.95 5.05 13.3 5.05 10.55 7.05 11.5 10.3 9 8.35 6.5 10.3 7.45 7.05 4.7 5.05 8.05 5.05 9 1.8Z" fill="currentColor"/><path d="M14.6 8.2 15.2 9.95 17 10.55 15.2 11.15 14.6 12.9 14 11.15 12.2 10.55 14 9.95 14.6 8.2Z" fill="currentColor" opacity=".75"/><path d="M4.4 11.7 4.85 13 6.1 13.45 4.85 13.9 4.4 15.2 3.95 13.9 2.7 13.45 3.95 13 4.4 11.7Z" fill="currentColor" opacity=".55"/></svg>';
+  const AI_ICON_SVG_MD = AI_ICON_SVG_SM.replace('width="16" height="16"', 'width="18" height="18"');
+
   function toggleCat(id) {
     document.getElementById(id).classList.toggle('collapsed');
   }
@@ -2050,11 +2216,20 @@
   function closeAllCapsuleMenus() {
     document.querySelectorAll('.capsule-select.open').forEach(el => el.classList.remove('open'));
     closePreviewMenu();
+    closePreviewHqStatusMenu();
   }
 
   function closePreviewMenu() {
     const wrap = document.getElementById('previewMenuWrap');
     const btn = document.getElementById('previewMenuBtn');
+    if (!wrap || !btn) return;
+    wrap.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function closePreviewHqStatusMenu() {
+    const wrap = document.getElementById('previewHqStatusWrap');
+    const btn = document.getElementById('previewHqStatusBtn');
     if (!wrap || !btn) return;
     wrap.classList.remove('open');
     btn.setAttribute('aria-expanded', 'false');
@@ -2075,6 +2250,121 @@
   function handleDeleteDocument(e) {
     e.stopPropagation();
     closePreviewMenu();
+  }
+
+  function handleSendDocumentEmail(e) {
+    e.stopPropagation();
+    closePreviewMenu();
+  }
+
+  const HQ_STATUS_LABEL = {
+    pending: 'ממתין לבחינת מטה',
+    valid: 'תקין',
+    invalid: 'לא תקין'
+  };
+
+  const BANKER_STATUS_LABEL = {
+    pending: 'ממתין לטיפול',
+    inprogress: 'בתהליך',
+    done: 'טופל',
+    notrelevant: 'לא רלוונטי',
+    valid: 'תקין',
+    invalid: 'לא תקין'
+  };
+
+  const docHqStatusStore = (() => {
+    try { return JSON.parse(localStorage.getItem('demoHqStatuses') || '{}') || {}; }
+    catch { return {}; }
+  })();
+
+  function persistHqStatuses() {
+    localStorage.setItem('demoHqStatuses', JSON.stringify(docHqStatusStore));
+  }
+
+  function ensureHqPendingForDoc(docId) {
+    if (!docHqStatusStore[docId]) {
+      docHqStatusStore[docId] = 'pending';
+      persistHqStatuses();
+    }
+  }
+
+  function getCurrentPersona() {
+    return document.body?.dataset?.persona || 'banker';
+  }
+
+  function getCurrentDocBankerStatus() {
+    const row = document.querySelector(`.inbox-row[data-doc="${previewCurrentDocId}"]`);
+    const select = row?.querySelector('select.status-select');
+    return select?.value || null;
+  }
+
+  function renderPreviewHqStatus() {
+    const container = document.getElementById('previewHqStatus');
+    const divider = document.getElementById('previewHqDivider');
+    const btn = document.getElementById('previewHqStatusBtn');
+    const text = document.getElementById('previewHqStatusText');
+    if (!container || !btn || !text || !divider) return;
+
+    const persona = getCurrentPersona();
+    const bankerStatus = getCurrentDocBankerStatus();
+    const isDoneByBanker = bankerStatus === 'done';
+    if (!isDoneByBanker) {
+      container.style.display = 'none';
+      divider.style.display = 'none';
+      closePreviewHqStatusMenu();
+      return;
+    }
+
+    container.style.display = 'inline-flex';
+    divider.style.display = 'inline-block';
+
+    // Banker: show only after "טופל", always disabled.
+    if (persona === 'banker') {
+      ensureHqPendingForDoc(previewCurrentDocId);
+      btn.disabled = true;
+      btn.setAttribute('aria-expanded', 'false');
+      text.textContent = HQ_STATUS_LABEL.pending;
+      return;
+    }
+
+    // HQ: editable review for docs marked "טופל".
+    ensureHqPendingForDoc(previewCurrentDocId);
+    const hqStatus = docHqStatusStore[previewCurrentDocId] || 'pending';
+    btn.disabled = false;
+    text.textContent = HQ_STATUS_LABEL[hqStatus] || HQ_STATUS_LABEL.pending;
+  }
+
+  function togglePreviewHqStatusMenu(e) {
+    e.stopPropagation();
+    const btn = document.getElementById('previewHqStatusBtn');
+    const wrap = document.getElementById('previewHqStatusWrap');
+    if (!btn || !wrap || btn.disabled) return;
+    const isOpen = wrap.classList.contains('open');
+    closeAllCapsuleMenus();
+    if (!isOpen) {
+      wrap.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  function setPreviewHqStatus(e, status) {
+    e.stopPropagation();
+    if (!HQ_STATUS_LABEL[status]) return;
+
+    docHqStatusStore[previewCurrentDocId] = status;
+    persistHqStatuses();
+    closePreviewHqStatusMenu();
+    renderPreviewHqStatus();
+
+    // Mirror to list status when HQ decides valid/invalid
+    if (status === 'valid' || status === 'invalid') {
+      const row = document.querySelector(`.inbox-row[data-doc="${previewCurrentDocId}"]`);
+      const select = row?.querySelector('select.status-select');
+      if (select) {
+        select.value = status;
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    }
   }
 
   function toggleCapsuleMenu(wrap) {
@@ -2143,6 +2433,25 @@
     select.classList.add(STATUS_CLASS[select.value]);
     syncCapsuleFromSelect(getCapsuleWrap(select), select);
     filterDocuments();
+
+    // Banker marking "טופל" triggers HQ pending review state in demo.
+    if (getCurrentPersona() === 'banker') {
+      const row = select.closest('.inbox-row');
+      const docId = row?.dataset?.doc;
+      if (docId && select.value === 'done') {
+        ensureHqPendingForDoc(docId);
+      }
+      if (docId && select.value !== 'done') {
+        if (docHqStatusStore[docId]) {
+          delete docHqStatusStore[docId];
+          persistHqStatuses();
+        }
+      }
+    }
+
+    if (select.closest('.inbox-row')?.dataset?.doc === previewCurrentDocId) {
+      renderPreviewHqStatus();
+    }
   }
 
   function filterDocuments() {
@@ -2178,7 +2487,7 @@
     tabu:     { name: 'נסח טאבו',                     code: 'משכ 632', previewId: 'preview-tabu', pages: 1 },
     contract: { name: 'חוזה רכישה חתום',              code: 'משכ 635', previewId: 'preview-contract', pages: 1 },
     id344:    { name: 'הסכם הלוואה',                  code: 'משכ 344', previewId: 'preview-generic', pages: 1 },
-    id329:    { name: 'תנאים עיקריים',                code: 'משכ 329', previewId: 'preview-generic', pages: 1 },
+    id329:    { name: 'תנאים עיקריים',                code: 'משכ 329', previewId: 'preview-poa', pages: 1 },
     id327:    { name: 'לוח סילוקין',                  code: 'משכ 327', previewId: 'preview-generic', pages: 1 },
     id318:    { name: 'הרשאה לחיוב חשבון',            code: 'משכ 318', previewId: 'preview-generic', pages: 1 },
     id331:    { name: 'ביטוח חיים — הצמדה למשכנתא',   code: 'משכ 331', previewId: 'preview-generic', pages: 1 },
@@ -2283,8 +2592,8 @@
     list.innerHTML = notes.map(note => `
       <article class="doc-note-item doc-note-item--ai">
         <div class="doc-note-meta">
-          <span class="doc-note-author doc-note-author--ai">
-            <span class="doc-note-ai-icon" aria-hidden="true"></span>
+            <span class="doc-note-author doc-note-author--ai">
+            ${AI_ICON_SVG_SM}
             AI
           </span>
           <time datetime="${note.date}">${note.date}</time>
@@ -2330,7 +2639,7 @@
     }
 
     if (mode === 'ai') {
-      title.innerHTML = '<span class="doc-notes-title-ai"><span class="doc-note-ai-icon" aria-hidden="true"></span>הערות AI</span>';
+      title.innerHTML = '<span class="doc-notes-title-ai">' + AI_ICON_SVG_MD + 'הערות AI</span>';
       renderDocAiNotes();
     } else {
       title.textContent = 'הערות';
@@ -2411,6 +2720,7 @@
     updatePreviewPageNav();
     updatePreviewNotesBadge();
     updatePreviewAiBadge();
+    renderPreviewHqStatus();
     const panelMode = getActiveSidePanelMode();
     if (panelMode === 'notes') renderDocNotes();
     if (panelMode === 'ai') renderDocAiNotes();
@@ -2432,7 +2742,7 @@
       btn.className = 'inbox-notes-btn' + (docsWithNotes.has(row.dataset.doc) ? ' has-notes' : '');
       btn.title = 'הערות';
       btn.setAttribute('aria-label', 'הערות');
-      btn.innerHTML = '<span class="inbox-notes-icon"></span>';
+      btn.innerHTML = NOTES_ICON_SVG;
       btn.addEventListener('click', e => e.stopPropagation());
 
       capsule.parentNode.insertBefore(actions, capsule);
@@ -2446,6 +2756,20 @@
   updatePreviewPageNav();
   updatePreviewNotesBadge();
   updatePreviewAiBadge();
+
+  function setPersona(persona) {
+    const p = (persona === 'hq') ? 'hq' : 'banker';
+    localStorage.setItem('demoPersona', p);
+    document.body.dataset.persona = p;
+    const bankerBtn = document.getElementById('personaBankerBtn');
+    const hqBtn = document.getElementById('personaHqBtn');
+    if (bankerBtn) bankerBtn.setAttribute('aria-pressed', String(p === 'banker'));
+    if (hqBtn) hqBtn.setAttribute('aria-pressed', String(p === 'hq'));
+    renderPreviewHqStatus();
+  }
+
+  // Initialize persona (default: banker)
+  setPersona(localStorage.getItem('demoPersona') || 'banker');
 </script>
 </body>
 </html>
