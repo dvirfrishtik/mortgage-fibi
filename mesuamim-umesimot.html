@@ -2209,9 +2209,10 @@
   };
 
   function getCapsuleWrap(select) {
-    return select.previousElementSibling?.classList?.contains('capsule-select')
-      ? select.previousElementSibling
-      : null;
+    const prev = select.previousElementSibling;
+    if (prev?.classList?.contains('capsule-select')) return prev;
+    const row = select.closest('.inbox-row');
+    return row?.querySelector('.capsule-select') || null;
   }
 
   function statusDotHtml(value) {
@@ -2439,6 +2440,61 @@
       select.parentNode.insertBefore(wrap, select);
       syncCapsuleFromSelect(wrap, select);
     });
+  }
+
+  function syncStatusSelect(select, value) {
+    select.value = value;
+    select.classList.remove('pending', 'open', 'complete', 'not-relevant', 'missing');
+    select.classList.add(STATUS_CLASS[value] || 'pending');
+    syncCapsuleFromSelect(getCapsuleWrap(select), select);
+  }
+
+  function captureBankerStatuses() {
+    const snapshot = {};
+    document.querySelectorAll('select.status-select').forEach(select => {
+      const docId = select.dataset.doc;
+      if (docId) snapshot[docId] = select.value;
+    });
+    return snapshot;
+  }
+
+  function applyAllDocsBankerStatus(value) {
+    document.querySelectorAll('select.status-select').forEach(select => {
+      const docId = select.dataset.doc;
+      if (!docId) return;
+      syncStatusSelect(select, value);
+      if (value === 'done') ensureHqPendingForDoc(docId);
+    });
+    filterDocuments();
+    renderPreviewHqStatus();
+  }
+
+  function restoreBankerStatuses() {
+    if (!bankerStatusSnapshot) return;
+    document.querySelectorAll('select.status-select').forEach(select => {
+      const docId = select.dataset.doc;
+      if (!docId || bankerStatusSnapshot[docId] === undefined) return;
+      const value = bankerStatusSnapshot[docId];
+      syncStatusSelect(select, value);
+      if (value !== 'done' && docHqStatusStore[docId]) {
+        delete docHqStatusStore[docId];
+      }
+    });
+    persistHqStatuses();
+    filterDocuments();
+    renderPreviewHqStatus();
+  }
+
+  let bankerStatusSnapshot = null;
+
+  function applyPersonaDocumentView(persona) {
+    if (persona === 'hq') {
+      bankerStatusSnapshot = captureBankerStatuses();
+      applyAllDocsBankerStatus('done');
+      return;
+    }
+    restoreBankerStatuses();
+    bankerStatusSnapshot = null;
   }
 
   document.addEventListener('click', closeAllCapsuleMenus);
@@ -2806,13 +2862,21 @@
 
   function setPersona(persona) {
     const p = (persona === 'hq') ? 'hq' : 'banker';
+    const wasHq = getCurrentPersona() === 'hq';
     localStorage.setItem('demoPersona', p);
     document.body.dataset.persona = p;
     const bankerBtn = document.getElementById('personaBankerBtn');
     const hqBtn = document.getElementById('personaHqBtn');
     if (bankerBtn) bankerBtn.setAttribute('aria-pressed', String(p === 'banker'));
     if (hqBtn) hqBtn.setAttribute('aria-pressed', String(p === 'hq'));
-    renderPreviewHqStatus();
+
+    if (p === 'hq' && !wasHq) {
+      applyPersonaDocumentView('hq');
+    } else if (p === 'banker' && wasHq) {
+      applyPersonaDocumentView('banker');
+    } else {
+      renderPreviewHqStatus();
+    }
   }
 
   // Initialize persona (default: banker)
