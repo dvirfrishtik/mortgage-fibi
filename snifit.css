@@ -73,10 +73,10 @@ body {
   align-items: center;
 }
 .header-logo-img {
-  height: 34px;
+  height: 32px;
   width: auto;
+  min-width: 120px;
   display: block;
-  mix-blend-mode: screen;
 }
 .header-user { display: flex; align-items: center; gap: 12px; font-size: 13px; opacity: 0.9; }
 .avatar {

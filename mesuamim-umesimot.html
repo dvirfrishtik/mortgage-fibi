@@ -144,17 +144,192 @@
       flex-shrink: 0;
       background: transparent;
       border-bottom: none;
-      padding: 16px 28px 4px;
+      padding: 16px 28px 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
     }
+    .center-col > .card > .card-header .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .preview-action-bar {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-shrink: 0;
+    }
+    .preview-action-divider {
+      width: 1px;
+      height: 18px;
+      background: #E2E4E9;
+      margin-inline: 4px;
+      flex-shrink: 0;
+    }
+    .preview-action-btn--menu {
+      flex-shrink: 0;
+      background: #F3F4F6;
+    }
+    .preview-action-btn--menu:hover {
+      background: #ECEEF2;
+    }
+    .preview-menu-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+    .preview-menu-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      inset-inline-end: 0;
+      z-index: 300;
+      min-width: 148px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 6px;
+    }
+    .preview-menu-wrap.open .preview-menu-dropdown {
+      display: block;
+    }
+    .preview-menu-wrap.open .preview-action-btn--menu {
+      background: #ECEEF2;
+    }
+    .preview-menu-option {
+      display: block;
+      width: 100%;
+      text-align: right;
+      border: none;
+      background: transparent;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-family: inherit;
+      font-weight: 600;
+      color: var(--text-body);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      transition: background 0.12s, color 0.12s;
+    }
+    .preview-menu-option--danger {
+      color: var(--red);
+    }
+    .preview-menu-option--danger:hover {
+      background: var(--red-bg);
+      color: var(--red);
+    }
+    .preview-action-btn {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      color: var(--text-muted);
+      transition: background 0.12s, color 0.12s;
+    }
+    .preview-action-btn:hover {
+      background: var(--navy-50);
+      color: var(--navy);
+    }
+    .preview-action-btn.active {
+      background: var(--navy-50);
+      color: var(--navy);
+    }
+    .preview-action-icon {
+      width: 18px;
+      height: 18px;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
+    .preview-action-icon--menu {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18' fill='none'%3E%3Ccircle cx='9' cy='4' r='1.3' fill='%236B7280'/%3E%3Ccircle cx='9' cy='9' r='1.3' fill='%236B7280'/%3E%3Ccircle cx='9' cy='14' r='1.3' fill='%236B7280'/%3E%3C/svg%3E");
+    }
+    .preview-action-btn:hover .preview-action-icon--menu {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18' fill='none'%3E%3Ccircle cx='9' cy='4' r='1.3' fill='%231B2A6B'/%3E%3Ccircle cx='9' cy='9' r='1.3' fill='%231B2A6B'/%3E%3Ccircle cx='9' cy='14' r='1.3' fill='%231B2A6B'/%3E%3C/svg%3E");
+    }
+    .preview-action-icon--notes {
+      width: 18px;
+      height: 18px;
+      background-image: url('notes-file-icon.png');
+      filter: drop-shadow(0 1px 1px rgba(27, 42, 107, 0.12));
+    }
+    .preview-action-btn:hover .preview-action-icon--notes,
+    .preview-action-btn.active .preview-action-icon--notes {
+      filter: drop-shadow(0 1px 2px rgba(27, 42, 107, 0.2));
+    }
+    .preview-action-btn--with-count {
+      width: auto;
+      min-width: 32px;
+      padding-inline: 4px;
+      gap: 2px;
+    }
+    .preview-action-btn--ai:hover,
+    .preview-action-btn--ai.active {
+      background: var(--navy-50);
+    }
+    .preview-action-icon--ai {
+      width: 18px;
+      height: 18px;
+      background-image: url('ai-sparkle.png');
+    }
+    .preview-action-count {
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 99px;
+      background: var(--navy);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 16px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+
     .doc-page-nav {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       flex-shrink: 0;
+    }
+    .doc-page-nav-float {
+      position: sticky;
+      top: 10px;
+      z-index: 25;
+      display: flex;
+      justify-content: center;
+      margin-bottom: -40px;
+      pointer-events: none;
+    }
+    .doc-page-nav-float .doc-page-nav {
+      pointer-events: auto;
+      background: var(--surface);
+      border-radius: 99px;
+      padding: 4px 6px;
+      box-shadow: 0 2px 10px rgba(27,42,107,0.12);
+      border: 1px solid var(--border-light);
+    }
+    .doc-page-nav-float .doc-page-btn {
+      width: 26px;
+      height: 26px;
+      border: none;
+      background: transparent;
+    }
+    .doc-page-nav-float .doc-page-btn:hover:not(:disabled) {
+      background: var(--navy-50);
+      border: none;
     }
     .doc-page-btn {
       width: 28px;
@@ -435,7 +610,7 @@
        detail pane on its left. The region frame provides the outer chrome. */
     .docs-sidebar {
       order: 1;
-      width: 380px;
+      width: 400px;
       flex-shrink: 0;
       min-height: 0;
       overflow: hidden;
@@ -451,22 +626,31 @@
     }
     .docs-sidebar .card-title { color: white; font-size: 15px; }
     .add-doc-btn {
-      width: 28px; height: 28px;
-      border-radius: 50%;
+      height: 28px;
+      border-radius: 99px;
       border: none;
       background: var(--yellow);
       color: var(--navy);
-      font-size: 17px;
+      font-size: 12px;
       font-weight: 700;
+      font-family: inherit;
       line-height: 1;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 5px;
+      padding: 0 12px 0 9px;
       flex-shrink: 0;
       transition: background 0.2s;
+      white-space: nowrap;
     }
     .add-doc-btn:hover { background: var(--yellow-dark); }
+    .add-doc-plus {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1;
+    }
 
     .inbox-filters {
       flex-shrink: 0;
@@ -506,8 +690,23 @@
       position: relative;
       flex-shrink: 0;
     }
-    .capsule-select--filter { min-width: 140px; }
+    .capsule-select--filter { min-width: 0; width: auto; }
     .capsule-select:not(.capsule-select--filter) { min-width: 128px; }
+    .capsule-select--filter .capsule-select-trigger {
+      width: auto;
+      border: none;
+      padding: 5px 6px;
+      background: transparent;
+      box-shadow: none;
+      gap: 4px;
+    }
+    .capsule-select--filter .capsule-select-trigger:hover,
+    .capsule-select--filter.open .capsule-select-trigger {
+      border: none;
+      box-shadow: none;
+      background: rgba(0,0,0,0.04);
+      border-radius: var(--radius-sm);
+    }
 
     .capsule-select-trigger {
       display: flex;
@@ -573,6 +772,12 @@
       overflow-y: auto;
     }
     .capsule-select.open .capsule-select-menu { display: block; }
+
+    .capsule-select-menu-divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 6px 10px;
+    }
 
     .capsule-select-option {
       display: flex;
@@ -653,8 +858,250 @@
     .inbox-row.active .inbox-name { color: var(--text-body); font-weight: 600; }
     .inbox-code { font-size: 12px; color: var(--text-faint); margin-top: 2px; font-family: monospace; }
 
+    .inbox-row-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .inbox-notes-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      flex-shrink: 0;
+      transition: background 0.12s;
+    }
+    .inbox-notes-btn:hover { background: rgba(0,0,0,0.05); }
+    .inbox-row:hover .inbox-notes-btn:hover { background: rgba(0,0,0,0.06); }
+    .inbox-notes-icon {
+      width: 16px;
+      height: 16px;
+      background-image: url('notes-file-icon.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      opacity: 0.72;
+      transition: opacity 0.12s;
+    }
+    .inbox-notes-btn:hover .inbox-notes-icon,
+    .inbox-notes-btn.has-notes .inbox-notes-icon {
+      opacity: 1;
+    }
+    .inbox-notes-btn.has-notes::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--orange);
+      top: 4px;
+      inset-inline-start: 4px;
+    }
+    .inbox-notes-btn { position: relative; }
+
     /* ── DOCUMENT PREVIEW (center column) ── */
-    .doc-preview-body { padding: 24px 28px; flex: 1; min-height: 0; overflow-y: auto; }
+    .doc-preview-body {
+      padding: 0;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .doc-preview-layout {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      align-items: stretch;
+    }
+    .doc-preview-main {
+      flex: 1;
+      min-width: 0;
+      overflow-y: auto;
+      padding: 16px 28px 24px;
+      position: relative;
+      transition: flex 0.28s ease;
+    }
+    .doc-notes-panel {
+      width: 0;
+      flex-shrink: 0;
+      overflow: hidden;
+      background: var(--surface);
+      border-inline-start: 1px solid transparent;
+      transition: width 0.28s ease, border-color 0.28s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .doc-preview-layout.notes-open .doc-notes-panel,
+    .doc-preview-layout.ai-open .doc-notes-panel {
+      width: 300px;
+      border-inline-start-color: var(--border-light);
+    }
+    .doc-notes-panel-inner {
+      width: 300px;
+      min-width: 300px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .doc-notes-header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .doc-notes-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .doc-notes-close {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.12s, color 0.12s;
+    }
+    .doc-notes-close:hover {
+      background: var(--navy-50);
+      color: var(--navy);
+    }
+    .doc-notes-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .doc-notes-empty {
+      font-size: 13px;
+      color: var(--text-faint);
+      text-align: center;
+      padding: 24px 8px;
+    }
+    .doc-note-item {
+      background: var(--bg);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+    }
+    .doc-note-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .doc-note-author {
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .doc-note-author--ai {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--navy);
+    }
+    .doc-note-ai-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      background-image: url('ai-sparkle.png');
+    }
+    .doc-notes-title-ai {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .doc-notes-title-ai .doc-note-ai-icon {
+      width: 18px;
+      height: 18px;
+    }
+    .doc-note-item--ai {
+      border-color: rgba(27, 42, 107, 0.12);
+      background: linear-gradient(180deg, #F5F7FC 0%, var(--bg) 100%);
+    }
+    .doc-preview-layout.ai-open .doc-notes-compose {
+      display: none;
+    }
+    .doc-note-text {
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--text-body);
+      white-space: pre-wrap;
+    }
+    .doc-notes-compose {
+      flex-shrink: 0;
+      padding: 12px 16px 16px;
+      border-top: 1px solid var(--border-light);
+      background: var(--surface);
+    }
+    .doc-notes-input {
+      width: 100%;
+      min-height: 72px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-body);
+      resize: vertical;
+      direction: rtl;
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .doc-notes-input:focus {
+      border-color: var(--navy-100);
+      box-shadow: 0 0 0 3px var(--navy-50);
+    }
+    .doc-notes-input::placeholder { color: var(--text-faint); }
+    .doc-notes-submit {
+      margin-top: 10px;
+      width: 100%;
+      padding: 9px 12px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--navy);
+      color: white;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .doc-notes-submit:hover { background: var(--navy-dark); }
+    .doc-notes-submit:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
     .legal-doc { background: #fff; font-size: 13px; line-height: 1.8; color: var(--text-body); }
     .legal-doc-title { text-align: center; font-weight: 700; font-size: 15px; color: var(--navy); margin-bottom: 4px; }
     .legal-doc-subtitle { text-align: center; font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
@@ -681,7 +1128,7 @@
 <body>
 
 <header class="header">
-  <div class="header-logo"><img src="logo-habeinleumi.png" alt="הבינלאומי — משקיעים בך" class="header-logo-img"></div>
+  <div class="header-logo"><img src="logo-habeinleumi.svg" alt="הבינלאומי — משקיעים בך" class="header-logo-img"></div>
   <div class="header-user">
     <span>שלום, דנה לוי</span>
     <div class="avatar">ד</div>
@@ -963,13 +1410,37 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">תצוגה מקדימה — <span id="previewTitle">ייפוי כוח מתמשך</span></div>
-          <div class="doc-page-nav">
-            <button type="button" class="doc-page-btn" id="previewPagePrev" onclick="changePreviewPage(-1)" aria-label="דף קודם" disabled>&lt;</button>
-            <span class="doc-page-indicator" id="previewPageIndicator">1/1</span>
-            <button type="button" class="doc-page-btn" id="previewPageNext" onclick="changePreviewPage(1)" aria-label="דף הבא" disabled>&gt;</button>
+          <div class="preview-action-bar">
+            <button type="button" class="preview-action-btn preview-action-btn--with-count" id="previewNotesBtn" aria-label="הערות" aria-expanded="false" onclick="toggleDocNotesPanel()">
+              <span class="preview-action-icon preview-action-icon--notes"></span>
+              <span class="preview-action-count" id="previewNotesBadge">3</span>
+            </button>
+            <span class="preview-action-divider" aria-hidden="true"></span>
+            <button type="button" class="preview-action-btn preview-action-btn--with-count" id="previewAiBtn" aria-label="הערות AI" aria-expanded="false" onclick="toggleDocAiPanel()">
+              <span class="preview-action-icon preview-action-icon--ai"></span>
+              <span class="preview-action-count" id="previewAiBadge">2</span>
+            </button>
+            <span class="preview-action-divider" aria-hidden="true"></span>
+            <div class="preview-menu-wrap" id="previewMenuWrap">
+              <button type="button" class="preview-action-btn preview-action-btn--menu" id="previewMenuBtn" aria-label="אפשרויות נוספות" aria-haspopup="menu" aria-expanded="false" onclick="togglePreviewMenu(event)">
+                <span class="preview-action-icon preview-action-icon--menu"></span>
+              </button>
+              <div class="preview-menu-dropdown" id="previewMenuDropdown" role="menu">
+                <button type="button" class="preview-menu-option preview-menu-option--danger" role="menuitem" onclick="handleDeleteDocument(event)">מחיקת מסמך</button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="doc-preview-body">
+          <div class="doc-preview-layout" id="docPreviewLayout">
+            <div class="doc-preview-main">
+              <div class="doc-page-nav-float">
+                <div class="doc-page-nav">
+                  <button type="button" class="doc-page-btn" id="previewPagePrev" onclick="changePreviewPage(-1)" aria-label="דף קודם" disabled>&lt;</button>
+                  <span class="doc-page-indicator" id="previewPageIndicator">1/1</span>
+                  <button type="button" class="doc-page-btn" id="previewPageNext" onclick="changePreviewPage(1)" aria-label="דף הבא" disabled>&gt;</button>
+                </div>
+              </div>
 
           <!-- Sample doc 1: the real scanned power-of-attorney form, with the borrower's
                surname flagged via an overlay positioned over the image -->
@@ -1016,6 +1487,23 @@
             <div class="legal-doc-subtitle" style="margin-top:8px;">תצוגה מקדימה מלאה אינה זמינה עבור מסמך זה בדמו זה.</div>
           </div>
 
+            </div><!-- /.doc-preview-main -->
+
+            <aside class="doc-notes-panel" id="docNotesPanel" aria-hidden="true">
+              <div class="doc-notes-panel-inner">
+                <div class="doc-notes-header">
+                  <div class="doc-notes-title" id="docSidePanelTitle">הערות</div>
+                  <button type="button" class="doc-notes-close" onclick="closeDocSidePanel()" aria-label="סגור">&times;</button>
+                </div>
+                <div class="doc-notes-list" id="docNotesList"></div>
+                <div class="doc-notes-compose">
+                  <textarea class="doc-notes-input" id="docNotesInput" placeholder="כתוב הערה חדשה..." rows="3"></textarea>
+                  <button type="button" class="doc-notes-submit" id="docNotesSubmit" onclick="addDocNote()">הוסף הערה</button>
+                </div>
+              </div>
+            </aside>
+          </div><!-- /.doc-preview-layout -->
+
         </div>
       </div>
     </div><!-- /.center-col (detail pane) -->
@@ -1024,14 +1512,14 @@
     <div class="docs-sidebar">
   <div class="card-header">
     <div class="card-title">כל המסמכים (19)</div>
-    <button class="add-doc-btn" title="הוספת מסמך">+</button>
+    <button class="add-doc-btn" title="הוספת מסמך"><span class="add-doc-plus">+</span><span>הוספת מסמך</span></button>
   </div>
   <div class="inbox-filters">
     <div class="inbox-search">
       <input type="text" id="docSearch" placeholder="חיפוש מסמך" oninput="filterDocuments()">
     </div>
     <select id="docStatusFilter" class="filter-status-select" onchange="filterDocuments()">
-      <option value="all">סטטוס</option>
+      <option value="all">סינון לפי: סטטוס</option>
       <option value="pending">ממתין לטיפול</option>
       <option value="inprogress">בתהליך</option>
       <option value="done">טופל</option>
@@ -1546,9 +2034,14 @@
   function syncCapsuleFromSelect(wrap, select) {
     if (!wrap) return;
     const value = select.value;
+    const isFilter = select.classList.contains('filter-status-select');
     const labelEl = wrap.querySelector('.capsule-select-label');
     const labelText = select.options[select.selectedIndex].text;
-    labelEl.innerHTML = statusDotHtml(value) + `<span>${labelText}</span>`;
+    if (isFilter && value === 'all') {
+      labelEl.innerHTML = `<span>${labelText}</span>`;
+    } else {
+      labelEl.innerHTML = statusDotHtml(value) + `<span>${labelText}</span>`;
+    }
     wrap.querySelectorAll('.capsule-select-option').forEach(btn => {
       btn.classList.toggle('selected', btn.dataset.value === value);
     });
@@ -1556,6 +2049,32 @@
 
   function closeAllCapsuleMenus() {
     document.querySelectorAll('.capsule-select.open').forEach(el => el.classList.remove('open'));
+    closePreviewMenu();
+  }
+
+  function closePreviewMenu() {
+    const wrap = document.getElementById('previewMenuWrap');
+    const btn = document.getElementById('previewMenuBtn');
+    if (!wrap || !btn) return;
+    wrap.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function togglePreviewMenu(e) {
+    e.stopPropagation();
+    const wrap = document.getElementById('previewMenuWrap');
+    const btn = document.getElementById('previewMenuBtn');
+    const isOpen = wrap.classList.contains('open');
+    closeAllCapsuleMenus();
+    if (!isOpen) {
+      wrap.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  function handleDeleteDocument(e) {
+    e.stopPropagation();
+    closePreviewMenu();
   }
 
   function toggleCapsuleMenu(wrap) {
@@ -1587,11 +2106,19 @@
       const menu = document.createElement('div');
       menu.className = 'capsule-select-menu';
       Array.from(select.options).forEach(opt => {
+        if (opt.value === 'valid') {
+          const divider = document.createElement('div');
+          divider.className = 'capsule-select-menu-divider';
+          divider.setAttribute('role', 'separator');
+          menu.appendChild(divider);
+        }
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'capsule-select-option' + (opt.selected ? ' selected' : '');
         btn.dataset.value = opt.value;
-        btn.innerHTML = statusDotHtml(opt.value) + `<span>${opt.text}</span>`;
+        btn.innerHTML = (isFilter && opt.value === 'all')
+          ? `<span>${opt.text}</span>`
+          : statusDotHtml(opt.value) + `<span>${opt.text}</span>`;
         btn.addEventListener('click', e => {
           e.stopPropagation();
           select.value = opt.value;
@@ -1666,6 +2193,187 @@
   let previewCurrentDocId = 'poa';
   let previewCurrentPage = 1;
 
+  const docNotesStore = {
+    poa: [
+      { author: 'דנה לוי', date: '05/07/2026 14:32', text: 'שם המשפחה בשדה אינו תואם לתעודת הזהות שהועלתה.' },
+      { author: 'יוסי כהן', date: '06/07/2026 09:15', text: 'יש לבקש מהלקוח לחתום מחדש בעמוד 2.' },
+      { author: 'דנה לוי', date: '07/07/2026 11:40', text: 'נשלחה תזכורת ללקוח ב-SMS.' }
+    ],
+    id329: [
+      { author: 'דנה לוי', date: '04/07/2026 16:20', text: 'המסמך אושר על ידי המנהל.' }
+    ],
+    id601: [
+      { author: 'מערכת', date: '03/07/2026 08:00', text: 'המסמך התקבל אוטומטית מהעלאת לקוח.' },
+      { author: 'דנה לוי', date: '03/07/2026 10:45', text: 'תמונה מטושטשת — ביקשתי העלאה מחדש.' }
+    ]
+  };
+
+  const docAiNotesStore = {
+    poa: [
+      { date: '05/07/2026 14:05', text: 'זוהה אי-התאמה בין שם המשפחה בטופס לבין שם המשפחה בתעודת הזהות שהועלתה.' },
+      { date: '06/07/2026 08:42', text: 'החתימה בעמוד 2 נראית חלקית — מומלץ לבקש חתימה מחדש לפני אישור המסמך.' }
+    ],
+    id329: [
+      { date: '04/07/2026 15:55', text: 'כל השדות החובה מולאו כראוי. לא נמצאו חריגות במסמך.' }
+    ],
+    id601: [
+      { date: '03/07/2026 08:01', text: 'איכות התמונה נמוכה — ייתכן שחלק מהטקסט לא יהיה קריא לאחר סריקה.' }
+    ]
+  };
+
+  function getDocAiNotes(docId) {
+    if (!docAiNotesStore[docId]) docAiNotesStore[docId] = [];
+    return docAiNotesStore[docId];
+  }
+
+  function getDocNotes(docId) {
+    if (!docNotesStore[docId]) docNotesStore[docId] = [];
+    return docNotesStore[docId];
+  }
+
+  function formatNoteDate(date) {
+    return new Date(date).toLocaleString('he-IL', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  function updatePreviewNotesBadge() {
+    const count = getDocNotes(previewCurrentDocId).length;
+    const badge = document.getElementById('previewNotesBadge');
+    badge.textContent = count;
+    badge.style.display = count > 0 ? '' : 'none';
+  }
+
+  function renderDocNotes() {
+    const list = document.getElementById('docNotesList');
+    const notes = getDocNotes(previewCurrentDocId);
+    if (!notes.length) {
+      list.innerHTML = '<div class="doc-notes-empty">אין הערות עדיין על מסמך זה</div>';
+      return;
+    }
+    list.innerHTML = notes.map(note => `
+      <article class="doc-note-item">
+        <div class="doc-note-meta">
+          <span class="doc-note-author">${note.author}</span>
+          <time datetime="${note.date}">${note.date}</time>
+        </div>
+        <div class="doc-note-text">${note.text}</div>
+      </article>
+    `).join('');
+  }
+
+  function updatePreviewAiBadge() {
+    const count = getDocAiNotes(previewCurrentDocId).length;
+    const badge = document.getElementById('previewAiBadge');
+    badge.textContent = count;
+    badge.style.display = count > 0 ? '' : 'none';
+  }
+
+  function renderDocAiNotes() {
+    const list = document.getElementById('docNotesList');
+    const notes = getDocAiNotes(previewCurrentDocId);
+    if (!notes.length) {
+      list.innerHTML = '<div class="doc-notes-empty">אין הערות AI על מסמך זה</div>';
+      return;
+    }
+    list.innerHTML = notes.map(note => `
+      <article class="doc-note-item doc-note-item--ai">
+        <div class="doc-note-meta">
+          <span class="doc-note-author doc-note-author--ai">
+            <span class="doc-note-ai-icon" aria-hidden="true"></span>
+            AI
+          </span>
+          <time datetime="${note.date}">${note.date}</time>
+        </div>
+        <div class="doc-note-text">${note.text}</div>
+      </article>
+    `).join('');
+  }
+
+  function getActiveSidePanelMode() {
+    const layout = document.getElementById('docPreviewLayout');
+    if (layout.classList.contains('ai-open')) return 'ai';
+    if (layout.classList.contains('notes-open')) return 'notes';
+    return null;
+  }
+
+  function closeDocSidePanel() {
+    toggleDocSidePanel(null, false);
+  }
+
+  function toggleDocSidePanel(mode, forceOpen) {
+    const layout = document.getElementById('docPreviewLayout');
+    const panel = document.getElementById('docNotesPanel');
+    const notesBtn = document.getElementById('previewNotesBtn');
+    const aiBtn = document.getElementById('previewAiBtn');
+    const title = document.getElementById('docSidePanelTitle');
+    const currentMode = getActiveSidePanelMode();
+    const isSameModeOpen = currentMode === mode;
+    const isOpen = forceOpen !== undefined ? forceOpen : !(isSameModeOpen && mode);
+
+    layout.classList.toggle('notes-open', isOpen && mode === 'notes');
+    layout.classList.toggle('ai-open', isOpen && mode === 'ai');
+    panel.setAttribute('aria-hidden', String(!isOpen));
+
+    notesBtn.classList.toggle('active', isOpen && mode === 'notes');
+    notesBtn.setAttribute('aria-expanded', String(isOpen && mode === 'notes'));
+    aiBtn.classList.toggle('active', isOpen && mode === 'ai');
+    aiBtn.setAttribute('aria-expanded', String(isOpen && mode === 'ai'));
+
+    if (!isOpen) {
+      title.textContent = 'הערות';
+      return;
+    }
+
+    if (mode === 'ai') {
+      title.innerHTML = '<span class="doc-notes-title-ai"><span class="doc-note-ai-icon" aria-hidden="true"></span>הערות AI</span>';
+      renderDocAiNotes();
+    } else {
+      title.textContent = 'הערות';
+      renderDocNotes();
+      document.getElementById('docNotesInput').focus();
+    }
+  }
+
+  function toggleDocNotesPanel(forceOpen) {
+    const layout = document.getElementById('docPreviewLayout');
+    const isNotesOpen = layout.classList.contains('notes-open');
+    const shouldOpen = forceOpen !== undefined ? forceOpen : !isNotesOpen;
+    toggleDocSidePanel('notes', shouldOpen);
+  }
+
+  function toggleDocAiPanel(forceOpen) {
+    const layout = document.getElementById('docPreviewLayout');
+    const isAiOpen = layout.classList.contains('ai-open');
+    const shouldOpen = forceOpen !== undefined ? forceOpen : !isAiOpen;
+    toggleDocSidePanel('ai', shouldOpen);
+  }
+
+  function addDocNote() {
+    const input = document.getElementById('docNotesInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    const now = new Date();
+    getDocNotes(previewCurrentDocId).unshift({
+      author: 'דנה לוי',
+      date: formatNoteDate(now),
+      text
+    });
+
+    input.value = '';
+    renderDocNotes();
+    updatePreviewNotesBadge();
+  }
+
+  document.getElementById('docNotesInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) addDocNote();
+  });
+
   function updatePreviewPageNav() {
     const doc = docs[previewCurrentDocId];
     const total = doc?.pages || 1;
@@ -1701,10 +2409,43 @@
 
     document.getElementById('previewTitle').textContent = doc.name;
     updatePreviewPageNav();
+    updatePreviewNotesBadge();
+    updatePreviewAiBadge();
+    const panelMode = getActiveSidePanelMode();
+    if (panelMode === 'notes') renderDocNotes();
+    if (panelMode === 'ai') renderDocAiNotes();
+  }
+
+  function initInboxNotesIcons() {
+    const docsWithNotes = new Set(['poa', 'id329', 'id601']);
+    document.querySelectorAll('.inbox-row').forEach(row => {
+      if (row.dataset.notesInit) return;
+      row.dataset.notesInit = '1';
+      const capsule = row.querySelector('.capsule-select');
+      if (!capsule) return;
+
+      const actions = document.createElement('div');
+      actions.className = 'inbox-row-actions';
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'inbox-notes-btn' + (docsWithNotes.has(row.dataset.doc) ? ' has-notes' : '');
+      btn.title = 'הערות';
+      btn.setAttribute('aria-label', 'הערות');
+      btn.innerHTML = '<span class="inbox-notes-icon"></span>';
+      btn.addEventListener('click', e => e.stopPropagation());
+
+      capsule.parentNode.insertBefore(actions, capsule);
+      actions.appendChild(btn);
+      actions.appendChild(capsule);
+    });
   }
 
   initCapsuleSelects();
+  initInboxNotesIcons();
   updatePreviewPageNav();
+  updatePreviewNotesBadge();
+  updatePreviewAiBadge();
 </script>
 </body>
 </html>
