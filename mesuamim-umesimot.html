@@ -246,8 +246,8 @@
       color: var(--navy);
     }
     .preview-action-icon {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       flex-shrink: 0;
       display: block;
       color: #6B7280;
@@ -272,8 +272,8 @@
     }
     .preview-action-icon-wrap {
       position: relative;
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       flex-shrink: 0;
       display: flex;
       align-items: center;
@@ -281,8 +281,8 @@
       overflow: visible;
     }
     .preview-action-icon-wrap .preview-action-icon {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
     }
     .preview-action-label {
       font-size: 12px;
@@ -308,21 +308,22 @@
     }
     .preview-action-count {
       position: absolute;
-      top: -3px;
-      inset-inline-end: -3px;
+      top: -6px;
+      inset-inline-end: -8px;
       z-index: 2;
-      min-width: 14px;
-      height: 14px;
+      min-width: 15px;
+      height: 15px;
       padding: 0 3px;
       border-radius: 99px;
       background: var(--navy);
       color: white;
       font-size: 9px;
       font-weight: 700;
-      line-height: 14px;
+      line-height: 15px;
       text-align: center;
       font-variant-numeric: tabular-nums;
       pointer-events: none;
+      box-shadow: 0 0 0 1.5px var(--surface);
     }
 
     /* HQ review status control (in preview header) */
@@ -365,15 +366,20 @@
       color: var(--text-muted);
     }
     .preview-hq-status-caret {
-      width: 0;
-      height: 0;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      border-top: 6px solid var(--text-muted);
-      transform: translateY(1px);
+      width: 11px;
+      height: 7px;
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236B7280' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      transition: transform 0.2s;
     }
     .preview-hq-status-pill:disabled .preview-hq-status-caret {
-      border-top-color: var(--text-faint);
+      opacity: 0.55;
+    }
+    .preview-hq-status-wrap.open .preview-hq-status-caret {
+      transform: rotate(180deg);
     }
     .preview-hq-status-menu {
       display: none;
@@ -784,14 +790,9 @@
       padding: 12px 16px;
       border-bottom: 1px solid var(--border-light);
       background: var(--surface);
+      overflow: visible;
     }
-    .inbox-filter-label {
-      flex-shrink: 0;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-body);
-      white-space: nowrap;
-    }
+
     .inbox-search {
       flex: 1;
       min-width: 0;
@@ -837,6 +838,12 @@
       box-shadow: none;
       background: rgba(0,0,0,0.04);
       border-radius: var(--radius-sm);
+    }
+
+    .capsule-select--filter .capsule-select-menu {
+      inset-inline-start: auto;
+      inset-inline-end: 0;
+      min-width: 168px;
     }
 
     .capsule-select-trigger {
@@ -995,46 +1002,62 @@
       gap: 6px;
       flex-shrink: 0;
     }
-    .inbox-notes-btn {
-      width: 28px;
-      height: 28px;
-      border: none;
-      background: transparent;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
+    .inbox-row-indicators {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .inbox-indicator {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      flex-shrink: 0;
+      color: var(--navy);
+    }
+    .inbox-indicator-icon-wrap {
+      position: relative;
+      width: 18px;
+      height: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0;
-      flex-shrink: 0;
-      transition: background 0.12s;
     }
-    .inbox-notes-btn:hover { background: rgba(0,0,0,0.05); }
-    .inbox-row:hover .inbox-notes-btn:hover { background: rgba(0,0,0,0.06); }
-    .inbox-notes-icon {
-      width: 16px;
-      height: 16px;
+    .inbox-indicator-icon-wrap svg {
       display: block;
-      color: #6B7280;
-      opacity: 0.85;
-      transition: opacity 0.12s, color 0.12s;
+      width: 18px;
+      height: 18px;
     }
-    .inbox-notes-btn:hover .inbox-notes-icon,
-    .inbox-notes-btn.has-notes .inbox-notes-icon {
-      opacity: 1;
+    .inbox-indicator--notes {
       color: var(--navy);
     }
-    .inbox-notes-btn.has-notes::after {
-      content: '';
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--orange);
-      top: 4px;
-      inset-inline-start: 4px;
+    .inbox-indicator--ai {
+      color: #2563EB;
     }
-    .inbox-notes-btn { position: relative; }
+    .inbox-indicator-count {
+      position: absolute;
+      top: -6px;
+      inset-inline-end: -8px;
+      z-index: 1;
+      min-width: 14px;
+      height: 14px;
+      padding: 0 3px;
+      border-radius: 99px;
+      background: var(--navy);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      line-height: 14px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      pointer-events: none;
+      box-shadow: 0 0 0 1.5px var(--surface);
+    }
+    .inbox-indicator--ai .inbox-indicator-count {
+      background: #2563EB;
+    }
 
     /* ── DOCUMENT PREVIEW (center column) ── */
     .doc-preview-body {
@@ -1275,7 +1298,7 @@
 <div class="hero-band">
   <a href="dashboard.html" class="hero-back-link">→ חזרה לרשימת התיקים</a>
   <div class="hero-main-row">
-    <div class="hero-track">תיק #12345 — ישראל ישראלי</div>
+    <div class="hero-track">תיק #12345 — ישראל ישראל | 437829343</div>
     <div class="hero-progress">
       <span class="hero-progress-label">התקדמות כוללת</span>
       <div class="hero-progress-track"><div class="hero-progress-fill" style="width:24%"></div></div>
@@ -1284,7 +1307,7 @@
     </div>
   </div>
   <div class="hero-kpi-line">
-    <span>רכישת דירה יד שניה · ת.ז 023456789</span>
+    <span>רכישת דירה יד שניה</span>
     <span><b>סטטוס:</b> <span class="accent">בתהליך</span></span>
     <span><b>פקיד מטפל:</b> דנה לוי</span>
     <span><b>נוצר:</b> 05/06/2026</span>
@@ -1676,18 +1699,15 @@
     <button class="add-doc-btn" title="הוספת מסמך"><span class="add-doc-plus">+</span><span>הוספת מסמך</span></button>
   </div>
   <div class="inbox-filters">
-    <div class="inbox-filter-label">סטטוס בנקאי</div>
     <div class="inbox-search">
       <input type="text" id="docSearch" placeholder="חיפוש מסמך" oninput="filterDocuments()">
     </div>
     <select id="docStatusFilter" class="filter-status-select" onchange="filterDocuments()">
-      <option value="all">סטטוס</option>
+      <option value="all">סטטוס בנקאי</option>
       <option value="pending">ממתין לטיפול</option>
       <option value="inprogress">בתהליך</option>
       <option value="done">טופל</option>
       <option value="notrelevant">לא רלוונטי</option>
-      <option value="valid">תקין</option>
-      <option value="invalid">לא תקין</option>
     </select>
   </div>
   <div class="inbox-list">
@@ -2007,7 +2027,8 @@
 
 <script>
   const NOTES_ICON_SVG = '<svg class="inbox-notes-icon" width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 2.5h7.2L14.5 5.6V14a1 1 0 01-1 1H4.5a1 1 0 01-1-1V3.5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.5 2.8V5.5H14.2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 8h6M6 10h4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>';
-  const AI_ICON_SVG_SM = '<svg class="doc-note-ai-icon" width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 1.8 9.95 5.05 13.3 5.05 10.55 7.05 11.5 10.3 9 8.35 6.5 10.3 7.45 7.05 4.7 5.05 8.05 5.05 9 1.8Z" fill="currentColor"/><path d="M14.6 8.2 15.2 9.95 17 10.55 15.2 11.15 14.6 12.9 14 11.15 12.2 10.55 14 9.95 14.6 8.2Z" fill="currentColor" opacity=".75"/><path d="M4.4 11.7 4.85 13 6.1 13.45 4.85 13.9 4.4 15.2 3.95 13.9 2.7 13.45 3.95 13 4.4 11.7Z" fill="currentColor" opacity=".55"/></svg>';
+  const INBOX_AI_ICON_SVG = '<svg class="inbox-ai-icon" width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 1.8 9.95 5.05 13.3 5.05 10.55 7.05 11.5 10.3 9 8.35 6.5 10.3 7.45 7.05 4.7 5.05 8.05 5.05 9 1.8Z" fill="currentColor"/><path d="M14.6 8.2 15.2 9.95 17 10.55 15.2 11.15 14.6 12.9 14 11.15 12.2 10.55 14 9.95 14.6 8.2Z" fill="currentColor" opacity=".75"/><path d="M4.4 11.7 4.85 13 6.1 13.45 4.85 13.9 4.4 15.2 3.95 13.9 2.7 13.45 3.95 13 4.4 11.7Z" fill="currentColor" opacity=".55"/></svg>';
+  const AI_ICON_SVG_SM = INBOX_AI_ICON_SVG.replace('inbox-ai-icon', 'doc-note-ai-icon');
   const AI_ICON_SVG_MD = AI_ICON_SVG_SM.replace('width="16" height="16"', 'width="18" height="18"');
 
   function toggleCat(id) {
@@ -2396,12 +2417,6 @@
       const menu = document.createElement('div');
       menu.className = 'capsule-select-menu';
       Array.from(select.options).forEach(opt => {
-        if (opt.value === 'valid') {
-          const divider = document.createElement('div');
-          divider.className = 'capsule-select-menu-divider';
-          divider.setAttribute('role', 'separator');
-          menu.appendChild(divider);
-        }
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'capsule-select-option' + (opt.selected ? ' selected' : '');
@@ -2555,6 +2570,7 @@
     const badge = document.getElementById('previewNotesBadge');
     badge.textContent = count;
     badge.style.display = count > 0 ? '' : 'none';
+    updateInboxRowIndicators();
   }
 
   function renderDocNotes() {
@@ -2580,6 +2596,7 @@
     const badge = document.getElementById('previewAiBadge');
     badge.textContent = count;
     badge.style.display = count > 0 ? '' : 'none';
+    updateInboxRowIndicators();
   }
 
   function renderDocAiNotes() {
@@ -2726,33 +2743,63 @@
     if (panelMode === 'ai') renderDocAiNotes();
   }
 
-  function initInboxNotesIcons() {
-    const docsWithNotes = new Set(['poa', 'id329', 'id601']);
+  function initInboxRowIndicators() {
     document.querySelectorAll('.inbox-row').forEach(row => {
-      if (row.dataset.notesInit) return;
-      row.dataset.notesInit = '1';
+      if (row.dataset.indicatorsInit) return;
+      row.dataset.indicatorsInit = '1';
       const capsule = row.querySelector('.capsule-select');
       if (!capsule) return;
 
       const actions = document.createElement('div');
       actions.className = 'inbox-row-actions';
 
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'inbox-notes-btn' + (docsWithNotes.has(row.dataset.doc) ? ' has-notes' : '');
-      btn.title = 'הערות';
-      btn.setAttribute('aria-label', 'הערות');
-      btn.innerHTML = NOTES_ICON_SVG;
-      btn.addEventListener('click', e => e.stopPropagation());
+      const indicators = document.createElement('div');
+      indicators.className = 'inbox-row-indicators';
+
+      const notesIndicator = document.createElement('span');
+      notesIndicator.className = 'inbox-indicator inbox-indicator--notes';
+      notesIndicator.title = 'הערות';
+      notesIndicator.setAttribute('aria-label', 'הערות');
+      notesIndicator.innerHTML = `<span class="inbox-indicator-icon-wrap">${NOTES_ICON_SVG}<span class="inbox-indicator-count">0</span></span>`;
+
+      const aiIndicator = document.createElement('span');
+      aiIndicator.className = 'inbox-indicator inbox-indicator--ai';
+      aiIndicator.title = 'הערות AI';
+      aiIndicator.setAttribute('aria-label', 'הערות AI');
+      aiIndicator.innerHTML = `<span class="inbox-indicator-icon-wrap">${INBOX_AI_ICON_SVG}<span class="inbox-indicator-count">0</span></span>`;
+
+      indicators.appendChild(notesIndicator);
+      indicators.appendChild(aiIndicator);
 
       capsule.parentNode.insertBefore(actions, capsule);
-      actions.appendChild(btn);
+      actions.appendChild(indicators);
       actions.appendChild(capsule);
+    });
+    updateInboxRowIndicators();
+  }
+
+  function updateInboxRowIndicators() {
+    document.querySelectorAll('.inbox-row').forEach(row => {
+      const docId = row.dataset.doc;
+      if (!docId) return;
+
+      const notesIndicator = row.querySelector('.inbox-indicator--notes');
+      const aiIndicator = row.querySelector('.inbox-indicator--ai');
+      if (!notesIndicator || !aiIndicator) return;
+
+      const notesCount = getDocNotes(docId).length;
+      const aiCount = getDocAiNotes(docId).length;
+
+      notesIndicator.style.display = notesCount > 0 ? 'inline-flex' : 'none';
+      notesIndicator.querySelector('.inbox-indicator-count').textContent = notesCount;
+
+      aiIndicator.style.display = aiCount > 0 ? 'inline-flex' : 'none';
+      aiIndicator.querySelector('.inbox-indicator-count').textContent = aiCount;
     });
   }
 
   initCapsuleSelects();
-  initInboxNotesIcons();
+  initInboxRowIndicators();
   updatePreviewPageNav();
   updatePreviewNotesBadge();
   updatePreviewAiBadge();
