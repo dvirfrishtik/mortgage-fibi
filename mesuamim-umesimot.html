@@ -883,26 +883,164 @@
     }
     .capsule-select--filter { min-width: 0; width: auto; }
     .capsule-select:not(.capsule-select--filter) { min-width: 128px; }
-    .capsule-select--filter .capsule-select-trigger {
-      width: auto;
+
+    /* Multi-select banker status filter */
+    .status-multi-filter {
+      position: relative;
+      flex-shrink: 0;
+    }
+    .status-multi-filter-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       border: none;
       padding: 5px 6px;
       background: transparent;
       box-shadow: none;
-      gap: 4px;
-    }
-    .capsule-select--filter .capsule-select-trigger:hover,
-    .capsule-select--filter.open .capsule-select-trigger {
-      border: none;
-      box-shadow: none;
-      background: rgba(0,0,0,0.04);
       border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      line-height: 1.2;
+      cursor: pointer;
+      white-space: nowrap;
+      color: var(--text-body);
     }
-
-    .capsule-select--filter .capsule-select-menu {
-      inset-inline-start: auto;
+    .status-multi-filter-trigger:hover,
+    .status-multi-filter.open .status-multi-filter-trigger {
+      background: rgba(0,0,0,0.04);
+    }
+    .status-multi-filter-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-multi-filter-icon {
+      width: 14px;
+      height: 14px;
+      display: block;
+      flex-shrink: 0;
+      color: var(--text-muted);
+      opacity: 0.85;
+    }
+    .status-multi-filter-trigger:hover .status-multi-filter-icon,
+    .status-multi-filter.open .status-multi-filter-icon,
+    .status-multi-filter.has-selection .status-multi-filter-icon {
+      color: var(--navy);
+      opacity: 1;
+    }
+    .status-multi-filter-count {
+      display: none;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 99px;
+      background: var(--navy);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 18px;
+      text-align: center;
+    }
+    .status-multi-filter.has-selection .status-multi-filter-count {
+      display: inline-block;
+    }
+    .status-multi-filter.open .capsule-select-chevron {
+      transform: rotate(180deg);
+    }
+    .status-multi-filter-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
       inset-inline-end: 0;
-      min-width: 168px;
+      z-index: 300;
+      min-width: 196px;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 20px rgba(27, 42, 107, 0.1);
+      padding: 4px;
+    }
+    .status-multi-filter.open .status-multi-filter-menu { display: block; }
+    .status-multi-filter-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-body);
+      user-select: none;
+    }
+    .status-multi-filter-option:hover {
+      background: rgba(27, 42, 107, 0.04);
+      color: var(--navy);
+    }
+    .status-multi-filter-option .status-dot {
+      flex-shrink: 0;
+      width: 7px;
+      height: 7px;
+    }
+    .status-multi-filter-option-text {
+      flex: 1;
+      text-align: right;
+      line-height: 1.2;
+    }
+    .status-multi-filter-option input {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      margin: 0;
+      margin-inline-start: auto;
+      flex-shrink: 0;
+      cursor: pointer;
+      border: 1.5px solid #C8CDD8;
+      border-radius: 4px;
+      background: #fff;
+      box-shadow: none;
+      transition: border-color 0.12s, background 0.12s, box-shadow 0.12s;
+    }
+    .status-multi-filter-option:hover input {
+      border-color: #A8B0C2;
+    }
+    .status-multi-filter-option input:checked {
+      border-color: var(--navy);
+      background: var(--navy);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8'%3E%3Cpath d='M1 3.8 3.7 6.5 9 1.2' stroke='%23fff' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 9px 7px;
+    }
+    .status-multi-filter-option input:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(27, 42, 107, 0.12);
+    }
+    .status-multi-filter-clear {
+      display: none;
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 7px 10px;
+      margin-top: 2px;
+      border-top: 1px solid var(--border-light);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: right;
+      border-radius: 0 0 6px 6px;
+    }
+    .status-multi-filter.has-selection .status-multi-filter-clear {
+      display: block;
+    }
+    .status-multi-filter-clear:hover {
+      background: rgba(27, 42, 107, 0.04);
+      color: var(--navy);
     }
 
     .capsule-select-trigger {
@@ -1915,13 +2053,41 @@
     <div class="inbox-search">
       <input type="text" id="docSearch" placeholder="חיפוש מסמך" oninput="filterDocuments()">
     </div>
-    <select id="docStatusFilter" class="filter-status-select" onchange="filterDocuments()">
-      <option value="all">סטטוס בנקאי</option>
-      <option value="pending">ממתין לטיפול</option>
-      <option value="inprogress">בתהליך</option>
-      <option value="done">טופל</option>
-      <option value="notrelevant">לא רלוונטי</option>
-    </select>
+    <div class="status-multi-filter" id="docStatusFilter">
+      <button type="button" class="status-multi-filter-trigger" id="docStatusFilterBtn" aria-haspopup="listbox" aria-expanded="false" onclick="toggleStatusMultiFilter(event)">
+        <span class="status-multi-filter-label">
+          <svg class="status-multi-filter-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2 3.25h10M3.75 7h6.5M5.5 10.75h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          <span id="docStatusFilterTitle">סטטוס בנקאי</span>
+          <span class="status-multi-filter-count" id="docStatusFilterCount">0</span>
+        </span>
+        <span class="capsule-select-chevron" aria-hidden="true"></span>
+      </button>
+      <div class="status-multi-filter-menu" id="docStatusFilterMenu" role="listbox" aria-multiselectable="true" onclick="event.stopPropagation()">
+        <label class="status-multi-filter-option">
+          <span class="status-dot pending" aria-hidden="true"></span>
+          <span class="status-multi-filter-option-text">ממתין לטיפול</span>
+          <input type="checkbox" value="pending" onchange="onStatusFilterChange()">
+        </label>
+        <label class="status-multi-filter-option">
+          <span class="status-dot inprogress" aria-hidden="true"></span>
+          <span class="status-multi-filter-option-text">בתהליך</span>
+          <input type="checkbox" value="inprogress" onchange="onStatusFilterChange()">
+        </label>
+        <label class="status-multi-filter-option">
+          <span class="status-dot done" aria-hidden="true"></span>
+          <span class="status-multi-filter-option-text">טופל</span>
+          <input type="checkbox" value="done" onchange="onStatusFilterChange()">
+        </label>
+        <label class="status-multi-filter-option">
+          <span class="status-dot notrelevant" aria-hidden="true"></span>
+          <span class="status-multi-filter-option-text">לא רלוונטי</span>
+          <input type="checkbox" value="notrelevant" onchange="onStatusFilterChange()">
+        </label>
+        <button type="button" class="status-multi-filter-clear" onclick="clearStatusFilter(event)">נקה בחירה</button>
+      </div>
+    </div>
   </div>
   <div class="inbox-list">
     <div class="category" id="docsDeliveryCat">
@@ -2436,14 +2602,9 @@
   function syncCapsuleFromSelect(wrap, select) {
     if (!wrap) return;
     const value = select.value;
-    const isFilter = select.classList.contains('filter-status-select');
     const labelEl = wrap.querySelector('.capsule-select-label');
     const labelText = select.options[select.selectedIndex].text;
-    if (isFilter && value === 'all') {
-      labelEl.innerHTML = `<span>${labelText}</span>`;
-    } else {
-      labelEl.innerHTML = statusDotHtml(value) + `<span>${labelText}</span>`;
-    }
+    labelEl.innerHTML = statusDotHtml(value) + `<span>${labelText}</span>`;
     wrap.querySelectorAll('.capsule-select-option').forEach(btn => {
       btn.classList.toggle('selected', btn.dataset.value === value);
     });
@@ -2451,8 +2612,92 @@
 
   function closeAllCapsuleMenus() {
     document.querySelectorAll('.capsule-select.open').forEach(el => el.classList.remove('open'));
+    closeStatusMultiFilter();
     closePreviewMenu();
     closePreviewHqStatusMenu();
+  }
+
+  const BANKER_FILTER_OPTIONS = [
+    { value: 'pending', label: 'ממתין לטיפול', dot: 'pending' },
+    { value: 'inprogress', label: 'בתהליך', dot: 'inprogress' },
+    { value: 'done', label: 'טופל', dot: 'done' },
+    { value: 'notrelevant', label: 'לא רלוונטי', dot: 'notrelevant' }
+  ];
+
+  const HQ_FILTER_OPTIONS = [
+    { value: 'pending', label: 'ממתין לבחינת מטה', dot: 'pending' },
+    { value: 'valid', label: 'תקין', dot: 'valid' },
+    { value: 'invalid', label: 'לא תקין', dot: 'invalid' }
+  ];
+
+  function getSelectedFilterStatuses() {
+    return [...document.querySelectorAll('#docStatusFilterMenu input[type="checkbox"]:checked')]
+      .map(input => input.value);
+  }
+
+  function syncStatusMultiFilterUi() {
+    const wrap = document.getElementById('docStatusFilter');
+    const countEl = document.getElementById('docStatusFilterCount');
+    const selected = getSelectedFilterStatuses();
+    if (!wrap || !countEl) return;
+    wrap.classList.toggle('has-selection', selected.length > 0);
+    countEl.textContent = String(selected.length);
+  }
+
+  function renderStatusFilterOptions(persona) {
+    const menu = document.getElementById('docStatusFilterMenu');
+    const title = document.getElementById('docStatusFilterTitle');
+    if (!menu || !title) return;
+
+    const isHq = persona === 'hq';
+    title.textContent = isHq ? 'סטטוס מטה' : 'סטטוס בנקאי';
+    const options = isHq ? HQ_FILTER_OPTIONS : BANKER_FILTER_OPTIONS;
+
+    menu.innerHTML = options.map(opt => `
+      <label class="status-multi-filter-option">
+        <span class="status-dot ${opt.dot}" aria-hidden="true"></span>
+        <span class="status-multi-filter-option-text">${opt.label}</span>
+        <input type="checkbox" value="${opt.value}" onchange="onStatusFilterChange()">
+      </label>
+    `).join('') + `
+      <button type="button" class="status-multi-filter-clear" onclick="clearStatusFilter(event)">נקה בחירה</button>
+    `;
+
+    syncStatusMultiFilterUi();
+  }
+
+  function toggleStatusMultiFilter(e) {
+    e.stopPropagation();
+    const wrap = document.getElementById('docStatusFilter');
+    const btn = document.getElementById('docStatusFilterBtn');
+    if (!wrap || !btn) return;
+    const isOpen = wrap.classList.contains('open');
+    closeAllCapsuleMenus();
+    if (!isOpen) {
+      wrap.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  function closeStatusMultiFilter() {
+    const wrap = document.getElementById('docStatusFilter');
+    const btn = document.getElementById('docStatusFilterBtn');
+    if (!wrap || !btn) return;
+    wrap.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function onStatusFilterChange() {
+    syncStatusMultiFilterUi();
+    filterDocuments();
+  }
+
+  function clearStatusFilter(e) {
+    e.stopPropagation();
+    document.querySelectorAll('#docStatusFilterMenu input[type="checkbox"]').forEach(input => {
+      input.checked = false;
+    });
+    onStatusFilterChange();
   }
 
   function closePreviewHqStatusMenu() {
@@ -2670,6 +2915,7 @@
     closePreviewHqStatusMenu();
     syncRowHqStatus(row, docId);
     if (docId === previewCurrentDocId) renderPreviewHqStatus();
+    filterDocuments();
 
     if (status === 'invalid') {
       openInvalidNotePopup(docId);
@@ -2760,14 +3006,13 @@
   }
 
   function initCapsuleSelects() {
-    document.querySelectorAll('select.status-select, select.filter-status-select').forEach(select => {
+    document.querySelectorAll('select.status-select').forEach(select => {
       if (select.dataset.capsuleInit) return;
       select.dataset.capsuleInit = '1';
       select.classList.add('capsule-select-native');
 
-      const isFilter = select.classList.contains('filter-status-select');
       const wrap = document.createElement('div');
-      wrap.className = 'capsule-select' + (isFilter ? ' capsule-select--filter' : '');
+      wrap.className = 'capsule-select';
 
       const trigger = document.createElement('button');
       trigger.type = 'button';
@@ -2786,9 +3031,7 @@
         btn.type = 'button';
         btn.className = 'capsule-select-option' + (opt.selected ? ' selected' : '');
         btn.dataset.value = opt.value;
-        btn.innerHTML = (isFilter && opt.value === 'all')
-          ? `<span>${opt.text}</span>`
-          : statusDotHtml(opt.value) + `<span>${opt.text}</span>`;
+        btn.innerHTML = statusDotHtml(opt.value) + `<span>${opt.text}</span>`;
         btn.addEventListener('click', e => {
           e.stopPropagation();
           select.value = opt.value;
@@ -2897,17 +3140,21 @@
 
   function filterDocuments() {
     const query = document.getElementById('docSearch').value.trim().toLowerCase();
-    const status = document.getElementById('docStatusFilter').value;
-    const filtering = query.length > 0 || status !== 'all';
+    const selectedStatuses = getSelectedFilterStatuses();
+    const filtering = query.length > 0 || selectedStatuses.length > 0;
+    const persona = getCurrentPersona();
 
     document.querySelectorAll('.docs-sidebar .category').forEach(cat => {
       let visible = 0;
       cat.querySelectorAll('.inbox-row').forEach(row => {
         const name = (row.querySelector('.inbox-name')?.textContent || '').toLowerCase();
         const code = (row.querySelector('.inbox-code')?.textContent || '').toLowerCase();
-        const rowStatus = row.querySelector('.status-select')?.value || '';
+        const docId = row.dataset.doc;
+        const rowBankerStatus = row.querySelector('.status-select')?.value || '';
+        const rowHqStatus = docId ? (docHqStatusStore[docId] || 'pending') : 'pending';
+        const rowStatus = persona === 'hq' ? rowHqStatus : rowBankerStatus;
         const matchesSearch = !query || name.includes(query) || code.includes(query);
-        const matchesStatus = status === 'all' || rowStatus === status;
+        const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(rowStatus);
         const show = matchesSearch && matchesStatus;
         row.style.display = show ? '' : 'none';
         if (show) visible++;
@@ -3267,6 +3514,7 @@
 
   initCapsuleSelects();
   initInboxRowIndicators();
+  syncStatusMultiFilterUi();
   updatePreviewPageNav();
   updatePreviewNotesBadge();
   updatePreviewAiBadge();
@@ -3288,8 +3536,10 @@
     } else {
       renderPreviewHqStatus();
     }
+    renderStatusFilterOptions(p);
     renderAllRowHqStatuses();
     closePreviewHqStatusMenu();
+    filterDocuments();
   }
 
   // Initialize persona (default: banker)
