@@ -461,6 +461,10 @@
       display: none;
       position: relative;
       flex-shrink: 0;
+      z-index: 1;
+    }
+    .inbox-hq-status.open {
+      z-index: 40;
     }
     .inbox-hq-status.open .preview-hq-status-menu { display: block; }
     .inbox-hq-status.open .preview-hq-status-caret { transform: rotate(180deg); }
@@ -482,9 +486,65 @@
       line-height: 1.2;
     }
     .inbox-hq-status .preview-hq-status-menu {
-      inset-inline-start: auto;
-      inset-inline-end: 0;
+      position: fixed;
+      inset: auto;
+      z-index: 500;
       min-width: 220px;
+    }
+
+    .inbox-row-hq-valid-burst {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 5;
+      background: rgba(27, 42, 107, 0.08);
+      opacity: 0;
+    }
+    .inbox-row--hq-valid-anim .inbox-row-hq-valid-burst {
+      animation: hqValidRowFlash 0.9s ease-out both;
+    }
+    .inbox-row-hq-valid-check {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(27, 42, 107, 0.28);
+      transform: scale(0.4);
+      opacity: 0;
+    }
+    .inbox-row--hq-valid-anim .inbox-row-hq-valid-check {
+      animation: hqValidCheckPop 0.9s cubic-bezier(0.22, 1.4, 0.36, 1) both;
+    }
+    .inbox-row-hq-valid-check svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+    .inbox-row--hq-valid-anim .inbox-hq-status-btn {
+      animation: hqValidCapsulePulse 0.9s ease-out both;
+    }
+    @keyframes hqValidRowFlash {
+      0% { opacity: 0; }
+      18% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @keyframes hqValidCheckPop {
+      0% { opacity: 0; transform: scale(0.35); }
+      28% { opacity: 1; transform: scale(1.12); }
+      55% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.92); }
+    }
+    @keyframes hqValidCapsulePulse {
+      0% { box-shadow: 0 0 0 0 rgba(27, 42, 107, 0.28); border-color: var(--border); }
+      35% { box-shadow: 0 0 0 5px rgba(27, 42, 107, 0.1); border-color: var(--navy-100); }
+      100% { box-shadow: none; border-color: var(--border); }
     }
 
     .doc-page-nav {
@@ -1172,6 +1232,11 @@
       border-bottom: 1px solid var(--border-light);
       cursor: pointer;
       transition: background 0.12s;
+      position: relative;
+      overflow: visible;
+    }
+    .inbox-row--hq-valid-anim {
+      overflow: hidden;
     }
     .inbox-row:last-child { border-bottom: none; }
     .inbox-row:hover { background: #F5F6F8; }
@@ -1179,6 +1244,24 @@
       background: #F0F1F4;
       border-right: 3px solid var(--border);
       padding-right: 15px;
+    }
+    .inbox-row--hq-valid .inbox-name,
+    .inbox-row--hq-valid .inbox-code,
+    .inbox-row--hq-valid .inbox-banker-tag {
+      color: #9AA3B5;
+    }
+    .inbox-row--hq-valid .inbox-name {
+      font-weight: 500;
+    }
+    .inbox-row--hq-valid .inbox-banker-tag .status-dot {
+      opacity: 0.45;
+    }
+    .inbox-row--hq-valid .inbox-meta-divider {
+      background: #D7DBE5;
+      opacity: 0.7;
+    }
+    .inbox-row--hq-valid .inbox-indicator {
+      opacity: 0.45;
     }
     .inbox-dot { display: none; }
     .inbox-info {
@@ -2854,6 +2937,7 @@
     btn.setAttribute('aria-label', HQ_STATUS_LABEL[hqStatus] || HQ_STATUS_LABEL.pending);
     btn.title = HQ_STATUS_LABEL[hqStatus] || HQ_STATUS_LABEL.pending;
     wrap.dataset.hqStatus = hqStatus;
+    row.classList.toggle('inbox-row--hq-valid', getCurrentPersona() === 'hq' && hqStatus === 'valid');
   }
 
   function renderAllRowHqStatuses() {
@@ -2879,6 +2963,33 @@
     }
   }
 
+  function positionRowHqStatusMenu(wrap) {
+    const btn = wrap?.querySelector('.inbox-hq-status-btn');
+    const menu = wrap?.querySelector('.preview-hq-status-menu');
+    if (!btn || !menu) return;
+
+    const rect = btn.getBoundingClientRect();
+    const menuWidth = Math.max(220, menu.offsetWidth || 220);
+    const menuHeight = menu.offsetHeight || 160;
+    const gap = 6;
+    const viewportPadding = 8;
+
+    let top = rect.bottom + gap;
+    if (top + menuHeight > window.innerHeight - viewportPadding) {
+      top = Math.max(viewportPadding, rect.top - menuHeight - gap);
+    }
+
+    // Align to the visual left of the capsule in RTL (inline-end).
+    let left = rect.left;
+    if (left + menuWidth > window.innerWidth - viewportPadding) {
+      left = Math.max(viewportPadding, rect.right - menuWidth);
+    }
+
+    menu.style.top = `${Math.round(top)}px`;
+    menu.style.left = `${Math.round(left)}px`;
+    menu.style.right = 'auto';
+  }
+
   function toggleRowHqStatusMenu(e, btn) {
     e.stopPropagation();
     const wrap = btn?.closest('.inbox-hq-status');
@@ -2888,6 +2999,7 @@
     if (!isOpen) {
       wrap.classList.add('open');
       btn.setAttribute('aria-expanded', 'true');
+      requestAnimationFrame(() => positionRowHqStatusMenu(wrap));
     }
   }
 
@@ -2903,6 +3015,31 @@
     if (row) syncRowHqStatus(row, previewCurrentDocId);
   }
 
+  function playHqValidRowAnimation(row) {
+    if (!row) return;
+    let burst = row.querySelector('.inbox-row-hq-valid-burst');
+    if (!burst) {
+      burst = document.createElement('div');
+      burst.className = 'inbox-row-hq-valid-burst';
+      burst.setAttribute('aria-hidden', 'true');
+      burst.innerHTML =
+        `<span class="inbox-row-hq-valid-check">` +
+        `<svg viewBox="0 0 18 18" fill="none"><path d="M4.2 9.3 7.4 12.5 13.8 5.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>` +
+        `</span>`;
+      row.appendChild(burst);
+    }
+
+    row.classList.remove('inbox-row--hq-valid-anim');
+    // Force reflow so the animation can replay.
+    void row.offsetWidth;
+    row.classList.add('inbox-row--hq-valid-anim');
+
+    window.clearTimeout(row._hqValidAnimTimer);
+    row._hqValidAnimTimer = window.setTimeout(() => {
+      row.classList.remove('inbox-row--hq-valid-anim');
+    }, 950);
+  }
+
   function setRowHqStatus(e, status, btn) {
     e.stopPropagation();
     if (!HQ_STATUS_LABEL[status]) return;
@@ -2916,6 +3053,10 @@
     syncRowHqStatus(row, docId);
     if (docId === previewCurrentDocId) renderPreviewHqStatus();
     filterDocuments();
+
+    if (status === 'valid') {
+      playHqValidRowAnimation(row);
+    }
 
     if (status === 'invalid') {
       openInvalidNotePopup(docId);
@@ -3067,6 +3208,15 @@
     return snapshot;
   }
 
+  function resetAllHqStatusesToPending() {
+    document.querySelectorAll('select.status-select').forEach(select => {
+      const docId = select.dataset.doc;
+      if (!docId) return;
+      docHqStatusStore[docId] = 'pending';
+    });
+    persistHqStatuses();
+  }
+
   function applyAllDocsBankerStatus(value) {
     document.querySelectorAll('select.status-select').forEach(select => {
       const docId = select.dataset.doc;
@@ -3102,6 +3252,9 @@
     if (persona === 'hq') {
       bankerStatusSnapshot = captureBankerStatuses();
       applyAllDocsBankerStatus('done');
+      resetAllHqStatusesToPending();
+      renderAllRowHqStatuses();
+      filterDocuments();
       return;
     }
     restoreBankerStatuses();
@@ -3518,6 +3671,9 @@
   updatePreviewPageNav();
   updatePreviewNotesBadge();
   updatePreviewAiBadge();
+
+  document.querySelector('.inbox-list')?.addEventListener('scroll', closePreviewHqStatusMenu, { passive: true });
+  window.addEventListener('resize', closePreviewHqStatusMenu);
 
   function setPersona(persona) {
     const p = (persona === 'hq') ? 'hq' : 'banker';
