@@ -326,12 +326,16 @@
       box-shadow: 0 0 0 1.5px var(--surface);
     }
 
-    /* HQ review status control (in preview header) */
+    /* HQ review status control (in preview header — banker only) */
     .preview-hq-status {
       display: none;
       align-items: center;
       gap: 6px;
       margin-inline-start: 0;
+    }
+    body[data-persona="hq"] .preview-hq-status,
+    body[data-persona="hq"] #previewHqDivider {
+      display: none !important;
     }
     .preview-hq-status-wrap {
       position: relative;
@@ -427,6 +431,61 @@
     .preview-hq-status-dot.pending { background: var(--orange); }
     .preview-hq-status-dot.valid { background: var(--green); }
     .preview-hq-status-dot.invalid { background: var(--red); }
+    .hq-status-icon {
+      width: 16px;
+      height: 16px;
+      display: block;
+      flex-shrink: 0;
+    }
+    .preview-hq-status-option .hq-status-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* HQ persona: banker status as read-only tag + editable HQ status in row */
+    .inbox-banker-tag {
+      display: none;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+      pointer-events: none;
+      user-select: none;
+      line-height: 1.2;
+    }
+    .inbox-hq-status {
+      display: none;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .inbox-hq-status.open .preview-hq-status-menu { display: block; }
+    .inbox-hq-status.open .preview-hq-status-caret { transform: rotate(180deg); }
+    body[data-persona="hq"] .inbox-row .capsule-select:not(.capsule-select--filter) {
+      display: none;
+    }
+    body[data-persona="hq"] .inbox-banker-tag,
+    body[data-persona="hq"] .inbox-hq-status {
+      display: inline-flex;
+    }
+    .inbox-hq-status .inbox-hq-status-btn {
+      gap: 6px;
+      padding: 5px 10px 5px 12px;
+      min-width: 0;
+    }
+    .inbox-hq-status-label {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    .inbox-hq-status .preview-hq-status-menu {
+      inset-inline-start: auto;
+      inset-inline-end: 0;
+      min-width: 220px;
+    }
 
     .doc-page-nav {
       display: flex;
@@ -970,8 +1029,8 @@
     .inbox-row {
       display: flex;
       align-items: center;
-      gap: 11px;
-      padding: 13px 16px;
+      gap: 12px;
+      padding: 16px 16px;
       border-bottom: 1px solid var(--border-light);
       cursor: pointer;
       transition: background 0.12s;
@@ -983,52 +1042,77 @@
       border-right: 3px solid var(--border);
       padding-right: 15px;
     }
-    .inbox-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      background: var(--navy-100);
+    .inbox-dot { display: none; }
+    .inbox-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
     }
-    .inbox-row.active .inbox-dot { background: var(--text-faint); }
-    .inbox-info { flex: 1; min-width: 0; }
-    .inbox-name { font-size: 14px; font-weight: 600; color: var(--text-body); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .inbox-name { font-size: 14px; font-weight: 600; color: var(--text-body); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
     .inbox-row.active .inbox-name { color: var(--text-body); font-weight: 600; }
-    .inbox-code { font-size: 12px; color: var(--text-faint); margin-top: 2px; font-family: monospace; }
+    .inbox-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      max-width: 100%;
+    }
+    .inbox-code {
+      font-size: 12px;
+      color: var(--text-faint);
+      font-family: monospace;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .inbox-meta-divider {
+      display: none;
+      width: 1px;
+      height: 14px;
+      background: #C5CAD6;
+      flex-shrink: 0;
+      align-self: center;
+    }
+    .inbox-meta.has-indicators .inbox-meta-divider {
+      display: block;
+    }
 
     .inbox-row-actions {
       display: flex;
       align-items: center;
       gap: 6px;
       flex-shrink: 0;
+      align-self: center;
     }
     .inbox-row-indicators {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 2px;
       flex-shrink: 0;
     }
     .inbox-indicator {
       display: none;
       align-items: center;
       justify-content: center;
-      width: 26px;
-      height: 26px;
+      width: 22px;
+      height: 22px;
       flex-shrink: 0;
       color: var(--navy);
     }
     .inbox-indicator-icon-wrap {
       position: relative;
-      width: 18px;
-      height: 18px;
+      width: 15px;
+      height: 15px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .inbox-indicator-icon-wrap svg {
       display: block;
-      width: 18px;
-      height: 18px;
+      width: 15px;
+      height: 15px;
     }
     .inbox-indicator--notes {
       color: var(--navy);
@@ -1038,18 +1122,18 @@
     }
     .inbox-indicator-count {
       position: absolute;
-      top: -6px;
-      inset-inline-end: -8px;
+      top: -5px;
+      inset-inline-end: -7px;
       z-index: 1;
-      min-width: 14px;
-      height: 14px;
+      min-width: 13px;
+      height: 13px;
       padding: 0 3px;
       border-radius: 99px;
       background: var(--navy);
       color: white;
-      font-size: 9px;
+      font-size: 8px;
       font-weight: 700;
-      line-height: 14px;
+      line-height: 13px;
       text-align: center;
       font-variant-numeric: tabular-nums;
       pointer-events: none;
@@ -1159,6 +1243,135 @@
       border-radius: var(--radius-sm);
       padding: 12px;
     }
+    .doc-note-item--enter {
+      animation: docNoteEnter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .doc-note-item--flash {
+      animation: docNoteFlash 1.1s ease-out both;
+    }
+    @keyframes docNoteEnter {
+      from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    @keyframes docNoteFlash {
+      0% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.35); border-color: #F5B7B1; background: #FDECEA; }
+      70% { box-shadow: 0 0 0 6px rgba(192, 57, 43, 0); border-color: #F5B7B1; background: #FDECEA; }
+      100% { box-shadow: none; border-color: var(--border-light); background: var(--bg); }
+    }
+
+    /* HQ invalid note modal */
+    .hq-note-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .hq-note-modal.open {
+      display: flex;
+    }
+    .hq-note-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(19, 32, 79, 0.45);
+      animation: hqModalFadeIn 0.2s ease-out;
+    }
+    .hq-note-modal-card {
+      position: relative;
+      width: min(440px, 100%);
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      padding: 22px 22px 18px;
+      animation: hqModalPopIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes hqModalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes hqModalPopIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .hq-note-modal-title {
+      margin: 0 0 6px;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .hq-note-modal-subtitle {
+      margin: 0 0 14px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    .hq-note-modal-doc {
+      font-weight: 700;
+      color: var(--text-body);
+    }
+    .hq-note-modal-input {
+      width: 100%;
+      min-height: 110px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-body);
+      resize: vertical;
+      box-sizing: border-box;
+    }
+    .hq-note-modal-input:focus {
+      outline: none;
+      border-color: var(--navy-100);
+      box-shadow: 0 0 0 3px var(--navy-50);
+    }
+    .hq-note-modal-input::placeholder { color: var(--text-faint); }
+    .hq-note-modal-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .hq-note-modal-submit {
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--navy);
+      color: white;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+    .hq-note-modal-submit:hover { background: var(--navy-dark); }
+    .hq-note-modal-submit:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+    .hq-note-modal-cancel {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 12px;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+    }
+    .hq-note-modal-cancel:hover { color: var(--navy); background: var(--navy-50); }
     .doc-note-meta {
       display: flex;
       align-items: center;
@@ -1577,13 +1790,13 @@
                 </button>
                 <div class="preview-hq-status-menu" id="previewHqStatusMenu" role="menu">
                   <button type="button" class="preview-hq-status-option" role="menuitem" onclick="setPreviewHqStatus(event, 'pending')">
-                    <span>ממתין לבחינת מטה</span><span class="preview-hq-status-dot pending" aria-hidden="true"></span>
+                    <span>ממתין לבחינת מטה</span>
                   </button>
                   <button type="button" class="preview-hq-status-option" role="menuitem" onclick="setPreviewHqStatus(event, 'valid')">
-                    <span>תקין</span><span class="preview-hq-status-dot valid" aria-hidden="true"></span>
+                    <span>תקין</span>
                   </button>
                   <button type="button" class="preview-hq-status-option" role="menuitem" onclick="setPreviewHqStatus(event, 'invalid')">
-                    <span>לא תקין</span><span class="preview-hq-status-dot invalid" aria-hidden="true"></span>
+                    <span>לא תקין</span>
                   </button>
                 </div>
               </div>
@@ -1718,7 +1931,6 @@
       </div>
       <div class="category-body">
         <div class="inbox-row active" data-doc="poa" onclick="selectDocument('poa')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">ייפוי כוח מתמשך</div>
                 <div class="inbox-code">משכ 542</div>
@@ -1733,7 +1945,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="id329" onclick="selectDocument('id329')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">תנאים עיקריים</div>
                 <div class="inbox-code">משכ 329</div>
@@ -1748,7 +1959,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="id327" onclick="selectDocument('id327')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">לוח סילוקין</div>
                 <div class="inbox-code">משכ 327</div>
@@ -1763,7 +1973,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="id332" onclick="selectDocument('id332')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">סיכום תנאים</div>
                 <div class="inbox-code">משכ 332</div>
@@ -1778,7 +1987,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="id338" onclick="selectDocument('id338')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">דף מידע על ביטוח</div>
                 <div class="inbox-code">משכ 338</div>
@@ -1793,7 +2001,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="id331" onclick="selectDocument('id331')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">ביטוח חיים — הצמדה למשכנתא</div>
                 <div class="inbox-code">משכ 331</div>
@@ -1808,7 +2015,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="id341" onclick="selectDocument('id341')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">הסבר זכויות לווה</div>
                 <div class="inbox-code">משכ 341</div>
@@ -1823,7 +2029,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="id345" onclick="selectDocument('id345')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">פירוט עלויות נלוות</div>
                 <div class="inbox-code">משכ 345</div>
@@ -1846,7 +2051,6 @@
       </div>
       <div class="category-body">
         <div class="inbox-row" data-doc="id344" onclick="selectDocument('id344')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">הסכם הלוואה</div>
                 <div class="inbox-code">משכ 344</div>
@@ -1861,7 +2065,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="id330" onclick="selectDocument('id330')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">גילוי נאות</div>
                 <div class="inbox-code">משכ 330</div>
@@ -1876,7 +2079,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="id318" onclick="selectDocument('id318')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">הרשאה לחיוב חשבון</div>
                 <div class="inbox-code">משכ 318</div>
@@ -1891,7 +2093,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="id342" onclick="selectDocument('id342')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">הסכמת בן/בת זוג</div>
                 <div class="inbox-code">משכ 342</div>
@@ -1914,7 +2115,6 @@
       </div>
       <div class="category-body">
         <div class="inbox-row" data-doc="id601" onclick="selectDocument('id601')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">תעודת זהות</div>
                 <div class="inbox-code">משכ 601</div>
@@ -1929,7 +2129,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="id612" onclick="selectDocument('id612')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">תלושי שכר 3 חודשים אחרונים</div>
                 <div class="inbox-code">משכ 612</div>
@@ -1944,7 +2143,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="id604" onclick="selectDocument('id604')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">אישור יתרות בנקאי</div>
                 <div class="inbox-code">משכ 604</div>
@@ -1959,7 +2157,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="id603" onclick="selectDocument('id603')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">אישור מס הכנסה</div>
                 <div class="inbox-code">משכ 603</div>
@@ -1974,7 +2171,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="id630" onclick="selectDocument('id630')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">אישור עו"ד על הנכס</div>
                 <div class="inbox-code">משכ 630</div>
@@ -1989,7 +2185,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="tabu" onclick="selectDocument('tabu')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">נסח טאבו</div>
                 <div class="inbox-code">משכ 632</div>
@@ -2004,7 +2199,6 @@
               </select>
             </div>
         <div class="inbox-row" data-doc="contract" onclick="selectDocument('contract')">
-              <div class="inbox-dot"></div>
               <div class="inbox-info">
                 <div class="inbox-name">חוזה רכישה חתום</div>
                 <div class="inbox-code">משכ 635</div>
@@ -2024,6 +2218,26 @@
   </div><!-- /.docs-sidebar -->
 </div><!-- /.doc-region -->
 </div><!-- /.app-shell -->
+
+<div class="hq-note-modal" id="hqInvalidNoteModal" aria-hidden="true">
+  <div class="hq-note-modal-backdrop" onclick="closeInvalidNotePopup()"></div>
+  <div class="hq-note-modal-card" role="dialog" aria-modal="true" aria-labelledby="hqInvalidNoteTitle">
+    <h2 class="hq-note-modal-title" id="hqInvalidNoteTitle">מסמך סומן כלא תקין</h2>
+    <p class="hq-note-modal-subtitle">
+      הוסיפו הערה עבור <span class="hq-note-modal-doc" id="hqInvalidNoteDocName">המסמך</span> שתסביר לבנקאי מה צריך לתקן.
+    </p>
+    <textarea
+      class="hq-note-modal-input"
+      id="hqInvalidNoteInput"
+      rows="4"
+      placeholder="לדוגמה: חתימה חסרה בעמוד 2 / פרטי זהות אינם תואמים / מסמך לא קריא..."
+    ></textarea>
+    <div class="hq-note-modal-actions">
+      <button type="button" class="hq-note-modal-submit" id="hqInvalidNoteSubmit" onclick="submitInvalidNote()">הוסף הערה</button>
+      <button type="button" class="hq-note-modal-cancel" onclick="closeInvalidNotePopup()">ביטול</button>
+    </div>
+  </div>
+</div>
 
 <script>
   const NOTES_ICON_SVG = '<svg class="inbox-notes-icon" width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 2.5h7.2L14.5 5.6V14a1 1 0 01-1 1H4.5a1 1 0 01-1-1V3.5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.5 2.8V5.5H14.2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 8h6M6 10h4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>';
@@ -2241,17 +2455,17 @@
     closePreviewHqStatusMenu();
   }
 
+  function closePreviewHqStatusMenu() {
+    document.querySelectorAll('.preview-hq-status-wrap.open, .inbox-hq-status.open').forEach(wrap => {
+      wrap.classList.remove('open');
+      const btn = wrap.querySelector('.preview-hq-status-pill, .inbox-hq-status-btn');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    });
+  }
+
   function closePreviewMenu() {
     const wrap = document.getElementById('previewMenuWrap');
     const btn = document.getElementById('previewMenuBtn');
-    if (!wrap || !btn) return;
-    wrap.classList.remove('open');
-    btn.setAttribute('aria-expanded', 'false');
-  }
-
-  function closePreviewHqStatusMenu() {
-    const wrap = document.getElementById('previewHqStatusWrap');
-    const btn = document.getElementById('previewHqStatusBtn');
     if (!wrap || !btn) return;
     wrap.classList.remove('open');
     btn.setAttribute('aria-expanded', 'false');
@@ -2284,6 +2498,26 @@
     valid: 'תקין',
     invalid: 'לא תקין'
   };
+
+  const HQ_STATUS_SHORT_LABEL = {
+    pending: 'ממתין',
+    valid: 'תקין',
+    invalid: 'לא תקין'
+  };
+
+  const HQ_STATUS_ICON = {
+    pending: `<svg class="hq-status-icon hq-status-icon--pending" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7.25" stroke="#F59E0B" stroke-width="1.6"/><path d="M9 5.4v4.05l2.55 1.55" stroke="#F59E0B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    valid: `<svg class="hq-status-icon hq-status-icon--valid" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7.25" stroke="#22C55E" stroke-width="1.6"/><path d="M5.7 9.15 8.05 11.5 12.4 6.7" stroke="#22C55E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    invalid: `<svg class="hq-status-icon hq-status-icon--invalid" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7.25" stroke="#EF4444" stroke-width="1.6"/><path d="M5.8 9h6.4" stroke="#EF4444" stroke-width="1.7" stroke-linecap="round"/></svg>`
+  };
+
+  function hqStatusIconHtml(status) {
+    return HQ_STATUS_ICON[status] || HQ_STATUS_ICON.pending;
+  }
+
+  function hqStatusOptionHtml(status) {
+    return `<span>${HQ_STATUS_LABEL[status]}</span>${hqStatusIconHtml(status)}`;
+  }
 
   const BANKER_STATUS_LABEL = {
     pending: 'ממתין לטיפול',
@@ -2328,6 +2562,14 @@
     if (!container || !btn || !text || !divider) return;
 
     const persona = getCurrentPersona();
+    // HQ edits status from the document list rows, not the preview header.
+    if (persona === 'hq') {
+      container.style.display = 'none';
+      divider.style.display = 'none';
+      closePreviewHqStatusMenu();
+      return;
+    }
+
     const bankerStatus = getCurrentDocBankerStatus();
     const isDoneByBanker = bankerStatus === 'done';
     if (!isDoneByBanker) {
@@ -2341,19 +2583,42 @@
     divider.style.display = 'inline-block';
 
     // Banker: show only after "טופל", always disabled.
-    if (persona === 'banker') {
-      ensureHqPendingForDoc(previewCurrentDocId);
-      btn.disabled = true;
-      btn.setAttribute('aria-expanded', 'false');
-      text.textContent = HQ_STATUS_LABEL.pending;
-      return;
-    }
-
-    // HQ: editable review for docs marked "טופל".
     ensureHqPendingForDoc(previewCurrentDocId);
-    const hqStatus = docHqStatusStore[previewCurrentDocId] || 'pending';
-    btn.disabled = false;
-    text.textContent = HQ_STATUS_LABEL[hqStatus] || HQ_STATUS_LABEL.pending;
+    btn.disabled = true;
+    btn.setAttribute('aria-expanded', 'false');
+    text.textContent = HQ_STATUS_LABEL.pending;
+  }
+
+  function syncBankerTag(row, value) {
+    const tag = row.querySelector('.inbox-banker-tag');
+    if (!tag) return;
+    const label = BANKER_STATUS_LABEL[value] || value;
+    tag.innerHTML = statusDotHtml(value) + `<span>${label}</span>`;
+  }
+
+  function syncRowHqStatus(row, docId) {
+    const wrap = row.querySelector('.inbox-hq-status');
+    const btn = wrap?.querySelector('.inbox-hq-status-btn');
+    const iconSlot = wrap?.querySelector('.inbox-hq-status-icon');
+    const labelEl = wrap?.querySelector('.inbox-hq-status-label');
+    if (!wrap || !btn || !iconSlot || !labelEl) return;
+    ensureHqPendingForDoc(docId);
+    const hqStatus = docHqStatusStore[docId] || 'pending';
+    iconSlot.innerHTML = hqStatusIconHtml(hqStatus);
+    labelEl.textContent = HQ_STATUS_SHORT_LABEL[hqStatus] || HQ_STATUS_SHORT_LABEL.pending;
+    btn.setAttribute('aria-label', HQ_STATUS_LABEL[hqStatus] || HQ_STATUS_LABEL.pending);
+    btn.title = HQ_STATUS_LABEL[hqStatus] || HQ_STATUS_LABEL.pending;
+    wrap.dataset.hqStatus = hqStatus;
+  }
+
+  function renderAllRowHqStatuses() {
+    document.querySelectorAll('.inbox-row[data-doc]').forEach(row => {
+      const docId = row.dataset.doc;
+      const select = row.querySelector('select.status-select');
+      if (!docId || !select) return;
+      syncBankerTag(row, select.value);
+      syncRowHqStatus(row, docId);
+    });
   }
 
   function togglePreviewHqStatusMenu(e) {
@@ -2361,6 +2626,18 @@
     const btn = document.getElementById('previewHqStatusBtn');
     const wrap = document.getElementById('previewHqStatusWrap');
     if (!btn || !wrap || btn.disabled) return;
+    const isOpen = wrap.classList.contains('open');
+    closeAllCapsuleMenus();
+    if (!isOpen) {
+      wrap.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  function toggleRowHqStatusMenu(e, btn) {
+    e.stopPropagation();
+    const wrap = btn?.closest('.inbox-hq-status');
+    if (!wrap || getCurrentPersona() !== 'hq') return;
     const isOpen = wrap.classList.contains('open');
     closeAllCapsuleMenus();
     if (!isOpen) {
@@ -2377,17 +2654,104 @@
     persistHqStatuses();
     closePreviewHqStatusMenu();
     renderPreviewHqStatus();
+    const row = document.querySelector(`.inbox-row[data-doc="${previewCurrentDocId}"]`);
+    if (row) syncRowHqStatus(row, previewCurrentDocId);
+  }
 
-    // Mirror to list status when HQ decides valid/invalid
-    if (status === 'valid' || status === 'invalid') {
-      const row = document.querySelector(`.inbox-row[data-doc="${previewCurrentDocId}"]`);
-      const select = row?.querySelector('select.status-select');
-      if (select) {
-        select.value = status;
-        select.dispatchEvent(new Event('change', { bubbles: true }));
-      }
+  function setRowHqStatus(e, status, btn) {
+    e.stopPropagation();
+    if (!HQ_STATUS_LABEL[status]) return;
+    const row = btn?.closest('.inbox-row');
+    const docId = row?.dataset?.doc;
+    if (!docId) return;
+
+    docHqStatusStore[docId] = status;
+    persistHqStatuses();
+    closePreviewHqStatusMenu();
+    syncRowHqStatus(row, docId);
+    if (docId === previewCurrentDocId) renderPreviewHqStatus();
+
+    if (status === 'invalid') {
+      openInvalidNotePopup(docId);
     }
   }
+
+  let pendingInvalidNoteDocId = null;
+
+  function openInvalidNotePopup(docId) {
+    pendingInvalidNoteDocId = docId;
+    const modal = document.getElementById('hqInvalidNoteModal');
+    const input = document.getElementById('hqInvalidNoteInput');
+    const docName = document.getElementById('hqInvalidNoteDocName');
+    const submit = document.getElementById('hqInvalidNoteSubmit');
+    if (!modal || !input) return;
+
+    docName.textContent = docs[docId]?.name || 'המסמך';
+    input.value = '';
+    input.placeholder = 'תארו מה לא תקין במסמך — למשל חתימה חסרה, פרטים לא תואמים, או מסמך לא קריא...';
+    submit.disabled = true;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    setTimeout(() => input.focus(), 30);
+  }
+
+  function closeInvalidNotePopup() {
+    const modal = document.getElementById('hqInvalidNoteModal');
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    pendingInvalidNoteDocId = null;
+    const input = document.getElementById('hqInvalidNoteInput');
+    if (input) input.value = '';
+  }
+
+  function submitInvalidNote() {
+    const docId = pendingInvalidNoteDocId;
+    const input = document.getElementById('hqInvalidNoteInput');
+    const text = input?.value.trim();
+    if (!docId || !text) return;
+
+    getDocNotes(docId).unshift({
+      author: 'בקרת מטה',
+      date: formatNoteDate(new Date()),
+      text
+    });
+
+    closeInvalidNotePopup();
+
+    if (previewCurrentDocId !== docId) {
+      selectDocument(docId);
+    }
+
+    toggleDocSidePanel('notes', true);
+    renderDocNotes({ animateFirst: true });
+    updatePreviewNotesBadge();
+
+    const list = document.getElementById('docNotesList');
+    if (list) list.scrollTop = 0;
+  }
+
+  document.getElementById('hqInvalidNoteInput')?.addEventListener('input', e => {
+    const submit = document.getElementById('hqInvalidNoteSubmit');
+    if (submit) submit.disabled = !e.target.value.trim();
+  });
+
+  document.getElementById('hqInvalidNoteInput')?.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeInvalidNotePopup();
+      return;
+    }
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      submitInvalidNote();
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('hqInvalidNoteModal')?.classList.contains('open')) {
+      closeInvalidNotePopup();
+    }
+  });
 
   function toggleCapsuleMenu(wrap) {
     const isOpen = wrap.classList.contains('open');
@@ -2447,6 +2811,8 @@
     select.classList.remove('pending', 'open', 'complete', 'not-relevant', 'missing');
     select.classList.add(STATUS_CLASS[value] || 'pending');
     syncCapsuleFromSelect(getCapsuleWrap(select), select);
+    const row = select.closest('.inbox-row');
+    if (row) syncBankerTag(row, value);
   }
 
   function captureBankerStatuses() {
@@ -2466,6 +2832,7 @@
       if (value === 'done') ensureHqPendingForDoc(docId);
     });
     filterDocuments();
+    renderAllRowHqStatuses();
     renderPreviewHqStatus();
   }
 
@@ -2482,6 +2849,7 @@
     });
     persistHqStatuses();
     filterDocuments();
+    renderAllRowHqStatuses();
     renderPreviewHqStatus();
   }
 
@@ -2503,14 +2871,16 @@
     select.classList.remove('pending', 'open', 'complete', 'not-relevant', 'missing');
     select.classList.add(STATUS_CLASS[select.value]);
     syncCapsuleFromSelect(getCapsuleWrap(select), select);
+    const row = select.closest('.inbox-row');
+    if (row) syncBankerTag(row, select.value);
     filterDocuments();
 
     // Banker marking "טופל" triggers HQ pending review state in demo.
     if (getCurrentPersona() === 'banker') {
-      const row = select.closest('.inbox-row');
       const docId = row?.dataset?.doc;
       if (docId && select.value === 'done') {
         ensureHqPendingForDoc(docId);
+        syncRowHqStatus(row, docId);
       }
       if (docId && select.value !== 'done') {
         if (docHqStatusStore[docId]) {
@@ -2520,7 +2890,7 @@
       }
     }
 
-    if (select.closest('.inbox-row')?.dataset?.doc === previewCurrentDocId) {
+    if (row?.dataset?.doc === previewCurrentDocId) {
       renderPreviewHqStatus();
     }
   }
@@ -2629,22 +2999,25 @@
     updateInboxRowIndicators();
   }
 
-  function renderDocNotes() {
+  function renderDocNotes(options = {}) {
     const list = document.getElementById('docNotesList');
     const notes = getDocNotes(previewCurrentDocId);
     if (!notes.length) {
       list.innerHTML = '<div class="doc-notes-empty">אין הערות עדיין על מסמך זה</div>';
       return;
     }
-    list.innerHTML = notes.map(note => `
-      <article class="doc-note-item">
+    list.innerHTML = notes.map((note, index) => {
+      const enterClass = options.animateFirst && index === 0 ? ' doc-note-item--enter doc-note-item--flash' : '';
+      return `
+      <article class="doc-note-item${enterClass}">
         <div class="doc-note-meta">
           <span class="doc-note-author">${note.author}</span>
           <time datetime="${note.date}">${note.date}</time>
         </div>
         <div class="doc-note-text">${note.text}</div>
       </article>
-    `).join('');
+    `;
+    }).join('');
   }
 
   function updatePreviewAiBadge() {
@@ -2803,11 +3176,20 @@
     document.querySelectorAll('.inbox-row').forEach(row => {
       if (row.dataset.indicatorsInit) return;
       row.dataset.indicatorsInit = '1';
+      const info = row.querySelector('.inbox-info');
+      const code = row.querySelector('.inbox-code');
       const capsule = row.querySelector('.capsule-select');
-      if (!capsule) return;
+      const select = row.querySelector('select.status-select');
+      if (!info || !code || !capsule || !select) return;
 
-      const actions = document.createElement('div');
-      actions.className = 'inbox-row-actions';
+      const meta = document.createElement('div');
+      meta.className = 'inbox-meta';
+      code.replaceWith(meta);
+      meta.appendChild(code);
+
+      const divider = document.createElement('span');
+      divider.className = 'inbox-meta-divider';
+      divider.setAttribute('aria-hidden', 'true');
 
       const indicators = document.createElement('div');
       indicators.className = 'inbox-row-indicators';
@@ -2826,10 +3208,36 @@
 
       indicators.appendChild(notesIndicator);
       indicators.appendChild(aiIndicator);
+      meta.appendChild(divider);
+      meta.appendChild(indicators);
 
+      const bankerTag = document.createElement('span');
+      bankerTag.className = 'inbox-banker-tag';
+      bankerTag.setAttribute('aria-label', 'סטטוס בנקאי');
+
+      const hqStatus = document.createElement('div');
+      hqStatus.className = 'inbox-hq-status';
+      hqStatus.innerHTML =
+        `<button type="button" class="preview-hq-status-pill inbox-hq-status-btn" aria-haspopup="menu" aria-expanded="false" aria-label="ממתין לבחינת מטה" title="ממתין לבחינת מטה" onclick="toggleRowHqStatusMenu(event, this)">` +
+        `<span class="inbox-hq-status-icon">${hqStatusIconHtml('pending')}</span>` +
+        `<span class="inbox-hq-status-label">ממתין</span>` +
+        `<span class="preview-hq-status-caret" aria-hidden="true"></span>` +
+        `</button>` +
+        `<div class="preview-hq-status-menu" role="menu">` +
+        `<button type="button" class="preview-hq-status-option" role="menuitem" onclick="setRowHqStatus(event, 'pending', this)">${hqStatusOptionHtml('pending')}</button>` +
+        `<button type="button" class="preview-hq-status-option" role="menuitem" onclick="setRowHqStatus(event, 'valid', this)">${hqStatusOptionHtml('valid')}</button>` +
+        `<button type="button" class="preview-hq-status-option" role="menuitem" onclick="setRowHqStatus(event, 'invalid', this)">${hqStatusOptionHtml('invalid')}</button>` +
+        `</div>`;
+
+      const actions = document.createElement('div');
+      actions.className = 'inbox-row-actions';
       capsule.parentNode.insertBefore(actions, capsule);
-      actions.appendChild(indicators);
+      actions.appendChild(bankerTag);
+      actions.appendChild(hqStatus);
       actions.appendChild(capsule);
+
+      syncBankerTag(row, select.value);
+      if (row.dataset.doc) syncRowHqStatus(row, row.dataset.doc);
     });
     updateInboxRowIndicators();
   }
@@ -2841,6 +3249,7 @@
 
       const notesIndicator = row.querySelector('.inbox-indicator--notes');
       const aiIndicator = row.querySelector('.inbox-indicator--ai');
+      const meta = row.querySelector('.inbox-meta');
       if (!notesIndicator || !aiIndicator) return;
 
       const notesCount = getDocNotes(docId).length;
@@ -2851,6 +3260,8 @@
 
       aiIndicator.style.display = aiCount > 0 ? 'inline-flex' : 'none';
       aiIndicator.querySelector('.inbox-indicator-count').textContent = aiCount;
+
+      if (meta) meta.classList.toggle('has-indicators', notesCount > 0 || aiCount > 0);
     });
   }
 
@@ -2877,6 +3288,8 @@
     } else {
       renderPreviewHqStatus();
     }
+    renderAllRowHqStatuses();
+    closePreviewHqStatusMenu();
   }
 
   // Initialize persona (default: banker)
