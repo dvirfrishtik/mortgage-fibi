@@ -150,10 +150,66 @@
       justify-content: space-between;
       gap: 16px;
     }
+    .preview-title-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-width: 0;
+      flex: 1;
+    }
     .center-col > .card > .card-header .card-title {
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--navy);
+      line-height: 1.3;
+    }
+    .preview-version-tabs {
+      display: none;
+      align-items: flex-end;
+      gap: 2px;
+      min-width: 0;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+    .preview-title-block.has-versions .preview-title-single {
+      display: none;
+    }
+    .preview-title-block.has-versions .preview-version-tabs {
+      display: flex;
+    }
+    .preview-version-tab {
+      appearance: none;
+      border: none;
+      background: transparent;
+      padding: 2px 10px 8px;
+      margin: 0;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-faint);
+      cursor: pointer;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .preview-version-tab:hover {
+      color: var(--navy);
+    }
+    .preview-version-tab.active {
+      color: var(--navy);
+      font-weight: 700;
+      border-bottom-color: var(--navy);
+    }
+    .preview-upload-date {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-faint);
+      line-height: 1.3;
+      margin: 0 0 8px;
+      padding: 0 2px;
+    }
+    .preview-upload-date.is-empty {
+      display: none;
     }
 
     .preview-action-bar {
@@ -186,7 +242,7 @@
       top: calc(100% + 6px);
       inset-inline-end: 0;
       z-index: 300;
-      min-width: 148px;
+      min-width: 200px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -200,12 +256,14 @@
       background: #ECEEF2;
     }
     .preview-menu-option {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 10px;
       width: 100%;
       text-align: right;
       border: none;
       background: transparent;
-      padding: 10px 14px;
+      padding: 10px 12px;
       font-size: 13px;
       font-family: inherit;
       font-weight: 600;
@@ -214,6 +272,17 @@
       border-radius: var(--radius-sm);
       white-space: nowrap;
       transition: background 0.12s, color 0.12s;
+    }
+    .preview-menu-option-icon {
+      width: 16px;
+      height: 16px;
+      display: block;
+      flex-shrink: 0;
+      color: currentColor;
+    }
+    .preview-menu-option:hover {
+      background: var(--navy-50);
+      color: var(--navy);
     }
     .preview-menu-option--danger {
       color: var(--red);
@@ -362,12 +431,22 @@
       box-shadow: var(--shadow-sm);
       border-color: var(--border);
     }
-    .preview-hq-status-pill:disabled {
+    #previewHqStatusBtn:disabled {
       cursor: default;
-      opacity: 0.65;
-      background: var(--bg);
-      border-color: var(--border-light);
+      opacity: 1;
+      background: transparent;
+      border-color: transparent;
+      border-radius: 0;
+      padding: 0;
+      min-height: 0;
       color: var(--text-muted);
+      font-weight: 600;
+      box-shadow: none;
+      pointer-events: none;
+    }
+    #previewHqStatusBtn:disabled:hover {
+      box-shadow: none;
+      border-color: transparent;
     }
     .preview-hq-status-caret {
       width: 11px;
@@ -379,8 +458,8 @@
       background-size: contain;
       transition: transform 0.2s;
     }
-    .preview-hq-status-pill:disabled .preview-hq-status-caret {
-      opacity: 0.55;
+    #previewHqStatusBtn:disabled .preview-hq-status-caret {
+      display: none;
     }
     .preview-hq-status-wrap.open .preview-hq-status-caret {
       transform: rotate(180deg);
@@ -436,6 +515,7 @@
       height: 16px;
       display: block;
       flex-shrink: 0;
+      object-fit: contain;
     }
     .preview-hq-status-option .hq-status-icon {
       width: 16px;
@@ -475,10 +555,81 @@
     body[data-persona="hq"] .inbox-hq-status {
       display: inline-flex;
     }
+    /* Banker: after טופל, show HQ result status next to the banker capsule */
+    body[data-persona="banker"] .inbox-row.is-done-with-hq .inbox-hq-status {
+      display: inline-flex;
+    }
     .inbox-hq-status .inbox-hq-status-btn {
       gap: 6px;
       padding: 5px 10px 5px 12px;
       min-width: 0;
+    }
+    .inbox-hq-status.is-readonly .inbox-hq-status-btn,
+    .inbox-hq-status.is-readonly .inbox-hq-status-btn:disabled {
+      cursor: default;
+      pointer-events: auto;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 2px;
+      min-height: 0;
+      gap: 0;
+      color: var(--text-muted);
+      opacity: 1;
+      box-shadow: none;
+    }
+    .inbox-hq-status.is-readonly .inbox-hq-status-label,
+    .inbox-hq-status.is-readonly .preview-hq-status-caret {
+      display: none;
+    }
+    .inbox-hq-status.is-readonly .inbox-hq-status-icon {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+    }
+    .inbox-hq-status.is-readonly .hq-status-icon {
+      width: 22px;
+      height: 22px;
+      pointer-events: none;
+    }
+    .inbox-hq-status-tooltip {
+      position: fixed;
+      z-index: 1000;
+      background: #1F2937;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.25;
+      white-space: nowrap;
+      padding: 7px 10px;
+      border-radius: 6px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18);
+      pointer-events: none;
+      opacity: 0;
+      transform: translate(-50%, -100%);
+      transition: opacity 0.12s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      text-align: right;
+    }
+    .inbox-hq-status-tooltip-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.65);
+      letter-spacing: 0.01em;
+    }
+    .inbox-hq-status-tooltip-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .inbox-hq-status-tooltip.is-visible {
+      opacity: 1;
     }
     .inbox-hq-status-label {
       font-size: 12px;
@@ -850,16 +1001,107 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
       border-bottom: 1px solid var(--border-light);
     }
     .group-header .category-name { font-size: 13px; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+    .add-task-btn {
+      width: 22px;
+      height: 22px;
+      border: none;
+      border-radius: 99px;
+      background: var(--navy);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .add-task-btn:hover {
+      background: var(--navy-dark);
+      transform: scale(1.04);
+    }
+    .add-task-btn svg {
+      width: 11px;
+      height: 11px;
+      display: block;
+    }
+    .task-desc:empty {
+      display: none;
+    }
+    .hq-note-modal-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .hq-note-modal-field:last-of-type {
+      margin-bottom: 0;
+    }
+    .hq-note-modal-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-body);
+    }
+    .hq-note-modal-label-optional {
+      font-weight: 500;
+      color: var(--text-faint);
+    }
+    .hq-note-modal-text-input {
+      width: 100%;
+      min-height: 40px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.4;
+      color: var(--text-body);
+      box-sizing: border-box;
+    }
+    .hq-note-modal-text-input:focus {
+      outline: none;
+      border-color: var(--navy-100);
+      box-shadow: 0 0 0 3px var(--navy-50);
+    }
+    .hq-note-modal-text-input::placeholder { color: var(--text-faint); }
+    .task-row-static.task-slot-enter-from-add {
+      overflow: hidden;
+      animation: taskAddEnter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    @keyframes taskAddEnter {
+      0% {
+        opacity: 0;
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        transform: translateY(-12px) scale(0.98);
+        background: #FFF8E1;
+      }
+      45% {
+        opacity: 1;
+        max-height: 160px;
+        transform: translateY(0) scale(1);
+        background: #FFF8E1;
+      }
+      100% {
+        opacity: 1;
+        max-height: 160px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        transform: none;
+        background: transparent;
+      }
+    }
 
     /* ── DOCUMENTS INBOX (master pane inside .doc-region) — the list you
        pick from; its border-left is the divider between it and the preview
        detail pane on its left. The region frame provides the outer chrome. */
     .docs-sidebar {
       order: 1;
-      width: 400px;
+      width: 480px;
       flex-shrink: 0;
       min-height: 0;
       overflow: hidden;
@@ -888,17 +1130,19 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
-      padding: 0 12px 0 9px;
+      gap: 6px;
+      padding: 0 12px 0 10px;
       flex-shrink: 0;
       transition: background 0.2s;
       white-space: nowrap;
     }
     .add-doc-btn:hover { background: var(--yellow-dark); }
-    .add-doc-plus {
-      font-size: 16px;
-      font-weight: 700;
-      line-height: 1;
+    .add-doc-icon {
+      width: 14px;
+      height: 14px;
+      display: block;
+      flex-shrink: 0;
+      object-fit: contain;
     }
 
     .inbox-filters {
@@ -1014,7 +1258,7 @@
       top: calc(100% + 6px);
       inset-inline-end: 0;
       z-index: 300;
-      min-width: 196px;
+      min-width: 220px;
       background: var(--surface);
       border: 1px solid var(--border-light);
       border-radius: var(--radius);
@@ -1022,6 +1266,24 @@
       padding: 4px;
     }
     .status-multi-filter.open .status-multi-filter-menu { display: block; }
+    .status-multi-filter-section-title {
+      display: block;
+      padding: 8px 10px 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-faint);
+      letter-spacing: 0.02em;
+      line-height: 1.3;
+      user-select: none;
+    }
+    .status-multi-filter-section-title:first-child {
+      padding-top: 4px;
+    }
+    .status-multi-filter-divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 6px 8px;
+    }
     .status-multi-filter-option {
       display: flex;
       align-items: center;
@@ -1043,6 +1305,9 @@
       flex-shrink: 0;
       width: 7px;
       height: 7px;
+    }
+    .status-multi-filter-option--no-dot {
+      padding-inline-end: 10px;
     }
     .status-multi-filter-option-text {
       flex: 1;
@@ -1200,11 +1465,13 @@
     }
     .status-dot.all         { background: transparent; border: 1.5px solid var(--border); }
     .status-dot.pending     { background: var(--orange); }
-    .status-dot.inprogress  { background: var(--navy); }
+    .status-dot.returned    { background: var(--red); }
     .status-dot.done        { background: var(--green); }
     .status-dot.notrelevant { background: var(--text-faint); }
     .status-dot.valid       { background: var(--green); }
     .status-dot.invalid     { background: var(--red); }
+    .status-dot.uploaded    { background: var(--green); }
+    .status-dot.not-uploaded { background: var(--text-faint); }
     .capsule-select-option:hover { background: var(--navy-50); color: var(--navy); }
     .capsule-select-option.selected {
       background: var(--navy-50);
@@ -1241,7 +1508,7 @@
     .inbox-row:last-child { border-bottom: none; }
     .inbox-row:hover { background: #F5F6F8; }
     .inbox-row.active {
-      background: #F0F1F4;
+      background: #F7F8FA;
       border-right: 3px solid var(--border);
       padding-right: 15px;
     }
@@ -1287,6 +1554,58 @@
       font-family: monospace;
       line-height: 1;
       flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .inbox-code:hover {
+      color: var(--navy);
+    }
+    .inbox-code-external {
+      width: 11px;
+      height: 11px;
+      display: block;
+      flex-shrink: 0;
+      opacity: 0.75;
+    }
+    .inbox-code:hover .inbox-code-external {
+      opacity: 1;
+    }
+    .inbox-upload-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 128px;
+      min-height: 28px;
+      padding: 5px 12px;
+      border-radius: 99px;
+      border: 1px dashed var(--navy-100);
+      background: var(--navy-50);
+      color: var(--navy);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.2;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .inbox-upload-btn:hover {
+      background: #E4E8F6;
+      border-color: var(--navy);
+    }
+    .inbox-row--missing .capsule-select,
+    .inbox-row--missing .inbox-banker-tag,
+    .inbox-row--missing .inbox-hq-status {
+      display: none !important;
+    }
+    /* Missing/unuploaded docs never reach HQ — only after upload + טופל */
+    body[data-persona="hq"] .inbox-row--missing {
+      display: none !important;
     }
     .inbox-meta-divider {
       display: none;
@@ -1766,6 +2085,9 @@
         <!-- Open tasks — always expanded -->
         <div class="group-header">
           <div class="category-name">משימות לביצוע <span class="category-badge partial" id="openTasksBadge">3</span></div>
+          <button type="button" class="add-task-btn" title="הוספת משימה" aria-label="הוספת משימה" onclick="openAddTaskPopup()">
+            <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 2.5v9M2.5 7h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </button>
         </div>
         <div class="category-body" id="openTasksBody">
           <div class="task-row-static task-row-actionable" onclick="onTaskRowClick(this, event)">
@@ -2001,17 +2323,22 @@
     <div class="center-col">
       <div class="card">
         <div class="card-header">
-          <div class="card-title"><span id="previewTitle">ייפוי כוח מתמשך</span></div>
+          <div class="preview-title-block" id="previewTitleBlock">
+            <div class="card-title">
+              <span class="preview-title-single" id="previewTitle">ייפוי כוח מתמשך</span>
+              <div class="preview-version-tabs" id="previewVersionTabs" role="tablist" aria-label="גרסאות מסמך"></div>
+            </div>
+          </div>
           <div class="preview-action-bar">
             <div class="preview-hq-status" id="previewHqStatus">
               <div class="preview-hq-status-wrap" id="previewHqStatusWrap">
                 <button type="button" class="preview-hq-status-pill" id="previewHqStatusBtn" aria-haspopup="menu" aria-expanded="false" onclick="togglePreviewHqStatusMenu(event)">
-                  <span id="previewHqStatusText">ממתין לבחינת מטה</span>
+                  <span id="previewHqStatusText">ממתין לבדיקת מטה</span>
                   <span class="preview-hq-status-caret" aria-hidden="true"></span>
                 </button>
                 <div class="preview-hq-status-menu" id="previewHqStatusMenu" role="menu">
                   <button type="button" class="preview-hq-status-option" role="menuitem" onclick="setPreviewHqStatus(event, 'pending')">
-                    <span>ממתין לבחינת מטה</span>
+                    <span>ממתין לבדיקה</span>
                   </button>
                   <button type="button" class="preview-hq-status-option" role="menuitem" onclick="setPreviewHqStatus(event, 'valid')">
                     <span>תקין</span>
@@ -2030,12 +2357,12 @@
               </span>
               <span class="preview-action-label">הערות</span>
             </button>
-            <button type="button" class="preview-action-btn preview-action-btn--with-count preview-action-btn--ai" id="previewAiBtn" aria-label="הערות AI" aria-expanded="false" onclick="toggleDocAiPanel()">
+            <button type="button" class="preview-action-btn preview-action-btn--with-count preview-action-btn--ai" id="previewAiBtn" aria-label="ניתוח AI" aria-expanded="false" onclick="toggleDocAiPanel()">
               <span class="preview-action-icon-wrap">
                 <svg class="preview-action-icon preview-action-icon--ai" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 1.8 9.95 5.05 13.3 5.05 10.55 7.05 11.5 10.3 9 8.35 6.5 10.3 7.45 7.05 4.7 5.05 8.05 5.05 9 1.8Z" fill="currentColor"/><path d="M14.6 8.2 15.2 9.95 17 10.55 15.2 11.15 14.6 12.9 14 11.15 12.2 10.55 14 9.95 14.6 8.2Z" fill="currentColor" opacity=".75"/><path d="M4.4 11.7 4.85 13 6.1 13.45 4.85 13.9 4.4 15.2 3.95 13.9 2.7 13.45 3.95 13 4.4 11.7Z" fill="currentColor" opacity=".55"/></svg>
                 <span class="preview-action-count" id="previewAiBadge">2</span>
               </span>
-              <span class="preview-action-label">AI</span>
+              <span class="preview-action-label">ניתוח AI</span>
             </button>
             <span class="preview-action-divider" aria-hidden="true"></span>
             <div class="preview-menu-wrap" id="previewMenuWrap">
@@ -2043,8 +2370,26 @@
                 <span class="preview-action-icon preview-action-icon--menu"></span>
               </button>
               <div class="preview-menu-dropdown" id="previewMenuDropdown" role="menu">
-                <button type="button" class="preview-menu-option" role="menuitem" onclick="handleSendDocumentEmail(event)">שליחת מסמך במייל</button>
-                <button type="button" class="preview-menu-option preview-menu-option--danger" role="menuitem" onclick="handleDeleteDocument(event)">מחיקת מסמך</button>
+                <button type="button" class="preview-menu-option" role="menuitem" onclick="handlePrintDocument(event)">
+                  <svg class="preview-menu-option-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.25 5.25V2.75h7.5v2.5M4.25 11.25H3.5A1.75 1.75 0 011.75 9.5V6.75A1.75 1.75 0 013.5 5h9a1.75 1.75 0 011.75 1.75V9.5a1.75 1.75 0 01-1.75 1.75h-.75" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.25 9.25h7.5v4H4.25v-4Z" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/><path d="M11 7.5h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  <span>הדפסת מסמך</span>
+                </button>
+                <button type="button" class="preview-menu-option" role="menuitem" onclick="handleReplaceDocument(event)">
+                  <svg class="preview-menu-option-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M12.75 5.25H5.5a2 2 0 00-2 2v1" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.75 3.25 12.75 5.25 10.75 7.25" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.25 10.75H10.5a2 2 0 002-2v-1" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.25 12.75 3.25 10.75 5.25 8.75" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>החלפת מסמך</span>
+                </button>
+                <button type="button" class="preview-menu-option" role="menuitem" onclick="handleAddAnotherDocument(event)">
+                  <svg class="preview-menu-option-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8.75 2.75h-3A1.75 1.75 0 004 4.5v8A1.75 1.75 0 005.75 14.25h4.5A1.75 1.75 0 0012 12.5V7.25" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.75 2.75 12 6H9.5A.75.75 0 018.75 5.25V2.75Z" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/><path d="M8 9v3.5M6.25 10.75H9.75" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/></svg>
+                  <span>הוספת מסמך נוסף</span>
+                </button>
+                <button type="button" class="preview-menu-option" role="menuitem" onclick="handleSendDocumentEmail(event)">
+                  <svg class="preview-menu-option-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.75 4.25h10.5v7.5H2.75v-7.5Z" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/><path d="m3.1 4.6 4.9 3.55L12.9 4.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>שליחת מסמך במייל</span>
+                </button>
+                <button type="button" class="preview-menu-option preview-menu-option--danger" role="menuitem" onclick="handleDeleteDocument(event)">
+                  <svg class="preview-menu-option-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.25 4.75h9.5M6.25 4.75V3.5h3.5v1.25M5.25 4.75l.5 7.5h4.5l.5-7.5" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>מחיקת מסמך</span>
+                </button>
               </div>
             </div>
           </div>
@@ -2052,6 +2397,7 @@
         <div class="doc-preview-body">
           <div class="doc-preview-layout" id="docPreviewLayout">
             <div class="doc-preview-main">
+              <div class="preview-upload-date" id="previewUploadDate">הועלה בתאריך 05/07/2026</div>
               <div class="doc-page-nav-float">
                 <div class="doc-page-nav">
                   <button type="button" class="doc-page-btn" id="previewPagePrev" onclick="changePreviewPage(-1)" aria-label="דף קודם" disabled>&lt;</button>
@@ -2130,7 +2476,10 @@
     <div class="docs-sidebar">
   <div class="card-header">
     <div class="card-title">כל המסמכים (19)</div>
-    <button class="add-doc-btn" title="הוספת מסמך"><span class="add-doc-plus">+</span><span>הוספת מסמך</span></button>
+    <button class="add-doc-btn" type="button" title="העלאת מסמכים" onclick="handleUploadDocuments()">
+      <img class="add-doc-icon" src="assets/attachment-icon.png" alt="" width="14" height="14" aria-hidden="true">
+      <span>העלאת מסמכים</span>
+    </button>
   </div>
   <div class="inbox-filters">
     <div class="inbox-search">
@@ -2142,21 +2491,22 @@
           <svg class="status-multi-filter-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
             <path d="M2 3.25h10M3.75 7h6.5M5.5 10.75h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
           </svg>
-          <span id="docStatusFilterTitle">סטטוס בנקאי</span>
+          <span id="docStatusFilterTitle">סינון לפי</span>
           <span class="status-multi-filter-count" id="docStatusFilterCount">0</span>
         </span>
         <span class="capsule-select-chevron" aria-hidden="true"></span>
       </button>
       <div class="status-multi-filter-menu" id="docStatusFilterMenu" role="listbox" aria-multiselectable="true" onclick="event.stopPropagation()">
+        <span class="status-multi-filter-section-title">סטטוס בנקאי</span>
         <label class="status-multi-filter-option">
           <span class="status-dot pending" aria-hidden="true"></span>
-          <span class="status-multi-filter-option-text">ממתין לטיפול</span>
+          <span class="status-multi-filter-option-text">ממתין לבדיקה</span>
           <input type="checkbox" value="pending" onchange="onStatusFilterChange()">
         </label>
         <label class="status-multi-filter-option">
-          <span class="status-dot inprogress" aria-hidden="true"></span>
-          <span class="status-multi-filter-option-text">בתהליך</span>
-          <input type="checkbox" value="inprogress" onchange="onStatusFilterChange()">
+          <span class="status-dot returned" aria-hidden="true"></span>
+          <span class="status-multi-filter-option-text">חזר לטיפול</span>
+          <input type="checkbox" value="returned" onchange="onStatusFilterChange()">
         </label>
         <label class="status-multi-filter-option">
           <span class="status-dot done" aria-hidden="true"></span>
@@ -2167,6 +2517,16 @@
           <span class="status-dot notrelevant" aria-hidden="true"></span>
           <span class="status-multi-filter-option-text">לא רלוונטי</span>
           <input type="checkbox" value="notrelevant" onchange="onStatusFilterChange()">
+        </label>
+        <div class="status-multi-filter-divider" role="separator"></div>
+        <span class="status-multi-filter-section-title">סטטוס העלאה</span>
+        <label class="status-multi-filter-option status-multi-filter-option--no-dot">
+          <span class="status-multi-filter-option-text">בוצעה העלאה</span>
+          <input type="checkbox" value="uploaded" onchange="onStatusFilterChange()">
+        </label>
+        <label class="status-multi-filter-option status-multi-filter-option--no-dot">
+          <span class="status-multi-filter-option-text">טרם בוצעה העלאה</span>
+          <input type="checkbox" value="not-uploaded" onchange="onStatusFilterChange()">
         </label>
         <button type="button" class="status-multi-filter-clear" onclick="clearStatusFilter(event)">נקה בחירה</button>
       </div>
@@ -2185,12 +2545,10 @@
                 <div class="inbox-code">משכ 542</div>
               </div>
               <select class="status-select pending" data-doc="poa" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending" selected>ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending" selected>ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done">טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
         <div class="inbox-row" data-doc="id329" onclick="selectDocument('id329')">
@@ -2199,12 +2557,10 @@
                 <div class="inbox-code">משכ 329</div>
               </div>
               <select class="status-select complete" data-doc="id329" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending">ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending">ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done" selected>טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
         <div class="inbox-row" data-doc="id327" onclick="selectDocument('id327')">
@@ -2213,12 +2569,10 @@
                 <div class="inbox-code">משכ 327</div>
               </div>
               <select class="status-select pending" data-doc="id327" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending" selected>ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending" selected>ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done">טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
         <div class="inbox-row" data-doc="id332" onclick="selectDocument('id332')">
@@ -2227,12 +2581,10 @@
                 <div class="inbox-code">משכ 332</div>
               </div>
               <select class="status-select pending" data-doc="id332" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending" selected>ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending" selected>ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done">טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
         <div class="inbox-row" data-doc="id338" onclick="selectDocument('id338')">
@@ -2241,12 +2593,10 @@
                 <div class="inbox-code">משכ 338</div>
               </div>
               <select class="status-select pending" data-doc="id338" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending" selected>ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending" selected>ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done">טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
         <div class="inbox-row" data-doc="id331" onclick="selectDocument('id331')">
@@ -2255,27 +2605,17 @@
                 <div class="inbox-code">משכ 331</div>
               </div>
               <select class="status-select not-relevant" data-doc="id331" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending">ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending">ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done">טופל</option>
                 <option value="notrelevant" selected>לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
-        <div class="inbox-row" data-doc="id341" onclick="selectDocument('id341')">
+        <div class="inbox-row inbox-row--missing" data-doc="id341" data-uploaded="false" onclick="selectDocument('id341')">
               <div class="inbox-info">
                 <div class="inbox-name">הסבר זכויות לווה</div>
-                <div class="inbox-code">משכ 341</div>
               </div>
-              <select class="status-select pending" data-doc="id341" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending" selected>ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
-                <option value="done">טופל</option>
-                <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
-              </select>
+              <button type="button" class="inbox-upload-btn" onclick="handleRowUploadDocument(event, 'id341')">+ הוספת המסמך</button>
             </div>
         <div class="inbox-row" data-doc="id345" onclick="selectDocument('id345')">
               <div class="inbox-info">
@@ -2283,12 +2623,10 @@
                 <div class="inbox-code">משכ 345</div>
               </div>
               <select class="status-select pending" data-doc="id345" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending" selected>ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending" selected>ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done">טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
       </div>
@@ -2305,12 +2643,10 @@
                 <div class="inbox-code">משכ 344</div>
               </div>
               <select class="status-select pending" data-doc="id344" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending" selected>ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending" selected>ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done">טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
         <div class="inbox-row" data-doc="id330" onclick="selectDocument('id330')">
@@ -2319,12 +2655,10 @@
                 <div class="inbox-code">משכ 330</div>
               </div>
               <select class="status-select pending" data-doc="id330" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending" selected>ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending" selected>ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done">טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
         <div class="inbox-row" data-doc="id318" onclick="selectDocument('id318')">
@@ -2333,12 +2667,10 @@
                 <div class="inbox-code">משכ 318</div>
               </div>
               <select class="status-select pending" data-doc="id318" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending" selected>ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending" selected>ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done">טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
         <div class="inbox-row" data-doc="id342" onclick="selectDocument('id342')">
@@ -2347,12 +2679,10 @@
                 <div class="inbox-code">משכ 342</div>
               </div>
               <select class="status-select pending" data-doc="id342" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending" selected>ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending" selected>ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done">טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
       </div>
@@ -2368,13 +2698,11 @@
                 <div class="inbox-name">תעודת זהות</div>
                 <div class="inbox-code">משכ 601</div>
               </div>
-              <select class="status-select complete" data-doc="id601" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending">ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
-                <option value="done" selected>טופל</option>
+              <select class="status-select returned" data-doc="id601" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending">ממתין לבדיקה</option>
+                <option value="returned" selected>חזר לטיפול</option>
+                <option value="done">טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
         <div class="inbox-row" data-doc="id612" onclick="selectDocument('id612')">
@@ -2383,12 +2711,10 @@
                 <div class="inbox-code">משכ 612</div>
               </div>
               <select class="status-select pending" data-doc="id612" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending" selected>ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending" selected>ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done">טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
         <div class="inbox-row" data-doc="id604" onclick="selectDocument('id604')">
@@ -2397,12 +2723,10 @@
                 <div class="inbox-code">משכ 604</div>
               </div>
               <select class="status-select pending" data-doc="id604" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending" selected>ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending" selected>ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done">טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
         <div class="inbox-row" data-doc="id603" onclick="selectDocument('id603')">
@@ -2411,12 +2735,10 @@
                 <div class="inbox-code">משכ 603</div>
               </div>
               <select class="status-select not-relevant" data-doc="id603" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending">ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending">ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done">טופל</option>
                 <option value="notrelevant" selected>לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
         <div class="inbox-row" data-doc="id630" onclick="selectDocument('id630')">
@@ -2425,12 +2747,10 @@
                 <div class="inbox-code">משכ 630</div>
               </div>
               <select class="status-select pending" data-doc="id630" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending" selected>ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending" selected>ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done">טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
         <div class="inbox-row" data-doc="tabu" onclick="selectDocument('tabu')">
@@ -2439,12 +2759,10 @@
                 <div class="inbox-code">משכ 632</div>
               </div>
               <select class="status-select complete" data-doc="tabu" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending">ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending">ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done" selected>טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
         <div class="inbox-row" data-doc="contract" onclick="selectDocument('contract')">
@@ -2453,12 +2771,10 @@
                 <div class="inbox-code">משכ 635</div>
               </div>
               <select class="status-select complete" data-doc="contract" onclick="event.stopPropagation()" onchange="updateStatus(this)">
-                <option value="pending">ממתין לטיפול</option>
-                <option value="inprogress">בתהליך</option>
+                <option value="pending">ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
                 <option value="done" selected>טופל</option>
                 <option value="notrelevant">לא רלוונטי</option>
-                <option value="valid">תקין</option>
-                <option value="invalid">לא תקין</option>
               </select>
             </div>
       </div>
@@ -2484,6 +2800,39 @@
     <div class="hq-note-modal-actions">
       <button type="button" class="hq-note-modal-submit" id="hqInvalidNoteSubmit" onclick="submitInvalidNote()">הוסף הערה</button>
       <button type="button" class="hq-note-modal-cancel" onclick="closeInvalidNotePopup()">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<div class="hq-note-modal" id="addTaskModal" aria-hidden="true">
+  <div class="hq-note-modal-backdrop" onclick="closeAddTaskPopup()"></div>
+  <div class="hq-note-modal-card" role="dialog" aria-modal="true" aria-labelledby="addTaskModalTitle">
+    <h2 class="hq-note-modal-title" id="addTaskModalTitle">הוספת משימה לביצוע</h2>
+    <p class="hq-note-modal-subtitle">המשימה תתווסף לרשימת המשימות לביצוע בתיק.</p>
+    <div class="hq-note-modal-field">
+      <label class="hq-note-modal-label" for="addTaskTitleInput">
+        כותרת <span class="hq-note-modal-label-optional">(רשות)</span>
+      </label>
+      <input
+        type="text"
+        class="hq-note-modal-text-input"
+        id="addTaskTitleInput"
+        maxlength="80"
+        placeholder="לדוגמה: בדיקת מסמך / שיחה עם הלקוח"
+      >
+    </div>
+    <div class="hq-note-modal-field">
+      <label class="hq-note-modal-label" for="addTaskDescInput">תיאור המשימה</label>
+      <textarea
+        class="hq-note-modal-input"
+        id="addTaskDescInput"
+        rows="4"
+        placeholder="מה צריך לבצע במשימה זו?"
+      ></textarea>
+    </div>
+    <div class="hq-note-modal-actions">
+      <button type="button" class="hq-note-modal-submit" id="addTaskSubmit" onclick="submitAddTask()" disabled>הוספה</button>
+      <button type="button" class="hq-note-modal-cancel" onclick="closeAddTaskPopup()">ביטול</button>
     </div>
   </div>
 </div>
@@ -2548,6 +2897,15 @@
     `;
   }
 
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   function createOpenTaskRow(name, desc) {
     const row = document.createElement('div');
     row.className = 'task-row-static task-row-actionable';
@@ -2560,8 +2918,8 @@
         <div class="task-confirm-popover">${completeConfirmPopoverHtml()}</div>
       </div>
       <div class="task-info">
-        <div class="task-name">${name}</div>
-        <div class="task-desc">${desc}</div>
+        <div class="task-name">${escapeHtml(name)}</div>
+        <div class="task-desc">${escapeHtml(desc)}</div>
       </div>
     `;
     return row;
@@ -2579,12 +2937,72 @@
         <div class="task-confirm-popover">${restoreConfirmPopoverHtml()}</div>
       </div>
       <div class="task-info">
-        <div class="task-name done">${name}</div>
-        <div class="task-desc">${desc}</div>
+        <div class="task-name done">${escapeHtml(name)}</div>
+        <div class="task-desc">${escapeHtml(desc)}</div>
       </div>
     `;
     return row;
   }
+
+  function syncAddTaskSubmitState() {
+    const desc = document.getElementById('addTaskDescInput')?.value.trim() || '';
+    const submit = document.getElementById('addTaskSubmit');
+    if (submit) submit.disabled = desc.length === 0;
+  }
+
+  function openAddTaskPopup() {
+    const modal = document.getElementById('addTaskModal');
+    const titleInput = document.getElementById('addTaskTitleInput');
+    const descInput = document.getElementById('addTaskDescInput');
+    if (!modal || !titleInput || !descInput) return;
+    titleInput.value = '';
+    descInput.value = '';
+    syncAddTaskSubmitState();
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    setTimeout(() => titleInput.focus(), 30);
+  }
+
+  function closeAddTaskPopup() {
+    const modal = document.getElementById('addTaskModal');
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  function submitAddTask() {
+    const titleInput = document.getElementById('addTaskTitleInput');
+    const descInput = document.getElementById('addTaskDescInput');
+    const body = document.getElementById('openTasksBody');
+    if (!titleInput || !descInput || !body) return;
+
+    const title = titleInput.value.trim();
+    const desc = descInput.value.trim();
+    if (!desc) {
+      descInput.focus();
+      return;
+    }
+
+    const name = title || desc;
+    const detail = title ? desc : '';
+    const row = createOpenTaskRow(name, detail);
+    body.prepend(row);
+    updateTaskBadges();
+    closeAddTaskPopup();
+
+    void row.offsetWidth;
+    row.classList.add('task-slot-enter-from-add');
+    setTimeout(() => row.classList.remove('task-slot-enter-from-add'), 600);
+  }
+
+  document.getElementById('addTaskTitleInput')?.addEventListener('input', syncAddTaskSubmitState);
+  document.getElementById('addTaskDescInput')?.addEventListener('input', syncAddTaskSubmitState);
+  document.getElementById('addTaskDescInput')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      if (!document.getElementById('addTaskSubmit')?.disabled) submitAddTask();
+    }
+  });
 
   function playTaskSlotEnter(row) {
     row.classList.add('task-slot-enter');
@@ -2664,7 +3082,7 @@
 
   const STATUS_CLASS = {
     pending: 'pending',
-    inprogress: 'open',
+    returned: 'returned',
     done: 'complete',
     notrelevant: 'not-relevant',
     valid: 'complete',
@@ -2701,21 +3119,35 @@
   }
 
   const BANKER_FILTER_OPTIONS = [
-    { value: 'pending', label: 'ממתין לטיפול', dot: 'pending' },
-    { value: 'inprogress', label: 'בתהליך', dot: 'inprogress' },
+    { value: 'pending', label: 'ממתין לבדיקה', dot: 'pending' },
+    { value: 'returned', label: 'חזר לטיפול', dot: 'returned' },
     { value: 'done', label: 'טופל', dot: 'done' },
     { value: 'notrelevant', label: 'לא רלוונטי', dot: 'notrelevant' }
   ];
 
   const HQ_FILTER_OPTIONS = [
-    { value: 'pending', label: 'ממתין לבחינת מטה', dot: 'pending' },
+    { value: 'pending', label: 'ממתין לבדיקה', dot: 'pending' },
     { value: 'valid', label: 'תקין', dot: 'valid' },
     { value: 'invalid', label: 'לא תקין', dot: 'invalid' }
+  ];
+
+  const UPLOAD_FILTER_OPTIONS = [
+    { value: 'uploaded', label: 'בוצעה העלאה' },
+    { value: 'not-uploaded', label: 'טרם בוצעה העלאה' }
   ];
 
   function getSelectedFilterStatuses() {
     return [...document.querySelectorAll('#docStatusFilterMenu input[type="checkbox"]:checked')]
       .map(input => input.value);
+  }
+
+  function getSelectedFilterGroups() {
+    const selected = getSelectedFilterStatuses();
+    const uploadValues = new Set(UPLOAD_FILTER_OPTIONS.map(o => o.value));
+    return {
+      statusValues: selected.filter(v => !uploadValues.has(v)),
+      uploadValues: selected.filter(v => uploadValues.has(v))
+    };
   }
 
   function syncStatusMultiFilterUi() {
@@ -2727,24 +3159,39 @@
     countEl.textContent = String(selected.length);
   }
 
+  function renderFilterOptionHtml(opt) {
+    const dotHtml = opt.dot
+      ? `<span class="status-dot ${opt.dot}" aria-hidden="true"></span>`
+      : '';
+    return `
+      <label class="status-multi-filter-option${opt.dot ? '' : ' status-multi-filter-option--no-dot'}">
+        ${dotHtml}
+        <span class="status-multi-filter-option-text">${opt.label}</span>
+        <input type="checkbox" value="${opt.value}" onchange="onStatusFilterChange()">
+      </label>`;
+  }
+
   function renderStatusFilterOptions(persona) {
     const menu = document.getElementById('docStatusFilterMenu');
     const title = document.getElementById('docStatusFilterTitle');
     if (!menu || !title) return;
 
     const isHq = persona === 'hq';
-    title.textContent = isHq ? 'סטטוס מטה' : 'סטטוס בנקאי';
+    title.textContent = 'סינון לפי';
+    const statusTitle = isHq ? 'סטטוס מטה' : 'סטטוס בנקאי';
     const options = isHq ? HQ_FILTER_OPTIONS : BANKER_FILTER_OPTIONS;
 
-    menu.innerHTML = options.map(opt => `
-      <label class="status-multi-filter-option">
-        <span class="status-dot ${opt.dot}" aria-hidden="true"></span>
-        <span class="status-multi-filter-option-text">${opt.label}</span>
-        <input type="checkbox" value="${opt.value}" onchange="onStatusFilterChange()">
-      </label>
-    `).join('') + `
-      <button type="button" class="status-multi-filter-clear" onclick="clearStatusFilter(event)">נקה בחירה</button>
-    `;
+    menu.innerHTML =
+      `<span class="status-multi-filter-section-title">${statusTitle}</span>` +
+      options.map(renderFilterOptionHtml).join('') +
+      (isHq
+        ? ''
+        : (
+          `<div class="status-multi-filter-divider" role="separator"></div>` +
+          `<span class="status-multi-filter-section-title">סטטוס העלאה</span>` +
+          UPLOAD_FILTER_OPTIONS.map(renderFilterOptionHtml).join('')
+        )) +
+      `<button type="button" class="status-multi-filter-clear" onclick="clearStatusFilter(event)">נקה בחירה</button>`;
 
     syncStatusMultiFilterUi();
   }
@@ -2821,22 +3268,66 @@
     closePreviewMenu();
   }
 
+  function handlePrintDocument(e) {
+    e.stopPropagation();
+    closePreviewMenu();
+  }
+
+  function handleReplaceDocument(e) {
+    e.stopPropagation();
+    closePreviewMenu();
+  }
+
+  function handleAddAnotherDocument(e) {
+    e.stopPropagation();
+    closePreviewMenu();
+  }
+
+  function handleUploadDocuments() {
+    // Demo placeholder for bulk document upload.
+  }
+
+  function handleRowUploadDocument(e, docId) {
+    e.stopPropagation();
+    // Demo placeholder for uploading a single missing document.
+    if (docId) selectDocument(docId);
+  }
+
+  function isMissingDocRow(row) {
+    return row?.classList?.contains('inbox-row--missing') || row?.dataset?.uploaded === 'false';
+  }
+
+  const EXTERNAL_LINK_ICON_SVG = '<svg class="inbox-code-external" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M5 2.25H2.75A.75.75 0 002 3v6.25c0 .41.34.75.75.75H9A.75.75 0 009.75 9.25V7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M7 2.25h2.75V5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.2 5.8 9.6 2.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>';
+
+  function enhanceInboxCode(codeEl) {
+    if (!codeEl || codeEl.dataset.codeEnhanced) return;
+    codeEl.dataset.codeEnhanced = '1';
+    const label = codeEl.textContent.trim();
+    codeEl.setAttribute('role', 'link');
+    codeEl.setAttribute('tabindex', '0');
+    codeEl.title = 'פתיחת הגדרת המסמך';
+    codeEl.innerHTML = `<span>${label}</span>${EXTERNAL_LINK_ICON_SVG}`;
+    codeEl.addEventListener('click', e => {
+      e.stopPropagation();
+    });
+  }
+
   const HQ_STATUS_LABEL = {
-    pending: 'ממתין לבחינת מטה',
+    pending: 'ממתין לבדיקה',
     valid: 'תקין',
     invalid: 'לא תקין'
   };
 
   const HQ_STATUS_SHORT_LABEL = {
-    pending: 'ממתין',
+    pending: 'ממתין לבדיקה',
     valid: 'תקין',
     invalid: 'לא תקין'
   };
 
   const HQ_STATUS_ICON = {
-    pending: `<svg class="hq-status-icon hq-status-icon--pending" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7.25" stroke="#F59E0B" stroke-width="1.6"/><path d="M9 5.4v4.05l2.55 1.55" stroke="#F59E0B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-    valid: `<svg class="hq-status-icon hq-status-icon--valid" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7.25" stroke="#22C55E" stroke-width="1.6"/><path d="M5.7 9.15 8.05 11.5 12.4 6.7" stroke="#22C55E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-    invalid: `<svg class="hq-status-icon hq-status-icon--invalid" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7.25" stroke="#EF4444" stroke-width="1.6"/><path d="M5.8 9h6.4" stroke="#EF4444" stroke-width="1.7" stroke-linecap="round"/></svg>`
+    pending: `<img class="hq-status-icon hq-status-icon--pending" src="assets/status-pending.png" alt="" width="16" height="16" aria-hidden="true">`,
+    valid: `<img class="hq-status-icon hq-status-icon--valid" src="assets/status-valid.png" alt="" width="16" height="16" aria-hidden="true">`,
+    invalid: `<img class="hq-status-icon hq-status-icon--invalid" src="assets/status-invalid.png" alt="" width="16" height="16" aria-hidden="true">`
   };
 
   function hqStatusIconHtml(status) {
@@ -2848,18 +3339,44 @@
   }
 
   const BANKER_STATUS_LABEL = {
-    pending: 'ממתין לטיפול',
-    inprogress: 'בתהליך',
+    pending: 'ממתין לבדיקה',
+    returned: 'חזר לטיפול',
     done: 'טופל',
-    notrelevant: 'לא רלוונטי',
-    valid: 'תקין',
-    invalid: 'לא תקין'
+    notrelevant: 'לא רלוונטי'
   };
 
   const docHqStatusStore = (() => {
     try { return JSON.parse(localStorage.getItem('demoHqStatuses') || '{}') || {}; }
     catch { return {}; }
   })();
+
+  const DEMO_BANKER_HQ_EXAMPLES = {
+    id329: 'pending', // תנאים עיקריים — ממתין לבדיקה
+    id601: 'invalid', // תעודת זהות — לא תקין
+    tabu: 'valid'     // נסח טאבו — תקין
+  };
+
+  function seedDemoHqStatusesForBanker() {
+    Object.entries(DEMO_BANKER_HQ_EXAMPLES).forEach(([docId, status]) => {
+      const row = document.querySelector(`.inbox-row[data-doc="${docId}"]`);
+      const select = row?.querySelector('select.status-select');
+      if (!select) return;
+      docHqStatusStore[docId] = status;
+      if (status === 'invalid') {
+        syncStatusSelect(select, 'returned');
+        if (bankerStatusSnapshot) bankerStatusSnapshot[docId] = 'returned';
+      }
+    });
+    persistHqStatuses();
+  }
+
+  function applyBankerReturnedAfterHqInvalid(docId, row) {
+    const select = row?.querySelector('select.status-select') ||
+      document.querySelector(`.inbox-row[data-doc="${docId}"] select.status-select`);
+    if (!select) return;
+    syncStatusSelect(select, 'returned');
+    if (bankerStatusSnapshot) bankerStatusSnapshot[docId] = 'returned';
+  }
 
   function persistHqStatuses() {
     localStorage.setItem('demoHqStatuses', JSON.stringify(docHqStatusStore));
@@ -2886,35 +3403,17 @@
     const container = document.getElementById('previewHqStatus');
     const divider = document.getElementById('previewHqDivider');
     const btn = document.getElementById('previewHqStatusBtn');
-    const text = document.getElementById('previewHqStatusText');
-    if (!container || !btn || !text || !divider) return;
+    if (!container || !divider) return;
 
-    const persona = getCurrentPersona();
-    // HQ edits status from the document list rows, not the preview header.
-    if (persona === 'hq') {
-      container.style.display = 'none';
-      divider.style.display = 'none';
-      closePreviewHqStatusMenu();
-      return;
+    // HQ edits status from the document list rows; banker no longer shows
+    // a "ממתין לבדיקת מטה" label after marking טופל.
+    container.style.display = 'none';
+    divider.style.display = 'none';
+    closePreviewHqStatusMenu();
+    if (btn) {
+      btn.disabled = true;
+      btn.setAttribute('aria-expanded', 'false');
     }
-
-    const bankerStatus = getCurrentDocBankerStatus();
-    const isDoneByBanker = bankerStatus === 'done';
-    if (!isDoneByBanker) {
-      container.style.display = 'none';
-      divider.style.display = 'none';
-      closePreviewHqStatusMenu();
-      return;
-    }
-
-    container.style.display = 'inline-flex';
-    divider.style.display = 'inline-block';
-
-    // Banker: show only after "טופל", always disabled.
-    ensureHqPendingForDoc(previewCurrentDocId);
-    btn.disabled = true;
-    btn.setAttribute('aria-expanded', 'false');
-    text.textContent = HQ_STATUS_LABEL.pending;
   }
 
   function syncBankerTag(row, value) {
@@ -2930,15 +3429,88 @@
     const iconSlot = wrap?.querySelector('.inbox-hq-status-icon');
     const labelEl = wrap?.querySelector('.inbox-hq-status-label');
     if (!wrap || !btn || !iconSlot || !labelEl) return;
-    ensureHqPendingForDoc(docId);
-    const hqStatus = docHqStatusStore[docId] || 'pending';
+
+    const select = row.querySelector('select.status-select');
+    const bankerDone = select?.value === 'done';
+    const storedHq = docHqStatusStore[docId] || null;
+    const showHqIndicator = bankerDone || storedHq === 'invalid' || getCurrentPersona() === 'hq';
+    row.classList.toggle('is-done-with-hq', !!(bankerDone || storedHq === 'invalid'));
+
+    if (bankerDone && !storedHq) ensureHqPendingForDoc(docId);
+    const hqStatus = showHqIndicator
+      ? (docHqStatusStore[docId] || 'pending')
+      : 'pending';
+
     iconSlot.innerHTML = hqStatusIconHtml(hqStatus);
+    const statusLabel = HQ_STATUS_LABEL[hqStatus] || HQ_STATUS_LABEL.pending;
     labelEl.textContent = HQ_STATUS_SHORT_LABEL[hqStatus] || HQ_STATUS_SHORT_LABEL.pending;
-    btn.setAttribute('aria-label', HQ_STATUS_LABEL[hqStatus] || HQ_STATUS_LABEL.pending);
-    btn.title = HQ_STATUS_LABEL[hqStatus] || HQ_STATUS_LABEL.pending;
+    btn.setAttribute('aria-label', statusLabel);
+    btn.title = '';
     wrap.dataset.hqStatus = hqStatus;
-    row.classList.toggle('inbox-row--hq-valid', getCurrentPersona() === 'hq' && hqStatus === 'valid');
+
+    const isHqPersona = getCurrentPersona() === 'hq';
+    const editable = isHqPersona;
+    btn.disabled = false;
+    btn.setAttribute('aria-disabled', editable ? 'false' : 'true');
+    wrap.classList.toggle('is-readonly', !editable);
+    btn.setAttribute('aria-haspopup', editable ? 'menu' : 'false');
+    if (editable) {
+      iconSlot.removeAttribute('data-tooltip');
+      iconSlot.removeAttribute('title');
+    } else {
+      iconSlot.setAttribute('data-tooltip', statusLabel);
+      iconSlot.removeAttribute('title');
+    }
+
+    row.classList.toggle('inbox-row--hq-valid', isHqPersona && hqStatus === 'valid');
   }
+
+  let hqStatusTooltipEl = null;
+
+  function getHqStatusTooltipEl() {
+    if (hqStatusTooltipEl) return hqStatusTooltipEl;
+    hqStatusTooltipEl = document.createElement('div');
+    hqStatusTooltipEl.className = 'inbox-hq-status-tooltip';
+    hqStatusTooltipEl.setAttribute('role', 'tooltip');
+    document.body.appendChild(hqStatusTooltipEl);
+    return hqStatusTooltipEl;
+  }
+
+  function hideHqStatusTooltip() {
+    const tip = getHqStatusTooltipEl();
+    tip.classList.remove('is-visible');
+    tip.innerHTML = '';
+  }
+
+  function showHqStatusTooltip(anchor) {
+    const text = anchor?.getAttribute('data-tooltip');
+    if (!text) return;
+    const tip = getHqStatusTooltipEl();
+    tip.innerHTML =
+      `<span class="inbox-hq-status-tooltip-title">סטטוס מטה</span>` +
+      `<span class="inbox-hq-status-tooltip-text">${text}</span>`;
+    const rect = anchor.getBoundingClientRect();
+    tip.style.left = `${Math.round(rect.left + rect.width / 2)}px`;
+    tip.style.top = `${Math.round(rect.top - 8)}px`;
+    tip.classList.add('is-visible');
+  }
+
+  document.addEventListener('mouseover', e => {
+    const icon = e.target.closest?.('.inbox-hq-status.is-readonly .inbox-hq-status-icon[data-tooltip]');
+    if (!icon) return;
+    showHqStatusTooltip(icon);
+  });
+
+  document.addEventListener('mouseout', e => {
+    const icon = e.target.closest?.('.inbox-hq-status.is-readonly .inbox-hq-status-icon[data-tooltip]');
+    if (!icon) return;
+    const next = e.relatedTarget;
+    if (next && icon.contains(next)) return;
+    hideHqStatusTooltip();
+  });
+
+  document.querySelector('.inbox-list')?.addEventListener('scroll', hideHqStatusTooltip, { passive: true });
+  window.addEventListener('scroll', hideHqStatusTooltip, { passive: true });
 
   function renderAllRowHqStatuses() {
     document.querySelectorAll('.inbox-row[data-doc]').forEach(row => {
@@ -3059,6 +3631,8 @@
     }
 
     if (status === 'invalid') {
+      applyBankerReturnedAfterHqInvalid(docId, row);
+      syncRowHqStatus(row, docId);
       openInvalidNotePopup(docId);
     }
   }
@@ -3135,7 +3709,12 @@
   });
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && document.getElementById('hqInvalidNoteModal')?.classList.contains('open')) {
+    if (e.key !== 'Escape') return;
+    if (document.getElementById('addTaskModal')?.classList.contains('open')) {
+      closeAddTaskPopup();
+      return;
+    }
+    if (document.getElementById('hqInvalidNoteModal')?.classList.contains('open')) {
       closeInvalidNotePopup();
     }
   });
@@ -3192,7 +3771,7 @@
 
   function syncStatusSelect(select, value) {
     select.value = value;
-    select.classList.remove('pending', 'open', 'complete', 'not-relevant', 'missing');
+    select.classList.remove('pending', 'open', 'complete', 'not-relevant', 'missing', 'returned');
     select.classList.add(STATUS_CLASS[value] || 'pending');
     syncCapsuleFromSelect(getCapsuleWrap(select), select);
     const row = select.closest('.inbox-row');
@@ -3208,17 +3787,10 @@
     return snapshot;
   }
 
-  function resetAllHqStatusesToPending() {
-    document.querySelectorAll('select.status-select').forEach(select => {
-      const docId = select.dataset.doc;
-      if (!docId) return;
-      docHqStatusStore[docId] = 'pending';
-    });
-    persistHqStatuses();
-  }
-
   function applyAllDocsBankerStatus(value) {
     document.querySelectorAll('select.status-select').forEach(select => {
+      const row = select.closest('.inbox-row');
+      if (isMissingDocRow(row)) return;
       const docId = select.dataset.doc;
       if (!docId) return;
       syncStatusSelect(select, value);
@@ -3229,6 +3801,17 @@
     renderPreviewHqStatus();
   }
 
+  function resetAllHqStatusesToPending() {
+    document.querySelectorAll('select.status-select').forEach(select => {
+      const row = select.closest('.inbox-row');
+      if (isMissingDocRow(row)) return;
+      const docId = select.dataset.doc;
+      if (!docId) return;
+      docHqStatusStore[docId] = 'pending';
+    });
+    persistHqStatuses();
+  }
+
   function restoreBankerStatuses() {
     if (!bankerStatusSnapshot) return;
     document.querySelectorAll('select.status-select').forEach(select => {
@@ -3236,7 +3819,7 @@
       if (!docId || bankerStatusSnapshot[docId] === undefined) return;
       const value = bankerStatusSnapshot[docId];
       syncStatusSelect(select, value);
-      if (value !== 'done' && docHqStatusStore[docId]) {
+      if (value !== 'done' && docHqStatusStore[docId] && docHqStatusStore[docId] !== 'invalid') {
         delete docHqStatusStore[docId];
       }
     });
@@ -3254,36 +3837,49 @@
       applyAllDocsBankerStatus('done');
       resetAllHqStatusesToPending();
       renderAllRowHqStatuses();
+      // HQ only sees uploaded/handled docs — leave empty/missing docs to banker.
+      const currentRow = document.querySelector(`.inbox-row[data-doc="${previewCurrentDocId}"]`);
+      if (isMissingDocRow(currentRow)) {
+        const fallback = document.querySelector('.inbox-row[data-doc]:not(.inbox-row--missing)');
+        if (fallback?.dataset?.doc) selectDocument(fallback.dataset.doc);
+      }
       filterDocuments();
       return;
     }
     restoreBankerStatuses();
+    seedDemoHqStatusesForBanker();
     bankerStatusSnapshot = null;
+    renderAllRowHqStatuses();
   }
 
   document.addEventListener('click', closeAllCapsuleMenus);
 
   function updateStatus(select) {
-    select.classList.remove('pending', 'open', 'complete', 'not-relevant', 'missing');
+    select.classList.remove('pending', 'open', 'complete', 'not-relevant', 'missing', 'returned');
     select.classList.add(STATUS_CLASS[select.value]);
     syncCapsuleFromSelect(getCapsuleWrap(select), select);
     const row = select.closest('.inbox-row');
     if (row) syncBankerTag(row, select.value);
     filterDocuments();
 
-    // Banker marking "טופל" triggers HQ pending review state in demo.
+    // Banker marking "טופל" shows HQ review status beside the banker capsule.
     if (getCurrentPersona() === 'banker') {
       const docId = row?.dataset?.doc;
       if (docId && select.value === 'done') {
-        ensureHqPendingForDoc(docId);
-        syncRowHqStatus(row, docId);
+        if (DEMO_BANKER_HQ_EXAMPLES[docId]) {
+          docHqStatusStore[docId] = DEMO_BANKER_HQ_EXAMPLES[docId];
+          persistHqStatuses();
+        } else {
+          ensureHqPendingForDoc(docId);
+        }
       }
       if (docId && select.value !== 'done') {
-        if (docHqStatusStore[docId]) {
+        if (docHqStatusStore[docId] && docHqStatusStore[docId] !== 'invalid') {
           delete docHqStatusStore[docId];
           persistHqStatuses();
         }
       }
+      if (docId) syncRowHqStatus(row, docId);
     }
 
     if (row?.dataset?.doc === previewCurrentDocId) {
@@ -3293,8 +3889,8 @@
 
   function filterDocuments() {
     const query = document.getElementById('docSearch').value.trim().toLowerCase();
-    const selectedStatuses = getSelectedFilterStatuses();
-    const filtering = query.length > 0 || selectedStatuses.length > 0;
+    const { statusValues, uploadValues } = getSelectedFilterGroups();
+    const filtering = query.length > 0 || statusValues.length > 0 || uploadValues.length > 0;
     const persona = getCurrentPersona();
 
     document.querySelectorAll('.docs-sidebar .category').forEach(cat => {
@@ -3305,10 +3901,22 @@
         const docId = row.dataset.doc;
         const rowBankerStatus = row.querySelector('.status-select')?.value || '';
         const rowHqStatus = docId ? (docHqStatusStore[docId] || 'pending') : 'pending';
+        const missing = isMissingDocRow(row);
         const rowStatus = persona === 'hq' ? rowHqStatus : rowBankerStatus;
         const matchesSearch = !query || name.includes(query) || code.includes(query);
-        const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(rowStatus);
-        const show = matchesSearch && matchesStatus;
+        // Unuploaded docs are banker-only; HQ receives them only after טופל.
+        if (persona === 'hq' && missing) {
+          row.style.display = 'none';
+          return;
+        }
+        const matchesStatus = statusValues.length === 0
+          ? true
+          : (!missing && statusValues.includes(rowStatus));
+        const matchesUpload = uploadValues.length === 0
+          ? true
+          : ((uploadValues.includes('uploaded') && !missing) ||
+             (uploadValues.includes('not-uploaded') && missing));
+        const show = matchesSearch && matchesStatus && matchesUpload;
         row.style.display = show ? '' : 'none';
         if (show) visible++;
       });
@@ -3319,29 +3927,144 @@
   }
 
   const docs = {
-    poa:      { name: 'ייפוי כוח מתמשך',            code: 'משכ 542', previewId: 'preview-poa', pages: 1 },
-    id601:    { name: 'תעודת זהות',                  code: 'משכ 601', previewId: 'preview-generic', pages: 1 },
-    id612:    { name: 'תלושי שכר 3 חודשים אחרונים',  code: 'משכ 612', previewId: 'preview-generic', pages: 1 },
-    id604:    { name: 'אישור יתרות בנקאי',            code: 'משכ 604', previewId: 'preview-generic', pages: 1 },
-    id603:    { name: 'אישור מס הכנסה',               code: 'משכ 603', previewId: 'preview-generic', pages: 1 },
-    id630:    { name: 'אישור עו"ד על הנכס',           code: 'משכ 630', previewId: 'preview-generic', pages: 1 },
-    tabu:     { name: 'נסח טאבו',                     code: 'משכ 632', previewId: 'preview-tabu', pages: 1 },
-    contract: { name: 'חוזה רכישה חתום',              code: 'משכ 635', previewId: 'preview-contract', pages: 1 },
-    id344:    { name: 'הסכם הלוואה',                  code: 'משכ 344', previewId: 'preview-generic', pages: 1 },
-    id329:    { name: 'תנאים עיקריים',                code: 'משכ 329', previewId: 'preview-poa', pages: 1 },
-    id327:    { name: 'לוח סילוקין',                  code: 'משכ 327', previewId: 'preview-generic', pages: 1 },
-    id318:    { name: 'הרשאה לחיוב חשבון',            code: 'משכ 318', previewId: 'preview-generic', pages: 1 },
-    id331:    { name: 'ביטוח חיים — הצמדה למשכנתא',   code: 'משכ 331', previewId: 'preview-generic', pages: 1 },
-    id342:    { name: 'הסכמת בן/בת זוג',              code: 'משכ 342', previewId: 'preview-generic', pages: 1 },
-    id330:    { name: 'גילוי נאות',                   code: 'משכ 330', previewId: 'preview-generic', pages: 1 },
-    id332:    { name: 'סיכום תנאים',                  code: 'משכ 332', previewId: 'preview-generic', pages: 1 },
-    id338:    { name: 'דף מידע על ביטוח',              code: 'משכ 338', previewId: 'preview-generic', pages: 1 },
-    id341:    { name: 'הסבר זכויות לווה',              code: 'משכ 341', previewId: 'preview-generic', pages: 1 },
-    id345:    { name: 'פירוט עלויות נלוות',            code: 'משכ 345', previewId: 'preview-generic', pages: 1 }
+    poa:      { name: 'ייפוי כוח מתמשך',            code: 'משכ 542', previewId: 'preview-poa', pages: 1, uploadedAt: '05/07/2026' },
+    id601:    { name: 'תעודת זהות',                  code: 'משכ 601', previewId: 'preview-generic', pages: 1, uploadedAt: '03/07/2026' },
+    id612:    { name: 'תלושי שכר 3 חודשים אחרונים',  code: 'משכ 612', previewId: 'preview-generic', pages: 1, uploadedAt: '02/07/2026' },
+    id604:    { name: 'אישור יתרות בנקאי',            code: 'משכ 604', previewId: 'preview-generic', pages: 1, uploadedAt: '01/07/2026' },
+    id603:    { name: 'אישור מס הכנסה',               code: 'משכ 603', previewId: 'preview-generic', pages: 1, uploadedAt: '30/06/2026' },
+    id630:    { name: 'אישור עו"ד על הנכס',           code: 'משכ 630', previewId: 'preview-generic', pages: 1, uploadedAt: '29/06/2026' },
+    tabu:     { name: 'נסח טאבו',                     code: 'משכ 632', previewId: 'preview-tabu', pages: 1, uploadedAt: '28/06/2026' },
+    contract: { name: 'חוזה רכישה חתום',              code: 'משכ 635', previewId: 'preview-contract', pages: 1, uploadedAt: '27/06/2026' },
+    id344:    { name: 'הסכם הלוואה',                  code: 'משכ 344', previewId: 'preview-generic', pages: 1, uploadedAt: '06/07/2026' },
+    id329:    {
+      name: 'תנאים עיקריים',
+      code: 'משכ 329',
+      previewId: 'preview-poa',
+      pages: 1,
+      uploadedAt: '04/07/2026',
+      versions: [
+        { name: 'תנאים עיקריים (1)', previewId: 'preview-poa', pages: 1, uploadedAt: '04/07/2026' },
+        { name: 'תנאים עיקריים (2)', previewId: 'preview-generic', pages: 1, uploadedAt: '11/07/2026' }
+      ]
+    },
+    id327:    { name: 'לוח סילוקין',                  code: 'משכ 327', previewId: 'preview-generic', pages: 1, uploadedAt: '05/07/2026' },
+    id318:    { name: 'הרשאה לחיוב חשבון',            code: 'משכ 318', previewId: 'preview-generic', pages: 1, uploadedAt: '08/07/2026' },
+    id331:    { name: 'ביטוח חיים — הצמדה למשכנתא',   code: 'משכ 331', previewId: 'preview-generic', pages: 1, uploadedAt: '07/07/2026' },
+    id342:    { name: 'הסכמת בן/בת זוג',              code: 'משכ 342', previewId: 'preview-generic', pages: 1, uploadedAt: '09/07/2026' },
+    id330:    { name: 'גילוי נאות',                   code: 'משכ 330', previewId: 'preview-generic', pages: 1, uploadedAt: '10/07/2026' },
+    id332:    { name: 'סיכום תנאים',                  code: 'משכ 332', previewId: 'preview-generic', pages: 1, uploadedAt: '04/07/2026' },
+    id338:    { name: 'דף מידע על ביטוח',              code: 'משכ 338', previewId: 'preview-generic', pages: 1, uploadedAt: '12/07/2026' },
+    id341:    { name: 'הסבר זכויות לווה',              previewId: 'preview-generic', pages: 1 },
+    id345:    { name: 'פירוט עלויות נלוות',            code: 'משכ 345', previewId: 'preview-generic', pages: 1, uploadedAt: '13/07/2026' }
   };
 
   let previewCurrentDocId = 'poa';
   let previewCurrentPage = 1;
+  let previewCurrentVersionIndex = 0;
+
+  function getDocVersions(docId) {
+    const doc = docs[docId];
+    if (!doc) return [];
+    if (Array.isArray(doc.versions) && doc.versions.length > 1) return doc.versions;
+    return [];
+  }
+
+  function getActiveDocVersion(docId) {
+    const doc = docs[docId];
+    if (!doc) return null;
+    const versions = getDocVersions(docId);
+    if (versions.length) {
+      const idx = Math.min(Math.max(0, previewCurrentVersionIndex), versions.length - 1);
+      return versions[idx];
+    }
+    return {
+      name: doc.name,
+      previewId: doc.previewId,
+      pages: doc.pages || 1,
+      uploadedAt: doc.uploadedAt || null
+    };
+  }
+
+  function renderPreviewUploadDate(uploadedAt) {
+    const el = document.getElementById('previewUploadDate');
+    if (!el) return;
+    if (!uploadedAt) {
+      el.textContent = '';
+      el.classList.add('is-empty');
+      return;
+    }
+    el.textContent = `הועלה בתאריך ${uploadedAt}`;
+    el.classList.remove('is-empty');
+  }
+
+  function renderPreviewVersionTabs(docId) {
+    const block = document.getElementById('previewTitleBlock');
+    const tabsEl = document.getElementById('previewVersionTabs');
+    const titleEl = document.getElementById('previewTitle');
+    const versions = getDocVersions(docId);
+    if (!block || !tabsEl || !titleEl) return;
+
+    if (versions.length < 2) {
+      block.classList.remove('has-versions');
+      tabsEl.innerHTML = '';
+      return;
+    }
+
+    block.classList.add('has-versions');
+    previewCurrentVersionIndex = Math.min(Math.max(0, previewCurrentVersionIndex), versions.length - 1);
+    tabsEl.innerHTML = versions.map((version, index) => {
+      const active = index === previewCurrentVersionIndex ? ' active' : '';
+      const selected = index === previewCurrentVersionIndex ? 'true' : 'false';
+      return `<button type="button" class="preview-version-tab${active}" role="tab" aria-selected="${selected}" data-version-index="${index}" onclick="selectDocumentVersion(${index})">${version.name}</button>`;
+    }).join('');
+  }
+
+  function selectDocumentVersion(index) {
+    const versions = getDocVersions(previewCurrentDocId);
+    if (!versions.length) return;
+    const next = Math.min(Math.max(0, index), versions.length - 1);
+    if (next === previewCurrentVersionIndex) return;
+    previewCurrentVersionIndex = next;
+    previewCurrentPage = 1;
+    applySelectedDocumentContent(previewCurrentDocId);
+  }
+
+  function applySelectedDocumentContent(id) {
+    const doc = docs[id];
+    if (!doc) return;
+    const row = document.querySelector(`.inbox-row[data-doc="${id}"]`);
+    const version = getActiveDocVersion(id);
+    const isMissing = isMissingDocRow(row);
+
+    document.querySelectorAll('.legal-doc').forEach(p => p.style.display = 'none');
+    if (isMissing) {
+      document.getElementById('preview-generic').style.display = 'block';
+      document.getElementById('genericTitle').textContent = doc.name;
+      const subtitle = document.querySelector('#preview-generic .legal-doc-subtitle');
+      if (subtitle) subtitle.textContent = 'המסמך טרם הועלה. יש להוסיף את המסמך כדי להמשיך בטיפול.';
+      document.getElementById('previewTitle').textContent = doc.name;
+      renderPreviewVersionTabs(id);
+      renderPreviewUploadDate(null);
+    } else {
+      const previewId = version?.previewId || doc.previewId;
+      document.getElementById(previewId).style.display = 'block';
+      if (previewId === 'preview-generic') {
+        document.getElementById('genericTitle').textContent = version?.name || doc.name;
+        const subtitle = document.querySelector('#preview-generic .legal-doc-subtitle');
+        if (subtitle) {
+          const versions = getDocVersions(id);
+          subtitle.textContent = versions.length > 1
+            ? `גרסה ${previewCurrentVersionIndex + 1} מתוך ${versions.length} — הצגה מלאה אינה זמינה עבור מסמך זה בדמו זה.`
+            : 'הצגה מלאה אינה זמינה עבור מסמך זה בדמו זה.';
+        }
+      }
+      document.getElementById('previewTitle').textContent = doc.name;
+      renderPreviewVersionTabs(id);
+      renderPreviewUploadDate(version?.uploadedAt || doc.uploadedAt || null);
+    }
+
+    updatePreviewPageNav();
+  }
 
   const docNotesStore = {
     poa: [
@@ -3432,7 +4155,7 @@
     const list = document.getElementById('docNotesList');
     const notes = getDocAiNotes(previewCurrentDocId);
     if (!notes.length) {
-      list.innerHTML = '<div class="doc-notes-empty">אין הערות AI על מסמך זה</div>';
+      list.innerHTML = '<div class="doc-notes-empty">אין ניתוח AI על מסמך זה</div>';
       return;
     }
     list.innerHTML = notes.map(note => `
@@ -3485,7 +4208,7 @@
     }
 
     if (mode === 'ai') {
-      title.innerHTML = '<span class="doc-notes-title-ai">' + AI_ICON_SVG_MD + 'הערות AI</span>';
+      title.innerHTML = '<span class="doc-notes-title-ai">' + AI_ICON_SVG_MD + 'ניתוח AI</span>';
       renderDocAiNotes();
     } else {
       title.textContent = 'הערות';
@@ -3530,8 +4253,8 @@
   });
 
   function updatePreviewPageNav() {
-    const doc = docs[previewCurrentDocId];
-    const total = doc?.pages || 1;
+    const version = getActiveDocVersion(previewCurrentDocId);
+    const total = version?.pages || docs[previewCurrentDocId]?.pages || 1;
     previewCurrentPage = Math.min(Math.max(1, previewCurrentPage), total);
     document.getElementById('previewPageIndicator').textContent = `${previewCurrentPage}/${total}`;
     document.getElementById('previewPagePrev').disabled = previewCurrentPage <= 1;
@@ -3539,8 +4262,8 @@
   }
 
   function changePreviewPage(delta) {
-    const doc = docs[previewCurrentDocId];
-    const total = doc?.pages || 1;
+    const version = getActiveDocVersion(previewCurrentDocId);
+    const total = version?.pages || docs[previewCurrentDocId]?.pages || 1;
     previewCurrentPage = Math.min(Math.max(1, previewCurrentPage + delta), total);
     updatePreviewPageNav();
   }
@@ -3551,19 +4274,13 @@
 
     previewCurrentDocId = id;
     previewCurrentPage = 1;
+    previewCurrentVersionIndex = 0;
 
     document.querySelectorAll('.inbox-row').forEach(r => r.classList.remove('active'));
     const row = document.querySelector(`.inbox-row[data-doc="${id}"]`);
     if (row) row.classList.add('active');
 
-    document.querySelectorAll('.legal-doc').forEach(p => p.style.display = 'none');
-    document.getElementById(doc.previewId).style.display = 'block';
-    if (doc.previewId === 'preview-generic') {
-      document.getElementById('genericTitle').textContent = doc.name;
-    }
-
-    document.getElementById('previewTitle').textContent = doc.name;
-    updatePreviewPageNav();
+    applySelectedDocumentContent(id);
     updatePreviewNotesBadge();
     updatePreviewAiBadge();
     renderPreviewHqStatus();
@@ -3577,10 +4294,23 @@
       if (row.dataset.indicatorsInit) return;
       row.dataset.indicatorsInit = '1';
       const info = row.querySelector('.inbox-info');
+      if (!info) return;
+
+      if (isMissingDocRow(row)) {
+        const uploadBtn = row.querySelector('.inbox-upload-btn');
+        if (uploadBtn && !uploadBtn.closest('.inbox-row-actions')) {
+          const actions = document.createElement('div');
+          actions.className = 'inbox-row-actions';
+          uploadBtn.parentNode.insertBefore(actions, uploadBtn);
+          actions.appendChild(uploadBtn);
+        }
+        return;
+      }
+
       const code = row.querySelector('.inbox-code');
-      const capsule = row.querySelector('.capsule-select');
-      const select = row.querySelector('select.status-select');
-      if (!info || !code || !capsule || !select) return;
+      if (!code) return;
+
+      enhanceInboxCode(code);
 
       const meta = document.createElement('div');
       meta.className = 'inbox-meta';
@@ -3602,14 +4332,18 @@
 
       const aiIndicator = document.createElement('span');
       aiIndicator.className = 'inbox-indicator inbox-indicator--ai';
-      aiIndicator.title = 'הערות AI';
-      aiIndicator.setAttribute('aria-label', 'הערות AI');
+      aiIndicator.title = 'ניתוח AI';
+      aiIndicator.setAttribute('aria-label', 'ניתוח AI');
       aiIndicator.innerHTML = `<span class="inbox-indicator-icon-wrap">${INBOX_AI_ICON_SVG}<span class="inbox-indicator-count">0</span></span>`;
 
       indicators.appendChild(notesIndicator);
       indicators.appendChild(aiIndicator);
       meta.appendChild(divider);
       meta.appendChild(indicators);
+
+      const capsule = row.querySelector('.capsule-select');
+      const select = row.querySelector('select.status-select');
+      if (!capsule || !select) return;
 
       const bankerTag = document.createElement('span');
       bankerTag.className = 'inbox-banker-tag';
@@ -3618,9 +4352,9 @@
       const hqStatus = document.createElement('div');
       hqStatus.className = 'inbox-hq-status';
       hqStatus.innerHTML =
-        `<button type="button" class="preview-hq-status-pill inbox-hq-status-btn" aria-haspopup="menu" aria-expanded="false" aria-label="ממתין לבחינת מטה" title="ממתין לבחינת מטה" onclick="toggleRowHqStatusMenu(event, this)">` +
+        `<button type="button" class="preview-hq-status-pill inbox-hq-status-btn" aria-haspopup="menu" aria-expanded="false" aria-label="ממתין לבדיקה" title="ממתין לבדיקה" onclick="toggleRowHqStatusMenu(event, this)">` +
         `<span class="inbox-hq-status-icon">${hqStatusIconHtml('pending')}</span>` +
-        `<span class="inbox-hq-status-label">ממתין</span>` +
+        `<span class="inbox-hq-status-label">ממתין לבדיקה</span>` +
         `<span class="preview-hq-status-caret" aria-hidden="true"></span>` +
         `</button>` +
         `<div class="preview-hq-status-menu" role="menu">` +
@@ -3668,7 +4402,8 @@
   initCapsuleSelects();
   initInboxRowIndicators();
   syncStatusMultiFilterUi();
-  updatePreviewPageNav();
+  seedDemoHqStatusesForBanker();
+  applySelectedDocumentContent(previewCurrentDocId);
   updatePreviewNotesBadge();
   updatePreviewAiBadge();
 
