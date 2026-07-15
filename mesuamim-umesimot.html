@@ -1306,6 +1306,20 @@
       background: rgba(27, 42, 107, 0.04);
       color: var(--navy);
     }
+    .status-multi-filter-option.is-disabled,
+    .status-multi-filter-section-title.is-disabled {
+      opacity: 0.45;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+    .status-multi-filter-option.is-disabled:hover {
+      background: transparent;
+      color: var(--text-body);
+    }
+    .status-multi-filter-option.is-disabled input {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
     .status-multi-filter-option .status-dot {
       flex-shrink: 0;
       width: 7px;
@@ -1928,6 +1942,105 @@
     }
     .hq-note-modal-cancel:hover { color: var(--navy); background: var(--navy-50); }
 
+    .activity-log-modal-card {
+      width: min(700px, calc(100vw - 48px));
+      height: min(700px, calc(100vh - 48px));
+      max-width: 700px;
+      max-height: 700px;
+      padding: 22px 22px 16px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      box-sizing: border-box;
+    }
+    .activity-log-modal-header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .activity-log-modal-heading {
+      min-width: 0;
+    }
+    .activity-log-modal-close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 99px;
+      background: var(--bg);
+      color: var(--text-muted);
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .activity-log-modal-close:hover {
+      background: var(--navy-50);
+      color: var(--navy);
+    }
+    .activity-log-table-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+    .activity-log-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    .activity-log-table th,
+    .activity-log-table td {
+      padding: 11px 14px;
+      text-align: right;
+      font-size: 13px;
+      line-height: 1.4;
+      border-bottom: 1px solid var(--border-light);
+      vertical-align: top;
+    }
+    .activity-log-table th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #F7F8FA;
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .activity-log-table tr:last-child td {
+      border-bottom: none;
+    }
+    .activity-log-table td:nth-child(1) {
+      font-weight: 600;
+      color: var(--text-body);
+      width: 42%;
+    }
+    .activity-log-table td:nth-child(2) {
+      color: var(--text-muted);
+      width: 28%;
+    }
+    .activity-log-table td:nth-child(3) {
+      color: var(--text-faint);
+      width: 30%;
+      white-space: nowrap;
+      direction: ltr;
+      text-align: right;
+    }
+    .activity-log-empty {
+      padding: 28px 16px;
+      text-align: center;
+      color: var(--text-faint);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
     /* Bulk upload AI categorization modal */
     .upload-analyze-modal {
       display: none;
@@ -2228,6 +2341,12 @@
       flex-direction: column;
       gap: 6px;
     }
+    .upload-analyze-catalog-pane--browse {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 0;
+    }
     .upload-analyze-catalog-search {
       position: relative;
       flex-shrink: 0;
@@ -2291,6 +2410,167 @@
     }
     .upload-analyze-catalog-empty.is-visible {
       display: block;
+    }
+    .upload-analyze-catalog-divider {
+      height: 1px;
+      margin: 6px 4px;
+      background: var(--border-light);
+      flex-shrink: 0;
+    }
+    .upload-analyze-catalog-add {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      width: 100%;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy);
+      cursor: pointer;
+      text-align: right;
+    }
+    .upload-analyze-catalog-add:hover {
+      background: rgba(27, 42, 107, 0.05);
+    }
+    .upload-analyze-catalog-add-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--navy-50);
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .upload-analyze-catalog-menu.is-create {
+      min-width: 280px;
+    }
+    .upload-analyze-catalog-pane[hidden] {
+      display: none !important;
+    }
+    .upload-analyze-catalog-pane--create {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 2px;
+    }
+    .upload-analyze-catalog-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      align-self: flex-start;
+      border: none;
+      background: transparent;
+      padding: 2px 0;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      cursor: pointer;
+    }
+    .upload-analyze-catalog-back:hover {
+      text-decoration: underline;
+    }
+    .upload-analyze-catalog-back-arrow {
+      display: inline-block;
+      transform: scaleX(-1);
+      font-size: 14px;
+      line-height: 1;
+    }
+    .upload-analyze-catalog-create-title {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .upload-analyze-catalog-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .upload-analyze-catalog-field-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-faint);
+    }
+    .upload-analyze-catalog-field input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      padding: 9px 12px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-body);
+      text-align: right;
+      outline: none;
+    }
+    .upload-analyze-catalog-field input[type="text"]:focus {
+      border-color: var(--navy-100);
+      box-shadow: 0 0 0 3px var(--navy-50);
+      background: var(--surface);
+    }
+    .upload-analyze-catalog-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .upload-analyze-catalog-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-body);
+    }
+    .upload-analyze-catalog-group:hover {
+      background: rgba(27, 42, 107, 0.04);
+    }
+    .upload-analyze-catalog-group:has(input:checked) {
+      border-color: var(--navy-100);
+      background: var(--navy-50);
+      color: var(--navy);
+    }
+    .upload-analyze-catalog-group input {
+      margin: 0;
+      accent-color: var(--navy);
+      flex-shrink: 0;
+    }
+    .upload-analyze-catalog-create-btn {
+      width: 100%;
+      border: none;
+      border-radius: 99px;
+      background: var(--navy);
+      color: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 14px;
+      cursor: pointer;
+      margin-top: 2px;
+    }
+    .upload-analyze-catalog-create-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+    .upload-analyze-catalog-create-btn:not(:disabled):hover {
+      background: #152456;
     }
     .upload-analyze-type-text {
       flex: 1.15;
@@ -2554,24 +2834,31 @@
       border-color: rgba(27, 42, 107, 0.12);
       background: linear-gradient(180deg, #F5F7FC 0%, var(--bg) 100%);
     }
-    .doc-notes-panel.mode-ai .doc-notes-compose,
-    .doc-notes-panel.mode-summary .doc-notes-compose {
-      display: none !important;
-    }
-    .doc-notes-panel.mode-summary .doc-notes-list {
+    .doc-notes-panel.mode-ai .doc-notes-compose {
       display: none !important;
     }
     .doc-summary-body {
       display: none;
-      background: var(--bg);
+      background: transparent;
     }
+    .doc-ai-section-title {
+      margin: 0 0 10px;
+      padding: 2px 2px 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .doc-ai-section-title--spaced {
+      margin-top: 4px;
+    }
+    .preview-summary-wrap { display: none !important; }
     /* When the slide-over is open, ignore the tasks column underneath
        so wheel/trackpad scrolling hits the panel and not left-col. */
     .tasks-region:has(.doc-notes-panel.is-open) .left-col {
       pointer-events: none;
     }
-    /* Summary mode: the panel itself scrolls (avoids nested overflow issues) */
-    .doc-notes-panel.mode-summary {
+    /* AI + appraisal summary: panel itself scrolls */
+    .doc-notes-panel.mode-ai.has-appraisal-summary {
       overflow-x: hidden;
       overflow-y: scroll;
       overscroll-behavior: contain;
@@ -2579,32 +2866,49 @@
       scrollbar-width: thin;
       scrollbar-color: #C5CAD6 transparent;
     }
-    .doc-notes-panel.mode-summary .doc-notes-panel-inner {
+    .doc-notes-panel.mode-ai.has-appraisal-summary .doc-notes-panel-inner {
       display: block;
       height: auto;
       min-height: 100%;
       overflow: visible;
     }
-    .doc-notes-panel.mode-summary .doc-notes-header {
+    .doc-notes-panel.mode-ai.has-appraisal-summary .doc-notes-header {
       position: sticky;
       top: 0;
       z-index: 2;
       background: var(--surface);
     }
-    .doc-notes-panel.mode-summary .doc-summary-body {
+    .doc-notes-panel.mode-ai.has-appraisal-summary .doc-notes-list {
+      overflow: visible;
+      flex: none;
+      height: auto;
+      min-height: 0;
+      padding-bottom: 4px;
+      gap: 12px;
+    }
+    .doc-notes-panel.mode-ai.has-appraisal-summary .doc-notes-list > .doc-ai-section-title {
+      margin: 0;
+      /* flex gap is 12px; pull title closer to first note */
+      margin-bottom: -8px;
+    }
+    .doc-notes-panel.mode-ai.has-appraisal-summary .doc-summary-body {
       display: block;
       position: static;
       overflow: visible;
-      padding: 12px 12px 28px;
+      background: transparent;
+      padding: 22px 12px 28px;
       box-sizing: border-box;
     }
-    .doc-notes-panel.mode-summary::-webkit-scrollbar {
+    .doc-notes-panel.mode-ai.has-appraisal-summary .doc-summary-body > .doc-ai-section-title {
+      margin: 0 0 12px;
+    }
+    .doc-notes-panel.mode-ai.has-appraisal-summary::-webkit-scrollbar {
       width: 8px;
     }
-    .doc-notes-panel.mode-summary::-webkit-scrollbar-track {
+    .doc-notes-panel.mode-ai.has-appraisal-summary::-webkit-scrollbar-track {
       background: transparent;
     }
-    .doc-notes-panel.mode-summary::-webkit-scrollbar-thumb {
+    .doc-notes-panel.mode-ai.has-appraisal-summary::-webkit-scrollbar-thumb {
       background: #C5CAD6;
       border-radius: 99px;
     }
@@ -2781,14 +3085,6 @@
       background: #FFF4C7;
       border-radius: 3px;
       padding: 0 2px;
-    }
-    .preview-summary-wrap {
-      display: none;
-      align-items: center;
-      flex-shrink: 0;
-    }
-    .preview-summary-wrap.is-visible {
-      display: inline-flex;
     }
     .doc-note-text {
       font-size: 13px;
@@ -3157,6 +3453,7 @@
         </div>
         <div class="doc-notes-list" id="docNotesList"></div>
         <div class="doc-summary-body" id="docSummaryBody" aria-label="דו״ח מסכם">
+          <div class="doc-ai-section-title" id="docSummarySectionTitle">דו״ח מסכם</div>
           <section class="doc-summary-card">
             <div class="doc-summary-card-header">
               <span class="doc-summary-card-num">1</span>
@@ -3268,13 +3565,6 @@
               </div>
             </div>
             <span class="preview-action-divider" id="previewHqDivider" aria-hidden="true"></span>
-            <div class="preview-summary-wrap" id="previewSummaryWrap">
-              <button type="button" class="preview-action-btn preview-action-btn--with-count" id="previewSummaryBtn" aria-label="דו״ח מסכם" aria-expanded="false" onclick="toggleDocSummaryPanel()">
-                <svg class="preview-action-icon" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 2.75h6.2L14 6.2V14.5a.75.75 0 01-.75.75h-8.5a.75.75 0 01-.75-.75V3.5a.75.75 0 01.75-.75z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M10.5 2.9V6h3.2" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M6.2 9h5.6M6.2 11.2h4.2M6.2 13.3h3.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-                <span class="preview-action-label">דו״ח מסכם</span>
-              </button>
-              <span class="preview-action-divider" aria-hidden="true"></span>
-            </div>
             <button type="button" class="preview-action-btn preview-action-btn--with-count" id="previewNotesBtn" aria-label="הערות" aria-expanded="false" onclick="toggleDocNotesPanel()">
               <span class="preview-action-icon-wrap">
                 <svg class="preview-action-icon preview-action-icon--notes" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 2.5h7.2L14.5 5.6V14a1 1 0 01-1 1H4.5a1 1 0 01-1-1V3.5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.5 2.8V5.5H14.2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 8h6M6 10h4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
@@ -3310,6 +3600,10 @@
                 <button type="button" class="preview-menu-option" role="menuitem" onclick="handleSendDocumentEmail(event)">
                   <svg class="preview-menu-option-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.75 4.25h10.5v7.5H2.75v-7.5Z" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/><path d="m3.1 4.6 4.9 3.55L12.9 4.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   <span>שליחת מסמך במייל</span>
+                </button>
+                <button type="button" class="preview-menu-option" role="menuitem" onclick="handleOpenActivityLog(event)">
+                  <svg class="preview-menu-option-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.25" stroke="currentColor" stroke-width="1.35"/><path d="M8 5.25V8l2 1.5" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.25 4.1 4.6 2.85M12.75 4.1 11.4 2.85" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>
+                  <span>לוג פעילות</span>
                 </button>
                 <button type="button" class="preview-menu-option preview-menu-option--danger" role="menuitem" onclick="handleDeleteDocument(event)">
                   <svg class="preview-menu-option-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.25 4.75h9.5M6.25 4.75V3.5h3.5v1.25M5.25 4.75l.5 7.5h4.5l.5-7.5" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -3768,6 +4062,22 @@
   </div>
 </div>
 
+<div class="hq-note-modal" id="activityLogModal" aria-hidden="true">
+  <div class="hq-note-modal-backdrop" onclick="closeActivityLogModal()"></div>
+  <div class="hq-note-modal-card activity-log-modal-card" role="dialog" aria-modal="true" aria-labelledby="activityLogTitle">
+    <div class="activity-log-modal-header">
+      <div class="activity-log-modal-heading">
+        <h2 class="hq-note-modal-title" id="activityLogTitle">לוג פעילות</h2>
+        <p class="hq-note-modal-subtitle" style="margin-bottom:0;">
+          היסטוריית פעולות עבור <span class="hq-note-modal-doc" id="activityLogDocName">המסמך</span>
+        </p>
+      </div>
+      <button type="button" class="activity-log-modal-close" onclick="closeActivityLogModal()" aria-label="סגור">&times;</button>
+    </div>
+    <div class="activity-log-table-wrap" id="activityLogTableWrap"></div>
+  </div>
+</div>
+
 <div class="upload-analyze-modal" id="uploadAnalyzeModal" aria-hidden="true">
   <div class="upload-analyze-modal-backdrop" onclick="closeUploadAnalyzeModal()"></div>
   <div class="upload-analyze-modal-card" role="dialog" aria-modal="true" aria-labelledby="uploadAnalyzeTitle">
@@ -4150,6 +4460,33 @@
     countEl.textContent = String(selected.length);
   }
 
+  function syncBankerStatusFilterAvailability() {
+    const menu = document.getElementById('docStatusFilterMenu');
+    if (!menu) return;
+    const notUploadedInput = menu.querySelector('input[type="checkbox"][value="not-uploaded"]');
+    if (!notUploadedInput) return;
+
+    const lockBanker = notUploadedInput.checked;
+    const bankerValues = new Set(BANKER_FILTER_OPTIONS.map(o => o.value));
+    const sectionTitle = menu.querySelector('.status-multi-filter-section-title');
+    if (sectionTitle) sectionTitle.classList.toggle('is-disabled', lockBanker);
+
+    menu.querySelectorAll('.status-multi-filter-option').forEach(label => {
+      const input = label.querySelector('input[type="checkbox"]');
+      if (!input || !bankerValues.has(input.value)) return;
+      if (lockBanker) {
+        input.checked = false;
+        input.disabled = true;
+        label.classList.add('is-disabled');
+        label.setAttribute('aria-disabled', 'true');
+      } else {
+        input.disabled = false;
+        label.classList.remove('is-disabled');
+        label.removeAttribute('aria-disabled');
+      }
+    });
+  }
+
   function renderFilterOptionHtml(opt) {
     const dotHtml = opt.dot
       ? `<span class="status-dot ${opt.dot}" aria-hidden="true"></span>`
@@ -4184,6 +4521,7 @@
         )) +
       `<button type="button" class="status-multi-filter-clear" onclick="clearStatusFilter(event)">נקה בחירה</button>`;
 
+    syncBankerStatusFilterAvailability();
     syncStatusMultiFilterUi();
   }
 
@@ -4209,6 +4547,7 @@
   }
 
   function onStatusFilterChange() {
+    syncBankerStatusFilterAvailability();
     syncStatusMultiFilterUi();
     filterDocuments();
   }
@@ -4217,6 +4556,7 @@
     e.stopPropagation();
     document.querySelectorAll('#docStatusFilterMenu input[type="checkbox"]').forEach(input => {
       input.checked = false;
+      input.disabled = false;
     });
     onStatusFilterChange();
   }
@@ -4259,6 +4599,103 @@
     closePreviewMenu();
   }
 
+  function handleOpenActivityLog(e) {
+    e.stopPropagation();
+    closePreviewMenu();
+    openActivityLogModal(previewCurrentDocId);
+  }
+
+  const docActivityLogStore = {
+    poa: [
+      { action: 'הוספת הערה', by: 'דנה לוי', date: '07/07/2026 11:40' },
+      { action: 'שינוי סטטוס בנקאי', by: 'דנה לוי', date: '06/07/2026 10:12' },
+      { action: 'הוספת הערה', by: 'יוסי כהן', date: '06/07/2026 09:15' },
+      { action: 'שינוי סטטוס מטה', by: 'מירב כץ', date: '05/07/2026 16:48' },
+      { action: 'העלאת מסמך', by: 'דנה לוי', date: '05/07/2026 14:05' }
+    ],
+    appraisal: [
+      { action: 'הוספת הערה', by: 'דנה לוי', date: '14/07/2026 10:20' },
+      { action: 'שינוי סטטוס מטה', by: 'מירב כץ', date: '14/07/2026 09:55' },
+      { action: 'שינוי סטטוס בנקאי', by: 'דנה לוי', date: '14/07/2026 09:40' },
+      { action: 'העלאת מסמך', by: 'דנה לוי', date: '14/07/2026 09:10' }
+    ],
+    id329: [
+      { action: 'שינוי סטטוס בנקאי', by: 'דנה לוי', date: '11/07/2026 12:05' },
+      { action: 'העלאת מסמך', by: 'דנה לוי', date: '11/07/2026 11:50' },
+      { action: 'הוספת הערה', by: 'דנה לוי', date: '04/07/2026 16:20' },
+      { action: 'העלאת מסמך', by: 'יוסי כהן', date: '04/07/2026 15:40' }
+    ],
+    id601: [
+      { action: 'שינוי סטטוס בנקאי', by: 'דנה לוי', date: '03/07/2026 11:10' },
+      { action: 'הוספת הערה', by: 'דנה לוי', date: '03/07/2026 10:45' },
+      { action: 'העלאת מסמך', by: 'מערכת', date: '03/07/2026 08:00' }
+    ],
+    tabu: [
+      { action: 'שינוי סטטוס מטה', by: 'מירב כץ', date: '29/06/2026 14:20' },
+      { action: 'שינוי סטטוס בנקאי', by: 'דנה לוי', date: '28/06/2026 17:05' },
+      { action: 'העלאת מסמך', by: 'דנה לוי', date: '28/06/2026 11:30' }
+    ]
+  };
+
+  function getDocActivityLog(docId) {
+    if (docActivityLogStore[docId]) return docActivityLogStore[docId];
+    const doc = docs[docId];
+    const uploadedAt = doc?.uploadedAt || '01/07/2026';
+    return [
+      { action: 'שינוי סטטוס בנקאי', by: 'דנה לוי', date: `${uploadedAt} 15:20` },
+      { action: 'העלאת מסמך', by: 'דנה לוי', date: `${uploadedAt} 10:05` }
+    ];
+  }
+
+  function renderActivityLogTable(docId) {
+    const wrap = document.getElementById('activityLogTableWrap');
+    if (!wrap) return;
+    const entries = getDocActivityLog(docId);
+    if (!entries.length) {
+      wrap.innerHTML = '<div class="activity-log-empty">אין פעילות עדיין עבור מסמך זה</div>';
+      return;
+    }
+    wrap.innerHTML = `
+      <table class="activity-log-table">
+        <thead>
+          <tr>
+            <th>פעולה</th>
+            <th>בוצעה ע״י</th>
+            <th>תאריך</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${entries.map((entry) => `
+            <tr>
+              <td>${escapeHtml(entry.action)}</td>
+              <td>${escapeHtml(entry.by)}</td>
+              <td>${escapeHtml(entry.date)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  function openActivityLogModal(docId) {
+    const modal = document.getElementById('activityLogModal');
+    if (!modal) return;
+    const id = docId || previewCurrentDocId;
+    const doc = docs[id];
+    const nameEl = document.getElementById('activityLogDocName');
+    if (nameEl) nameEl.textContent = doc?.name || 'המסמך';
+    renderActivityLogTable(id);
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeActivityLogModal() {
+    const modal = document.getElementById('activityLogModal');
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
   function handlePrintDocument(e) {
     e.stopPropagation();
     closePreviewMenu();
@@ -4298,11 +4735,22 @@
     { filename: 'purchase_contract.pdf', suggestedType: 'חוזה רכישה חתום', preview: 'generic' }
   ];
 
+  const UPLOAD_ANALYZE_DOC_GROUPS = [
+    { id: 'docsDeliveryCat', label: 'מיועדים למסירה ללקוח' },
+    { id: 'docsSignatureCat', label: 'מיועדים לחתימת לקוח' },
+    { id: 'docsReceiveCat', label: 'צריכים להתקבל מהלקוח' }
+  ];
+
+  let uploadAnalyzeCustomCatalogs = [];
+  let uploadAnalyzeCustomIdSeq = 900;
+
   function getUploadAnalyzeCatalogOptions() {
     const names = [...document.querySelectorAll('.inbox-row .inbox-name')]
       .map(el => el.textContent.trim())
       .filter(Boolean);
-    return names.length ? names : UPLOAD_ANALYZE_FILES.map(f => f.suggestedType);
+    const customNames = uploadAnalyzeCustomCatalogs.map((c) => c.name);
+    const base = names.length ? names : UPLOAD_ANALYZE_FILES.map(f => f.suggestedType);
+    return [...new Set([...customNames, ...base])];
   }
 
   function setUploadAnalyzeScanProgress(current) {
@@ -4367,9 +4815,83 @@
     UPLOAD_ANALYZE_FILES.forEach((file) => {
       file.approved = false;
       file.catalogType = file.suggestedType;
+      file.isCustomCatalog = false;
+      delete file.catalogGroupId;
     });
     uploadAnalyzeSelectedIndex = 0;
     uploadAnalyzeAnimating = false;
+  }
+
+  function updateDocsSidebarTotalCount() {
+    const title = document.querySelector('.docs-sidebar .card-title');
+    if (!title) return;
+    const total = document.querySelectorAll('.docs-sidebar .inbox-row').length;
+    title.textContent = `כל המסמכים (${total})`;
+  }
+
+  function refreshDocsCategoryBadge(catId) {
+    const cat = document.getElementById(catId);
+    if (!cat) return;
+    const badge = cat.querySelector('.category-badge');
+    if (!badge) return;
+    const visible = [...cat.querySelectorAll('.inbox-row')].filter((row) => row.style.display !== 'none').length;
+    badge.textContent = String(visible);
+  }
+
+  function applyCustomCatalogsToInbox() {
+    const today = '15/07/2026';
+    let added = false;
+
+    UPLOAD_ANALYZE_FILES.forEach((file) => {
+      if (!file.approved || !file.isCustomCatalog || !file.catalogType) return;
+      const name = file.catalogType;
+      const already = [...document.querySelectorAll('.inbox-row .inbox-name')]
+        .some((el) => el.textContent.trim() === name);
+      if (already) return;
+
+      const groupId = file.catalogGroupId
+        || uploadAnalyzeCustomCatalogs.find((c) => c.name === name)?.groupId
+        || 'docsReceiveCat';
+      const body = document.querySelector(`#${groupId} .category-body`);
+      if (!body) return;
+
+      uploadAnalyzeCustomIdSeq += 1;
+      const docId = `custom${uploadAnalyzeCustomIdSeq}`;
+      const code = `משכ ${uploadAnalyzeCustomIdSeq}`;
+      docs[docId] = {
+        name,
+        code,
+        previewId: file.preview === 'poa' ? 'preview-poa' : 'preview-generic',
+        pages: 1,
+        uploadedAt: today
+      };
+
+      const row = document.createElement('div');
+      row.className = 'inbox-row';
+      row.dataset.doc = docId;
+      row.setAttribute('onclick', `selectDocument('${docId}')`);
+      row.innerHTML = `
+        <div class="inbox-info">
+          <div class="inbox-name">${escapeHtml(name)}</div>
+          <div class="inbox-code">${escapeHtml(code)}</div>
+        </div>
+        <select class="status-select pending" data-doc="${docId}" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+          <option value="pending" selected>ממתין לבדיקה</option>
+          <option value="returned">חזר לטיפול</option>
+          <option value="done">טופל</option>
+          <option value="notrelevant">לא רלוונטי</option>
+        </select>
+      `;
+      body.prepend(row);
+      refreshDocsCategoryBadge(groupId);
+      added = true;
+    });
+
+    if (!added) return;
+    initCapsuleSelects();
+    initInboxRowIndicators();
+    updateDocsSidebarTotalCount();
+    filterDocuments();
   }
 
   function getUploadAnalyzeFile(index) {
@@ -4403,6 +4925,13 @@
         ${escapeHtml(type)}
       </button>
     `).join('');
+    const groupsHtml = UPLOAD_ANALYZE_DOC_GROUPS.map((group, gi) => `
+      <label class="upload-analyze-catalog-group">
+        <input type="radio" name="uploadAnalyzeCatalogGroup${index}" value="${group.id}"${gi === 0 ? ' checked' : ''}
+          onchange="syncUploadAnalyzeCatalogCreateBtn(${index})">
+        <span>${escapeHtml(group.label)}</span>
+      </label>
+    `).join('');
     return `
       <div class="upload-analyze-catalog" data-index="${index}" onclick="event.stopPropagation()">
         <button type="button"
@@ -4415,20 +4944,153 @@
           <span class="capsule-select-chevron" aria-hidden="true"></span>
         </button>
         <div class="upload-analyze-catalog-menu" role="listbox">
-          <div class="upload-analyze-catalog-search">
-            <span class="upload-analyze-catalog-search-icon" aria-hidden="true"></span>
-            <input type="search"
-              placeholder="חיפוש קטלוג..."
-              autocomplete="off"
-              aria-label="חיפוש קטלוג"
-              onclick="event.stopPropagation()"
-              oninput="filterUploadAnalyzeCatalog(${index}, this.value)">
+          <div class="upload-analyze-catalog-pane upload-analyze-catalog-pane--browse" data-pane="browse">
+            <div class="upload-analyze-catalog-search">
+              <span class="upload-analyze-catalog-search-icon" aria-hidden="true"></span>
+              <input type="search"
+                placeholder="חיפוש קטלוג..."
+                autocomplete="off"
+                aria-label="חיפוש קטלוג"
+                onclick="event.stopPropagation()"
+                oninput="filterUploadAnalyzeCatalog(${index}, this.value)">
+            </div>
+            <div class="upload-analyze-catalog-options">
+              ${optionsHtml}
+              <div class="upload-analyze-catalog-divider" role="separator"></div>
+              <button type="button"
+                class="upload-analyze-catalog-add"
+                onclick="event.stopPropagation(); openUploadAnalyzeCatalogCreate(${index})">
+                <span class="upload-analyze-catalog-add-icon" aria-hidden="true">+</span>
+                <span>הוספת קטלוג מסמך</span>
+              </button>
+            </div>
+            <div class="upload-analyze-catalog-empty">לא נמצאו תוצאות</div>
           </div>
-          <div class="upload-analyze-catalog-options">${optionsHtml}</div>
-          <div class="upload-analyze-catalog-empty">לא נמצאו תוצאות</div>
+          <div class="upload-analyze-catalog-pane upload-analyze-catalog-pane--create" data-pane="create" hidden>
+            <button type="button" class="upload-analyze-catalog-back"
+              onclick="event.stopPropagation(); backUploadAnalyzeCatalogCreate(${index})">
+              <span class="upload-analyze-catalog-back-arrow" aria-hidden="true">→</span>
+              <span>חזרה</span>
+            </button>
+            <p class="upload-analyze-catalog-create-title">הוספת קטלוג מסמך</p>
+            <div class="upload-analyze-catalog-field">
+              <label class="upload-analyze-catalog-field-label" for="uploadAnalyzeCatalogName${index}">שם המסמך</label>
+              <input type="text" id="uploadAnalyzeCatalogName${index}" maxlength="80"
+                placeholder="לדוגמה: אישור עירייה"
+                autocomplete="off"
+                onclick="event.stopPropagation()"
+                oninput="syncUploadAnalyzeCatalogCreateBtn(${index})"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();createUploadAnalyzeCatalog(${index});}">
+            </div>
+            <div class="upload-analyze-catalog-field">
+              <span class="upload-analyze-catalog-field-label">קבוצת מסמכים</span>
+              <div class="upload-analyze-catalog-groups" role="radiogroup" aria-label="קבוצת מסמכים">
+                ${groupsHtml}
+              </div>
+            </div>
+            <button type="button" class="upload-analyze-catalog-create-btn" disabled
+              onclick="event.stopPropagation(); createUploadAnalyzeCatalog(${index})">
+              יצירת קטלוג חדש
+            </button>
+          </div>
         </div>
       </div>
     `;
+  }
+
+  function setUploadAnalyzeCatalogPane(wrap, pane) {
+    if (!wrap) return;
+    const menu = wrap.querySelector('.upload-analyze-catalog-menu');
+    const browse = wrap.querySelector('[data-pane="browse"]');
+    const create = wrap.querySelector('[data-pane="create"]');
+    if (!menu || !browse || !create) return;
+    const isCreate = pane === 'create';
+    browse.hidden = isCreate;
+    create.hidden = !isCreate;
+    menu.classList.toggle('is-create', isCreate);
+    if (!isCreate) {
+      const nameInput = create.querySelector('input[type="text"]');
+      if (nameInput) nameInput.value = '';
+      const firstGroup = create.querySelector('input[type="radio"]');
+      if (firstGroup) firstGroup.checked = true;
+      syncUploadAnalyzeCatalogCreateBtn(Number(wrap.dataset.index));
+    }
+  }
+
+  function openUploadAnalyzeCatalogCreate(index) {
+    const wrap = document.querySelector(`.upload-analyze-catalog[data-index="${index}"]`);
+    if (!wrap) return;
+    if (!wrap.classList.contains('open')) toggleUploadAnalyzeCatalog(index);
+    setUploadAnalyzeCatalogPane(wrap, 'create');
+    positionUploadAnalyzeCatalogMenu(wrap);
+    const nameInput = wrap.querySelector('.upload-analyze-catalog-pane--create input[type="text"]');
+    requestAnimationFrame(() => nameInput?.focus());
+  }
+
+  function backUploadAnalyzeCatalogCreate(index) {
+    const wrap = document.querySelector(`.upload-analyze-catalog[data-index="${index}"]`);
+    if (!wrap) return;
+    setUploadAnalyzeCatalogPane(wrap, 'browse');
+    positionUploadAnalyzeCatalogMenu(wrap);
+    const search = wrap.querySelector('.upload-analyze-catalog-search input');
+    requestAnimationFrame(() => search?.focus());
+  }
+
+  function syncUploadAnalyzeCatalogCreateBtn(index) {
+    const wrap = document.querySelector(`.upload-analyze-catalog[data-index="${index}"]`);
+    if (!wrap) return;
+    const nameInput = wrap.querySelector('.upload-analyze-catalog-pane--create input[type="text"]');
+    const btn = wrap.querySelector('.upload-analyze-catalog-create-btn');
+    if (!nameInput || !btn) return;
+    btn.disabled = !nameInput.value.trim();
+  }
+
+  function createUploadAnalyzeCatalog(index) {
+    const wrap = document.querySelector(`.upload-analyze-catalog[data-index="${index}"]`);
+    const file = getUploadAnalyzeFile(index);
+    if (!wrap || !file) return;
+    const nameInput = wrap.querySelector('.upload-analyze-catalog-pane--create input[type="text"]');
+    const groupInput = wrap.querySelector('.upload-analyze-catalog-pane--create input[type="radio"]:checked');
+    const name = (nameInput?.value || '').trim();
+    const groupId = groupInput?.value || 'docsReceiveCat';
+    if (!name) {
+      nameInput?.focus();
+      return;
+    }
+
+    const existingCustom = uploadAnalyzeCustomCatalogs.find((c) => c.name === name);
+    if (!existingCustom) {
+      uploadAnalyzeCustomCatalogs.unshift({ name, groupId });
+    } else {
+      existingCustom.groupId = groupId;
+    }
+
+    file.catalogType = name;
+    file.catalogGroupId = groupId;
+    file.isCustomCatalog = true;
+
+    const optionsEl = wrap.querySelector('.upload-analyze-catalog-options');
+    if (optionsEl) {
+      const exists = [...optionsEl.querySelectorAll('.capsule-select-option')]
+        .some((btn) => btn.dataset.value === name);
+      if (!exists) {
+        const divider = optionsEl.querySelector('.upload-analyze-catalog-divider');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'capsule-select-option selected';
+        btn.dataset.value = name;
+        btn.textContent = name;
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          pickUploadAnalyzeCatalog(index, name);
+        };
+        if (divider) optionsEl.insertBefore(btn, divider);
+        else optionsEl.appendChild(btn);
+      }
+    }
+
+    setUploadAnalyzeCatalogPane(wrap, 'browse');
+    pickUploadAnalyzeCatalog(index, name);
   }
 
   function closeUploadAnalyzeCatalogMenus() {
@@ -4436,6 +5098,7 @@
       wrap.classList.remove('open');
       const trigger = wrap.querySelector('.upload-analyze-catalog-trigger');
       if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      setUploadAnalyzeCatalogPane(wrap, 'browse');
       const input = wrap.querySelector('.upload-analyze-catalog-search input');
       if (input) {
         input.value = '';
@@ -4449,13 +5112,14 @@
     const trigger = wrap.querySelector('.upload-analyze-catalog-trigger');
     if (!menu || !trigger) return;
     const rect = trigger.getBoundingClientRect();
-    const menuWidth = Math.max(rect.width, 260);
+    const isCreate = menu.classList.contains('is-create');
+    const menuWidth = Math.max(rect.width, isCreate ? 300 : 260);
     let right = window.innerWidth - rect.right;
     if (right + menuWidth > window.innerWidth - 12) {
       right = Math.max(12, window.innerWidth - menuWidth - 12);
     }
     let top = rect.bottom + 6;
-    const estimatedHeight = 300;
+    const estimatedHeight = isCreate ? 420 : 340;
     if (top + estimatedHeight > window.innerHeight - 12) {
       top = Math.max(12, rect.top - estimatedHeight - 6);
     }
@@ -4474,6 +5138,7 @@
     wrap.classList.add('open');
     const trigger = wrap.querySelector('.upload-analyze-catalog-trigger');
     if (trigger) trigger.setAttribute('aria-expanded', 'true');
+    setUploadAnalyzeCatalogPane(wrap, 'browse');
     positionUploadAnalyzeCatalogMenu(wrap);
     selectUploadAnalyzeRow(index);
     const input = wrap.querySelector('.upload-analyze-catalog-search input');
@@ -4504,6 +5169,10 @@
     const wrap = document.querySelector(`.upload-analyze-catalog[data-index="${index}"]`);
     if (!file || !type) return;
     file.catalogType = type;
+    const custom = uploadAnalyzeCustomCatalogs.find((c) => c.name === type);
+    file.isCustomCatalog = !!custom;
+    if (custom) file.catalogGroupId = custom.groupId;
+    else delete file.catalogGroupId;
     if (wrap) {
       const label = wrap.querySelector('.upload-analyze-catalog-label');
       if (label) label.textContent = type;
@@ -4784,6 +5453,7 @@
 
     if (uploadAnalyzeFinishTimer) clearTimeout(uploadAnalyzeFinishTimer);
     uploadAnalyzeFinishTimer = setTimeout(() => {
+      applyCustomCatalogsToInbox();
       doneBtn.classList.remove('is-busy');
       doneBtn.classList.add('is-success');
       uploadAnalyzeFinishTimer = setTimeout(() => {
@@ -5257,6 +5927,10 @@
       closeInvalidNotePopup();
       return;
     }
+    if (document.getElementById('activityLogModal')?.classList.contains('open')) {
+      closeActivityLogModal();
+      return;
+    }
     if (getActiveSidePanelMode()) {
       closeDocSidePanel();
     }
@@ -5703,12 +6377,24 @@
 
   function renderDocAiNotes() {
     const list = document.getElementById('docNotesList');
+    const panel = document.getElementById('docNotesPanel');
     const notes = getDocAiNotes(previewCurrentDocId);
-    if (!notes.length) {
-      list.innerHTML = '<div class="doc-notes-empty">אין ניתוח AI על מסמך זה</div>';
-      return;
+    const isAppraisal = previewCurrentDocId === 'appraisal';
+    if (panel) {
+      panel.classList.toggle(
+        'has-appraisal-summary',
+        isAppraisal && panel.classList.contains('is-open') && panel.classList.contains('mode-ai')
+      );
     }
-    list.innerHTML = notes.map(note => `
+
+    let html = '';
+    if (isAppraisal) {
+      html += '<div class="doc-ai-section-title">הערות AI</div>';
+    }
+    if (!notes.length) {
+      html += `<div class="doc-notes-empty">${isAppraisal ? 'אין הערות AI על מסמך זה' : 'אין ניתוח AI על מסמך זה'}</div>`;
+    } else {
+      html += notes.map(note => `
       <article class="doc-note-item doc-note-item--ai">
         <div class="doc-note-meta">
             <span class="doc-note-author doc-note-author--ai">
@@ -5720,25 +6406,16 @@
         <div class="doc-note-text">${note.text}</div>
       </article>
     `).join('');
+    }
+    list.innerHTML = html;
   }
 
   function getActiveSidePanelMode() {
     const panel = document.getElementById('docNotesPanel');
     if (!panel?.classList.contains('is-open')) return null;
-    if (panel.classList.contains('mode-summary')) return 'summary';
     if (panel.classList.contains('mode-ai')) return 'ai';
     if (panel.classList.contains('mode-notes')) return 'notes';
     return null;
-  }
-
-  function updatePreviewSummaryBtn() {
-    const wrap = document.getElementById('previewSummaryWrap');
-    if (!wrap) return;
-    const show = previewCurrentDocId === 'appraisal';
-    wrap.classList.toggle('is-visible', show);
-    if (!show && getActiveSidePanelMode() === 'summary') {
-      closeDocSidePanel();
-    }
   }
 
   function closeDocSidePanel() {
@@ -5749,7 +6426,6 @@
     const panel = document.getElementById('docNotesPanel');
     const notesBtn = document.getElementById('previewNotesBtn');
     const aiBtn = document.getElementById('previewAiBtn');
-    const summaryBtn = document.getElementById('previewSummaryBtn');
     const title = document.getElementById('docSidePanelTitle');
     if (!panel || !notesBtn || !aiBtn || !title) return;
 
@@ -5760,20 +6436,18 @@
     panel.classList.toggle('is-open', isOpen);
     panel.classList.toggle('mode-notes', isOpen && mode === 'notes');
     panel.classList.toggle('mode-ai', isOpen && mode === 'ai');
-    panel.classList.toggle('mode-summary', isOpen && mode === 'summary');
+    panel.classList.toggle('mode-summary', false);
+    panel.classList.toggle('has-appraisal-summary', isOpen && mode === 'ai' && previewCurrentDocId === 'appraisal');
     panel.setAttribute('aria-hidden', String(!isOpen));
 
     notesBtn.classList.toggle('active', isOpen && mode === 'notes');
     notesBtn.setAttribute('aria-expanded', String(isOpen && mode === 'notes'));
     aiBtn.classList.toggle('active', isOpen && mode === 'ai');
     aiBtn.setAttribute('aria-expanded', String(isOpen && mode === 'ai'));
-    if (summaryBtn) {
-      summaryBtn.classList.toggle('active', isOpen && mode === 'summary');
-      summaryBtn.setAttribute('aria-expanded', String(isOpen && mode === 'summary'));
-    }
 
     if (!isOpen) {
       title.textContent = 'הערות';
+      panel.classList.remove('has-appraisal-summary');
       document.getElementById('docNotesInput')?.blur();
       return;
     }
@@ -5781,11 +6455,10 @@
     if (mode === 'ai') {
       title.innerHTML = '<span class="doc-notes-title-ai">' + AI_ICON_SVG_MD + 'ניתוח AI</span>';
       renderDocAiNotes();
-    } else if (mode === 'summary') {
-      title.textContent = 'דו״ח מסכם';
       panel.scrollTop = 0;
     } else {
       title.textContent = 'הערות';
+      panel.classList.remove('has-appraisal-summary');
       renderDocNotes();
       const input = document.getElementById('docNotesInput');
       if (!input) return;
@@ -5816,13 +6489,6 @@
     const isAiOpen = getActiveSidePanelMode() === 'ai';
     const shouldOpen = forceOpen !== undefined ? forceOpen : !isAiOpen;
     toggleDocSidePanel('ai', shouldOpen);
-  }
-
-  function toggleDocSummaryPanel(forceOpen) {
-    if (previewCurrentDocId !== 'appraisal') return;
-    const isOpen = getActiveSidePanelMode() === 'summary';
-    const shouldOpen = forceOpen !== undefined ? forceOpen : !isOpen;
-    toggleDocSidePanel('summary', shouldOpen);
   }
 
   function addDocNote() {
@@ -5877,7 +6543,6 @@
     applySelectedDocumentContent(id);
     updatePreviewNotesBadge();
     updatePreviewAiBadge();
-    updatePreviewSummaryBtn();
     renderPreviewHqStatus();
     const panelMode = getActiveSidePanelMode();
     if (panelMode === 'notes') renderDocNotes();
@@ -5995,7 +6660,6 @@
   }
 
   initCapsuleSelects();
-  updatePreviewSummaryBtn();
   initInboxRowIndicators();
   syncStatusMultiFilterUi();
   seedDemoHqStatusesForBanker();
@@ -6008,7 +6672,7 @@
     if (!panel || panel.dataset.wheelBound) return;
     panel.dataset.wheelBound = '1';
     panel.addEventListener('wheel', (e) => {
-      if (!panel.classList.contains('is-open') || !panel.classList.contains('mode-summary')) return;
+      if (!panel.classList.contains('is-open') || !panel.classList.contains('has-appraisal-summary')) return;
       const max = panel.scrollHeight - panel.clientHeight;
       if (max <= 0) return;
       const next = Math.min(max, Math.max(0, panel.scrollTop + e.deltaY));
