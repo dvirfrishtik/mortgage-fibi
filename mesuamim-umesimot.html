@@ -2466,24 +2466,27 @@
     .upload-analyze-catalog-back {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
       align-self: flex-start;
+      width: 28px;
+      height: 28px;
       border: none;
+      border-radius: 99px;
       background: transparent;
-      padding: 2px 0;
+      padding: 0;
       font-family: inherit;
-      font-size: 12px;
+      font-size: 18px;
       font-weight: 700;
       color: var(--navy);
       cursor: pointer;
+      line-height: 1;
     }
     .upload-analyze-catalog-back:hover {
-      text-decoration: underline;
+      background: var(--navy-50);
     }
     .upload-analyze-catalog-back-arrow {
       display: inline-block;
-      transform: scaleX(-1);
-      font-size: 14px;
+      font-size: 18px;
       line-height: 1;
     }
     .upload-analyze-catalog-create-title {
@@ -4084,7 +4087,7 @@
     <button type="button" class="upload-analyze-modal-close" onclick="closeUploadAnalyzeModal()" aria-label="סגור">&times;</button>
     <div class="upload-analyze-step is-active" id="uploadAnalyzeLoadingStep" data-step="loading">
       <div class="upload-analyze-loader" id="uploadAnalyzeLottie" aria-hidden="true"></div>
-      <h2 class="upload-analyze-title" id="uploadAnalyzeTitle">מתבצע ניתוח AI</h2>
+      <h2 class="upload-analyze-title" id="uploadAnalyzeTitle">מתבצע ניתוח AI...</h2>
       <p class="upload-analyze-subtitle" id="uploadAnalyzeSubtitle">1/12 מסמכים נסרקו</p>
     </div>
     <div class="upload-analyze-step" id="uploadAnalyzeReviewStep" data-step="review" hidden>
@@ -4967,10 +4970,9 @@
             <div class="upload-analyze-catalog-empty">לא נמצאו תוצאות</div>
           </div>
           <div class="upload-analyze-catalog-pane upload-analyze-catalog-pane--create" data-pane="create" hidden>
-            <button type="button" class="upload-analyze-catalog-back"
+            <button type="button" class="upload-analyze-catalog-back" aria-label="חזרה"
               onclick="event.stopPropagation(); backUploadAnalyzeCatalogCreate(${index})">
               <span class="upload-analyze-catalog-back-arrow" aria-hidden="true">→</span>
-              <span>חזרה</span>
             </button>
             <p class="upload-analyze-catalog-create-title">הוספת קטלוג מסמך</p>
             <div class="upload-analyze-catalog-field">
