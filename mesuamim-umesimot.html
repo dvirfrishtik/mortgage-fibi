@@ -93,10 +93,15 @@
     /* LEFT — independent tasks card */
     .tasks-region {
       order: 2;
-      width: 320px;
+      width: 420px;
       flex-shrink: 0;
+      align-self: stretch;
+      height: 100%;
+      max-height: 100%;
       min-height: 0;
       display: flex;
+      position: relative;
+      overflow: hidden;
       /* left = page margin (32), right = gap toward the doc group (20) */
       padding: 24px 20px 24px 32px;
     }
@@ -1704,30 +1709,40 @@
       overflow-y: auto;
       padding: 16px 28px 24px;
       position: relative;
-      transition: flex 0.28s ease;
     }
+    /* Notes / AI slide-over: covers the tasks column, no screen dimming.
+       Uses left (not transform) so overflow scrolling works reliably. */
     .doc-notes-panel {
-      width: 0;
-      flex-shrink: 0;
-      overflow: hidden;
-      background: var(--surface);
-      border-inline-start: 1px solid transparent;
-      transition: width 0.28s ease, border-color 0.28s ease;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -105%;
+      width: 100%;
+      height: 100%;
+      max-height: 100%;
+      z-index: 40;
       display: flex;
       flex-direction: column;
+      background: var(--surface);
+      border-inline-end: 1px solid var(--border-light);
+      box-shadow: 8px 0 28px rgba(27, 42, 107, 0.08);
+      transition: left 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+      overflow: hidden;
     }
-    .doc-preview-layout.notes-open .doc-notes-panel,
-    .doc-preview-layout.ai-open .doc-notes-panel {
-      width: 300px;
-      border-inline-start-color: var(--border-light);
+    .doc-notes-panel.is-open {
+      left: 0;
+      pointer-events: auto;
     }
     .doc-notes-panel-inner {
-      width: 300px;
-      min-width: 300px;
+      position: relative;
+      width: 100%;
+      min-width: 0;
       height: 100%;
       display: flex;
       flex-direction: column;
       min-height: 0;
+      overflow: hidden;
     }
     .doc-notes-header {
       flex-shrink: 0;
@@ -1912,6 +1927,570 @@
       border-radius: var(--radius-sm);
     }
     .hq-note-modal-cancel:hover { color: var(--navy); background: var(--navy-50); }
+
+    /* Bulk upload AI categorization modal */
+    .upload-analyze-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .upload-analyze-modal.open {
+      display: flex;
+    }
+    .upload-analyze-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(19, 32, 79, 0.5);
+      animation: hqModalFadeIn 0.2s ease-out;
+    }
+    .upload-analyze-modal-card {
+      position: relative;
+      width: 80vw;
+      height: 80vh;
+      max-width: 80vw;
+      max-height: 80vh;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: hqModalPopIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .upload-analyze-modal-close {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: auto;
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 99px;
+      background: var(--bg);
+      color: var(--text-muted);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .upload-analyze-modal-close:hover {
+      background: var(--navy-50);
+      color: var(--navy);
+    }
+    .upload-analyze-step {
+      flex: 1;
+      min-height: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 48px;
+      text-align: center;
+    }
+    .upload-analyze-step.is-active {
+      display: flex;
+    }
+    .upload-analyze-loader {
+      width: min(220px, 36vw);
+      height: min(220px, 36vw);
+      margin-bottom: 28px;
+    }
+    .upload-analyze-title {
+      margin: 0 0 10px;
+      font-size: clamp(22px, 2.4vw, 30px);
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.3;
+    }
+    .upload-analyze-subtitle {
+      margin: 0;
+      font-size: clamp(14px, 1.4vw, 17px);
+      font-weight: 500;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    .upload-analyze-review {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+    }
+    .upload-analyze-list-panel {
+      width: min(46%, 560px);
+      flex-shrink: 0;
+      border-inline-start: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .upload-analyze-list-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 8px;
+    }
+    .upload-analyze-acc {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      background: var(--surface);
+      overflow: hidden;
+    }
+    .upload-analyze-acc.is-collapsed .upload-analyze-acc-body {
+      display: none;
+    }
+    .upload-analyze-acc-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border: none;
+      background: #F7F8FA;
+      cursor: pointer;
+      font-family: inherit;
+      text-align: right;
+    }
+    .upload-analyze-acc-header:hover {
+      background: #F0F1F4;
+    }
+    .upload-analyze-acc-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .upload-analyze-acc-chevron {
+      width: 11px;
+      height: 7px;
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231B2A6B' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      transition: transform 0.2s;
+    }
+    .upload-analyze-acc.is-collapsed .upload-analyze-acc-chevron {
+      transform: rotate(180deg);
+    }
+    .upload-analyze-acc-body {
+      padding: 6px;
+      border-top: 1px solid var(--border-light);
+    }
+    .upload-analyze-acc-empty {
+      padding: 16px 12px;
+      font-size: 12px;
+      color: var(--text-faint);
+      text-align: center;
+    }
+    .upload-analyze-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition:
+        background 0.12s,
+        border-color 0.12s,
+        opacity 0.28s ease,
+        transform 0.28s ease,
+        max-height 0.3s ease,
+        padding 0.3s ease,
+        margin 0.3s ease;
+      max-height: 84px;
+      overflow: hidden;
+    }
+    .upload-analyze-row:hover {
+      background: #F7F8FA;
+    }
+    .upload-analyze-row.is-selected {
+      background: #F0F3FA;
+      border-color: var(--navy-100);
+    }
+    .upload-analyze-row.is-moving-out {
+      opacity: 0;
+      transform: translateX(18px);
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      margin: 0;
+      border-color: transparent;
+      pointer-events: none;
+    }
+    .upload-analyze-row.is-moving-in {
+      animation: uploadAnalyzeRowEnter 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    @keyframes uploadAnalyzeRowEnter {
+      from {
+        opacity: 0;
+        transform: translateX(-14px);
+        max-height: 0;
+      }
+      to {
+        opacity: 1;
+        transform: none;
+        max-height: 84px;
+      }
+    }
+    .upload-analyze-filename {
+      flex: 1;
+      min-width: 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-body);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: right;
+      direction: ltr;
+    }
+    .upload-analyze-catalog {
+      position: relative;
+      flex: 1.15;
+      min-width: 0;
+      max-width: 220px;
+      z-index: 1;
+    }
+    .upload-analyze-catalog.open {
+      z-index: 40;
+    }
+    .upload-analyze-catalog-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      background: var(--surface);
+      padding: 7px 12px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--navy);
+      cursor: pointer;
+      text-align: right;
+      transition: box-shadow 0.15s, border-color 0.15s;
+    }
+    .upload-analyze-catalog-trigger:hover {
+      box-shadow: var(--shadow-sm);
+    }
+    .upload-analyze-catalog.open .upload-analyze-catalog-trigger {
+      border-color: var(--navy-100);
+      box-shadow: 0 0 0 3px var(--navy-50);
+    }
+    .upload-analyze-catalog-label {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .upload-analyze-catalog.open .capsule-select-chevron {
+      transform: rotate(180deg);
+    }
+    .upload-analyze-catalog-menu {
+      display: none;
+      position: fixed;
+      z-index: 1200;
+      min-width: 240px;
+      max-width: min(360px, calc(100vw - 24px));
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 8px;
+      text-align: right;
+    }
+    .upload-analyze-catalog.open .upload-analyze-catalog-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .upload-analyze-catalog-search {
+      position: relative;
+      flex-shrink: 0;
+    }
+    .upload-analyze-catalog-search input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      padding: 9px 12px 9px 34px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-body);
+      text-align: right;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .upload-analyze-catalog-search input::placeholder {
+      color: var(--text-faint);
+      font-weight: 500;
+    }
+    .upload-analyze-catalog-search input:focus {
+      border-color: var(--navy-100);
+      box-shadow: 0 0 0 3px var(--navy-50);
+      background: var(--surface);
+    }
+    .upload-analyze-catalog-search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      opacity: 0.45;
+      pointer-events: none;
+      background: no-repeat center / contain
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Ccircle cx='6.2' cy='6.2' r='4.4' stroke='%236B7280' stroke-width='1.5'/%3E%3Cpath d='M9.5 9.5 12.2 12.2' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+    .upload-analyze-catalog-options {
+      max-height: 220px;
+      overflow-y: auto;
+      padding: 2px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .upload-analyze-catalog-options .capsule-select-option {
+      white-space: normal;
+      line-height: 1.35;
+      padding: 9px 12px;
+      font-size: 12.5px;
+    }
+    .upload-analyze-catalog-empty {
+      display: none;
+      padding: 16px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-faint);
+      text-align: center;
+    }
+    .upload-analyze-catalog-empty.is-visible {
+      display: block;
+    }
+    .upload-analyze-type-text {
+      flex: 1.15;
+      min-width: 0;
+      max-width: 210px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: right;
+    }
+    .upload-analyze-approve-btn,
+    .upload-analyze-edit-btn {
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      background: var(--surface);
+      color: var(--navy);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .upload-analyze-approve-btn:hover,
+    .upload-analyze-edit-btn:hover {
+      background: var(--navy-50);
+      border-color: var(--navy-100);
+    }
+    .upload-analyze-footer {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-light);
+      background: var(--surface);
+    }
+    .upload-analyze-footer-status {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .upload-analyze-footer-done {
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--navy);
+      color: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 18px;
+      cursor: pointer;
+      min-width: 148px;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .upload-analyze-footer-done:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+    .upload-analyze-footer-done:not(:disabled):hover {
+      background: var(--navy-dark);
+    }
+    .upload-analyze-footer-done.is-busy,
+    .upload-analyze-footer-done.is-success {
+      pointer-events: none;
+      opacity: 1;
+      cursor: default;
+    }
+    .upload-analyze-footer-done.is-busy:hover,
+    .upload-analyze-footer-done.is-success:hover {
+      background: var(--navy);
+    }
+    .upload-analyze-footer-done.is-success {
+      background: var(--green);
+    }
+    .upload-analyze-footer-done.is-success:hover {
+      background: var(--green);
+    }
+    .upload-analyze-footer-done-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .upload-analyze-footer-done.is-busy .upload-analyze-footer-done-label,
+    .upload-analyze-footer-done.is-success .upload-analyze-footer-done-label {
+      display: none;
+    }
+    .upload-analyze-footer-done-loader {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.28);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: uploadAnalyzeBtnSpin 0.65s linear infinite;
+    }
+    .upload-analyze-footer-done.is-busy .upload-analyze-footer-done-loader {
+      display: block;
+    }
+    .upload-analyze-footer-done-success {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      animation: uploadAnalyzeBtnSuccessIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .upload-analyze-footer-done.is-success .upload-analyze-footer-done-success {
+      display: inline-flex;
+    }
+    .upload-analyze-footer-done-check {
+      width: 16px;
+      height: 12px;
+      flex-shrink: 0;
+      background: no-repeat center / contain
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12' fill='none'%3E%3Cpath d='M1.5 6.2 5.6 10.2 14.5 1.5' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      animation: taskSuccessCheck 0.3s ease 0.08s both;
+    }
+    @keyframes uploadAnalyzeBtnSpin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes uploadAnalyzeBtnSuccessIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: none; }
+    }
+    .upload-analyze-preview-panel {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      background: #F3F4F6;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+    .upload-analyze-preview-meta {
+      flex-shrink: 0;
+      margin-bottom: 12px;
+      text-align: right;
+    }
+    .upload-analyze-preview-filename {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-body);
+      direction: ltr;
+      text-align: right;
+    }
+    .upload-analyze-preview-type {
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .upload-analyze-preview-frame {
+      flex: 1;
+      min-height: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .upload-analyze-preview-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .upload-analyze-preview-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--text-faint);
+      font-size: 15px;
+      font-weight: 600;
+      padding: 24px;
+      text-align: center;
+    }
+    .upload-analyze-preview-placeholder svg {
+      width: 42px;
+      height: 42px;
+      opacity: 0.55;
+    }
+    .upload-analyze-step[data-step="review"] {
+      padding: 0;
+      align-items: stretch;
+      justify-content: stretch;
+      text-align: initial;
+    }
+    .upload-analyze-step[data-step="review"].is-active {
+      display: flex;
+    }
+
     .doc-note-meta {
       display: flex;
       align-items: center;
@@ -1951,8 +2530,237 @@
       border-color: rgba(27, 42, 107, 0.12);
       background: linear-gradient(180deg, #F5F7FC 0%, var(--bg) 100%);
     }
-    .doc-preview-layout.ai-open .doc-notes-compose {
+    .doc-notes-panel.mode-ai .doc-notes-compose,
+    .doc-notes-panel.mode-summary .doc-notes-compose {
+      display: none !important;
+    }
+    .doc-notes-panel.mode-summary .doc-notes-list {
+      display: none !important;
+    }
+    .doc-summary-body {
       display: none;
+      background: var(--bg);
+    }
+    /* When the slide-over is open, ignore the tasks column underneath
+       so wheel/trackpad scrolling hits the panel and not left-col. */
+    .tasks-region:has(.doc-notes-panel.is-open) .left-col {
+      pointer-events: none;
+    }
+    /* Summary mode: the panel itself scrolls (avoids nested overflow issues) */
+    .doc-notes-panel.mode-summary {
+      overflow-x: hidden;
+      overflow-y: scroll;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: #C5CAD6 transparent;
+    }
+    .doc-notes-panel.mode-summary .doc-notes-panel-inner {
+      display: block;
+      height: auto;
+      min-height: 100%;
+      overflow: visible;
+    }
+    .doc-notes-panel.mode-summary .doc-notes-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: var(--surface);
+    }
+    .doc-notes-panel.mode-summary .doc-summary-body {
+      display: block;
+      position: static;
+      overflow: visible;
+      padding: 12px 12px 28px;
+      box-sizing: border-box;
+    }
+    .doc-notes-panel.mode-summary::-webkit-scrollbar {
+      width: 8px;
+    }
+    .doc-notes-panel.mode-summary::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .doc-notes-panel.mode-summary::-webkit-scrollbar-thumb {
+      background: #C5CAD6;
+      border-radius: 99px;
+    }
+    .doc-summary-card {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 12px;
+    }
+    .doc-summary-card:last-child {
+      margin-bottom: 0;
+    }
+    .doc-summary-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #EEF1F7;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .doc-summary-card-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .doc-summary-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.3;
+    }
+    .doc-summary-kv {
+      display: flex;
+      flex-direction: column;
+    }
+    .doc-summary-kv-row {
+      display: grid;
+      grid-template-columns: minmax(110px, 42%) 1fr;
+      gap: 10px;
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    .doc-summary-kv-row:nth-child(even) {
+      background: #F8F9FB;
+    }
+    .doc-summary-kv-row:last-child {
+      border-bottom: none;
+    }
+    .doc-summary-kv-label {
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .doc-summary-kv-value {
+      color: var(--text-body);
+      font-weight: 500;
+    }
+    .doc-summary-list {
+      list-style: none;
+      margin: 0;
+      padding: 8px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .doc-summary-list-item {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--text-body);
+    }
+    .doc-summary-bullet {
+      width: 6px;
+      height: 6px;
+      margin-top: 7px;
+      border-radius: 50%;
+      background: var(--navy);
+      flex-shrink: 0;
+    }
+    .doc-summary-list-item strong {
+      color: var(--navy);
+      font-weight: 700;
+    }
+    .doc-summary-flag-list {
+      list-style: none;
+      margin: 0;
+      padding: 8px 12px 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      counter-reset: summary-flag;
+    }
+    .doc-summary-flag-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--text-body);
+      counter-increment: summary-flag;
+    }
+    .doc-summary-flag-item::before {
+      content: counter(summary-flag) ".";
+      font-weight: 700;
+      color: var(--navy);
+      flex-shrink: 0;
+      min-width: 1.2em;
+    }
+    .doc-summary-flag-item.is-warn {
+      background: #FFF8E8;
+      border: 1px solid rgba(230, 168, 34, 0.28);
+    }
+    .doc-summary-flag-main {
+      flex: 1;
+      min-width: 0;
+    }
+    .doc-summary-flag-main strong {
+      color: var(--navy);
+      font-weight: 700;
+    }
+    .doc-summary-flag-mark {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      margin-top: 1px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .doc-summary-flag-mark.is-ok {
+      background: #E7F6EC;
+      color: var(--green);
+    }
+    .doc-summary-flag-mark.is-warn {
+      background: #FFF1C9;
+      color: #C98500;
+    }
+    .doc-summary-flag-mark svg {
+      width: 12px;
+      height: 12px;
+      display: block;
+    }
+    .doc-summary-footnote {
+      margin: 0 12px 12px;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      background: #F0F3FA;
+      color: var(--navy);
+      font-size: 12.5px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .doc-summary-highlight {
+      background: #FFF4C7;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+    .preview-summary-wrap {
+      display: none;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .preview-summary-wrap.is-visible {
+      display: inline-flex;
     }
     .doc-note-text {
       font-size: 13px;
@@ -2313,6 +3121,88 @@
       </div>
     </div>
 
+    <aside class="doc-notes-panel" id="docNotesPanel" aria-hidden="true">
+      <div class="doc-notes-panel-inner">
+        <div class="doc-notes-header">
+          <div class="doc-notes-title" id="docSidePanelTitle">הערות</div>
+          <button type="button" class="doc-notes-close" onclick="closeDocSidePanel()" aria-label="סגור">&times;</button>
+        </div>
+        <div class="doc-notes-list" id="docNotesList"></div>
+        <div class="doc-summary-body" id="docSummaryBody" aria-label="דו״ח מסכם">
+          <section class="doc-summary-card">
+            <div class="doc-summary-card-header">
+              <span class="doc-summary-card-num">1</span>
+              <h3 class="doc-summary-card-title">1. סקירת נכס</h3>
+            </div>
+            <div class="doc-summary-kv">
+              <div class="doc-summary-kv-row"><div class="doc-summary-kv-label">כתובת</div><div class="doc-summary-kv-value">רחוב הלילך 5, יבנה, גוש 4944, חלקה 126, תת חלקה 13</div></div>
+              <div class="doc-summary-kv-row"><div class="doc-summary-kv-label">סוג נכס</div><div class="doc-summary-kv-value">דירת מגורים בבית משותף</div></div>
+              <div class="doc-summary-kv-row"><div class="doc-summary-kv-label">קומה</div><div class="doc-summary-kv-value">חמישית / 6 קומות</div></div>
+              <div class="doc-summary-kv-row"><div class="doc-summary-kv-label">שטח רשום / שטח מדוד</div><div class="doc-summary-kv-value">112 מ"ר / 112 מ"ר</div></div>
+              <div class="doc-summary-kv-row"><div class="doc-summary-kv-label">מצב פיזי</div><div class="doc-summary-kv-value">טובה</div></div>
+              <div class="doc-summary-kv-row"><div class="doc-summary-kv-label">מצב הזכויות בנכס (סעיף 7)</div><div class="doc-summary-kv-value">[מוסתר], חלק 1/1</div></div>
+              <div class="doc-summary-kv-row"><div class="doc-summary-kv-label">מהות הזכויות בנכס (סעיף 8)</div><div class="doc-summary-kv-value">בעלות</div></div>
+              <div class="doc-summary-kv-row"><div class="doc-summary-kv-label">האם זיהוי הנכס תואם לזכויות המשפטיות (סעיף 10)</div><div class="doc-summary-kv-value">כן</div></div>
+              <div class="doc-summary-kv-row"><div class="doc-summary-kv-label">מי מתגורר בנכס ושייכותו</div><div class="doc-summary-kv-value">לא צוין בדוח</div></div>
+              <div class="doc-summary-kv-row"><div class="doc-summary-kv-label">פרטי שכירות (סעיף 11)</div><div class="doc-summary-kv-value">הנכס אינו מושכר</div></div>
+              <div class="doc-summary-kv-row"><div class="doc-summary-kv-label">שם מציג/ת הנכס ושייכותו</div><div class="doc-summary-kv-value">לא צוין בדוח</div></div>
+            </div>
+          </section>
+
+          <section class="doc-summary-card">
+            <div class="doc-summary-card-header">
+              <span class="doc-summary-card-num">4</span>
+              <h3 class="doc-summary-card-title">4. סיכום כללי</h3>
+            </div>
+            <ul class="doc-summary-list">
+              <li class="doc-summary-list-item"><span class="doc-summary-bullet" aria-hidden="true"></span><span><strong>התאמה לזכויות משפטיות:</strong> כן. הנכס תואם לזכויות המשפטיות המוצעות כבטוחה.</span></li>
+              <li class="doc-summary-list-item"><span class="doc-summary-bullet" aria-hidden="true"></span><span><strong>מהות הנכס:</strong> מגורים.</span></li>
+              <li class="doc-summary-list-item"><span class="doc-summary-bullet" aria-hidden="true"></span><span><strong>גיל הנכס / שנת בניה:</strong> 2022 (בנייה רוויה במסגרת פרויקט תמ״א 38).</span></li>
+              <li class="doc-summary-list-item"><span class="doc-summary-bullet" aria-hidden="true"></span><span><strong>מצב פיזי:</strong> טובה.</span></li>
+              <li class="doc-summary-list-item"><span class="doc-summary-bullet" aria-hidden="true"></span><span><strong>נכס מחולק/מפוצל:</strong> לא.</span></li>
+              <li class="doc-summary-list-item"><span class="doc-summary-bullet" aria-hidden="true"></span><span><strong>פער בין שווי רכישה לשווי שוק:</strong> 9.3% (חישוב: (2,350,000 − 2,150,000) / 2,150,000).</span></li>
+              <li class="doc-summary-list-item"><span class="doc-summary-bullet" aria-hidden="true"></span><span><strong>פער בין הנכס בפועל לרישום המשפטי:</strong> קיימת חריגת בניה (סגירת מרפסת) שאינה תואמת את ההיתר.</span></li>
+              <li class="doc-summary-list-item"><span class="doc-summary-bullet" aria-hidden="true"></span><span><strong>דגלים אדומים שנמצאו:</strong> לא נמצאו דגלים אדומים.</span></li>
+            </ul>
+          </section>
+
+          <section class="doc-summary-card">
+            <div class="doc-summary-card-header">
+              <span class="doc-summary-card-num">5</span>
+              <h3 class="doc-summary-card-title">5. דגלים אדומים</h3>
+            </div>
+            <ol class="doc-summary-flag-list">
+              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>השמאות לא מופנית לבנק הבינלאומי</strong></div><span class="doc-summary-flag-mark is-ok" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.2 6.2 4.7 8.7 9.8 3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>סכנת קריסה</strong></div><span class="doc-summary-flag-mark is-ok" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.2 6.2 4.7 8.7 9.8 3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>אין אחריות כלפי הבנק הבינלאומי בהסתמכות על השמאות</strong></div><span class="doc-summary-flag-mark is-ok" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.2 6.2 4.7 8.7 9.8 3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>קיים דייר מוגן בנכס</strong></div><span class="doc-summary-flag-mark is-ok" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.2 6.2 4.7 8.7 9.8 3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+            </ol>
+            <p class="doc-summary-footnote">לא נמצאו דגלים אדומים.</p>
+          </section>
+
+          <section class="doc-summary-card">
+            <div class="doc-summary-card-header">
+              <span class="doc-summary-card-num">6</span>
+              <h3 class="doc-summary-card-title">6. דגלים צהובים</h3>
+            </div>
+            <ol class="doc-summary-flag-list">
+              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>לא צורף נספח בטחונות</strong> — לא רלוונטי (שווי נכס נמוך מ-4 מיליון ₪).</div></li>
+              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>פער שטחים בין מדוד לרשום גדול מ-20%</strong> — לא נמצא פער (112 מ"ר בשני המדדים).</div></li>
+              <li class="doc-summary-flag-item is-warn"><div class="doc-summary-flag-main"><strong>חריגות בניה, הגבלות, שעבודים, צווי הריסה, הפקעות</strong> — <span class="doc-summary-highlight">קיימת חריגת בניה (סגירת מרפסת ללא היתר) וקיימות הערות בדבר העברה לזרים והערת אזהרה לתמ״א 38.</span></div><span class="doc-summary-flag-mark is-warn" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1.8 10.6 10H1.4L6 1.8Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M6 4.6v2.4M6 8.6h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span></li>
+              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>חוסר עקביות בנתונים</strong> — לא נמצאו חוסר עקביות.</div></li>
+              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>מועד ביצוע השמאות מוקדם ממועד חתימת חוזה הרכישה</strong> — לא נמצא.</div></li>
+              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>לא הוצג לשמאי היתר בניה</strong> — לא רלוונטי (רכישת דירה קיימת).</div></li>
+              <li class="doc-summary-flag-item is-warn"><div class="doc-summary-flag-main"><strong>הערות בנסח/באישור הזכויות הדורשות בירור</strong> — <span class="doc-summary-highlight">הערת אזהרה תמ״א 38, הערה בדבר העברה לזרים (מדינת ישראל).</span></div><span class="doc-summary-flag-mark is-warn" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1.8 10.6 10H1.4L6 1.8Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M6 4.6v2.4M6 8.6h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span></li>
+            </ol>
+          </section>
+        </div>
+        <div class="doc-notes-compose">
+          <textarea class="doc-notes-input" id="docNotesInput" placeholder="כתוב הערה חדשה..." rows="3"></textarea>
+          <button type="button" class="doc-notes-submit" id="docNotesSubmit" onclick="addDocNote()">הוסף הערה</button>
+        </div>
+      </div>
+    </aside>
+
   </div><!-- /.tasks-region -->
 
   <!-- RIGHT: the document group — picking a row in the inbox drives the
@@ -2350,6 +3240,13 @@
               </div>
             </div>
             <span class="preview-action-divider" id="previewHqDivider" aria-hidden="true"></span>
+            <div class="preview-summary-wrap" id="previewSummaryWrap">
+              <button type="button" class="preview-action-btn preview-action-btn--with-count" id="previewSummaryBtn" aria-label="דו״ח מסכם" aria-expanded="false" onclick="toggleDocSummaryPanel()">
+                <svg class="preview-action-icon" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 2.75h6.2L14 6.2V14.5a.75.75 0 01-.75.75h-8.5a.75.75 0 01-.75-.75V3.5a.75.75 0 01.75-.75z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M10.5 2.9V6h3.2" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M6.2 9h5.6M6.2 11.2h4.2M6.2 13.3h3.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                <span class="preview-action-label">דו״ח מסכם</span>
+              </button>
+              <span class="preview-action-divider" aria-hidden="true"></span>
+            </div>
             <button type="button" class="preview-action-btn preview-action-btn--with-count" id="previewNotesBtn" aria-label="הערות" aria-expanded="false" onclick="toggleDocNotesPanel()">
               <span class="preview-action-icon-wrap">
                 <svg class="preview-action-icon preview-action-icon--notes" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 2.5h7.2L14.5 5.6V14a1 1 0 01-1 1H4.5a1 1 0 01-1-1V3.5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.5 2.8V5.5H14.2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 8h6M6 10h4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
@@ -2420,6 +3317,13 @@
             </div>
           </div>
 
+          <!-- דוח שמאות מקרקעין -->
+          <div class="legal-doc" id="preview-appraisal" style="display:none;">
+            <div class="doc-image-wrap">
+              <img src="appraisal-sample.png" alt="דוח שמאות מקרקעין" class="doc-image">
+            </div>
+          </div>
+
           <!-- Sample doc 2: נסח טאבו -->
           <div class="legal-doc" id="preview-tabu" style="display:none;">
             <div class="legal-doc-title">נסח רישום מקרקעין (טאבו)</div>
@@ -2453,19 +3357,6 @@
 
             </div><!-- /.doc-preview-main -->
 
-            <aside class="doc-notes-panel" id="docNotesPanel" aria-hidden="true">
-              <div class="doc-notes-panel-inner">
-                <div class="doc-notes-header">
-                  <div class="doc-notes-title" id="docSidePanelTitle">הערות</div>
-                  <button type="button" class="doc-notes-close" onclick="closeDocSidePanel()" aria-label="סגור">&times;</button>
-                </div>
-                <div class="doc-notes-list" id="docNotesList"></div>
-                <div class="doc-notes-compose">
-                  <textarea class="doc-notes-input" id="docNotesInput" placeholder="כתוב הערה חדשה..." rows="3"></textarea>
-                  <button type="button" class="doc-notes-submit" id="docNotesSubmit" onclick="addDocNote()">הוסף הערה</button>
-                </div>
-              </div>
-            </aside>
           </div><!-- /.doc-preview-layout -->
 
         </div>
@@ -2521,11 +3412,11 @@
         <div class="status-multi-filter-divider" role="separator"></div>
         <span class="status-multi-filter-section-title">סטטוס העלאה</span>
         <label class="status-multi-filter-option status-multi-filter-option--no-dot">
-          <span class="status-multi-filter-option-text">בוצעה העלאה</span>
+          <span class="status-multi-filter-option-text">בוצעה העלאת מסמך</span>
           <input type="checkbox" value="uploaded" onchange="onStatusFilterChange()">
         </label>
         <label class="status-multi-filter-option status-multi-filter-option--no-dot">
-          <span class="status-multi-filter-option-text">טרם בוצעה העלאה</span>
+          <span class="status-multi-filter-option-text">טרם בוצעה העלאת מסמך</span>
           <input type="checkbox" value="not-uploaded" onchange="onStatusFilterChange()">
         </label>
         <button type="button" class="status-multi-filter-clear" onclick="clearStatusFilter(event)">נקה בחירה</button>
@@ -2535,7 +3426,7 @@
   <div class="inbox-list">
     <div class="category" id="docsDeliveryCat">
       <div class="category-header" onclick="toggleCat('docsDeliveryCat')">
-        <div class="category-name">מיועדים למסירה ללקוח <span class="category-badge">8</span></div>
+        <div class="category-name">מיועדים למסירה ללקוח <span class="category-badge">9</span></div>
         <span class="chevron"></span>
       </div>
       <div class="category-body">
@@ -2545,6 +3436,18 @@
                 <div class="inbox-code">משכ 542</div>
               </div>
               <select class="status-select pending" data-doc="poa" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+                <option value="pending" selected>ממתין לבדיקה</option>
+                <option value="returned">חזר לטיפול</option>
+                <option value="done">טופל</option>
+                <option value="notrelevant">לא רלוונטי</option>
+              </select>
+            </div>
+        <div class="inbox-row" data-doc="appraisal" onclick="selectDocument('appraisal')">
+              <div class="inbox-info">
+                <div class="inbox-name">דוח שמאות מקרקעין</div>
+                <div class="inbox-code">משכ 640</div>
+              </div>
+              <select class="status-select pending" data-doc="appraisal" onclick="event.stopPropagation()" onchange="updateStatus(this)">
                 <option value="pending" selected>ממתין לבדיקה</option>
                 <option value="returned">חזר לטיפול</option>
                 <option value="done">טופל</option>
@@ -2837,6 +3740,65 @@
   </div>
 </div>
 
+<div class="upload-analyze-modal" id="uploadAnalyzeModal" aria-hidden="true">
+  <div class="upload-analyze-modal-backdrop" onclick="closeUploadAnalyzeModal()"></div>
+  <div class="upload-analyze-modal-card" role="dialog" aria-modal="true" aria-labelledby="uploadAnalyzeTitle">
+    <button type="button" class="upload-analyze-modal-close" onclick="closeUploadAnalyzeModal()" aria-label="סגור">&times;</button>
+    <div class="upload-analyze-step is-active" id="uploadAnalyzeLoadingStep" data-step="loading">
+      <div class="upload-analyze-loader" id="uploadAnalyzeLottie" aria-hidden="true"></div>
+      <h2 class="upload-analyze-title" id="uploadAnalyzeTitle">מתבצע ניתוח AI</h2>
+      <p class="upload-analyze-subtitle" id="uploadAnalyzeSubtitle">1/12 מסמכים נסרקו</p>
+    </div>
+    <div class="upload-analyze-step" id="uploadAnalyzeReviewStep" data-step="review" hidden>
+      <div class="upload-analyze-review">
+        <aside class="upload-analyze-list-panel">
+          <div class="upload-analyze-list-scroll">
+            <div class="upload-analyze-acc" id="uploadAnalyzePendingAcc">
+              <button type="button" class="upload-analyze-acc-header" onclick="toggleUploadAnalyzeAcc('pending')">
+                <span class="upload-analyze-acc-title" id="uploadAnalyzePendingTitle">מחכים לאישור קטלוג (12)</span>
+                <span class="upload-analyze-acc-chevron" aria-hidden="true"></span>
+              </button>
+              <div class="upload-analyze-acc-body" id="uploadAnalyzePendingBody"></div>
+            </div>
+            <div class="upload-analyze-acc is-collapsed" id="uploadAnalyzeApprovedAcc">
+              <button type="button" class="upload-analyze-acc-header" onclick="toggleUploadAnalyzeAcc('approved')">
+                <span class="upload-analyze-acc-title" id="uploadAnalyzeApprovedTitle">מאושרים קטלוג (0)</span>
+                <span class="upload-analyze-acc-chevron" aria-hidden="true"></span>
+              </button>
+              <div class="upload-analyze-acc-body" id="uploadAnalyzeApprovedBody"></div>
+            </div>
+          </div>
+          <div class="upload-analyze-footer">
+            <span class="upload-analyze-footer-status" id="uploadAnalyzeApproveStatus">0/12 אושרו</span>
+            <button type="button" class="upload-analyze-footer-done" id="uploadAnalyzeDoneBtn" onclick="finishUploadAnalyzeReview()" disabled>
+              <span class="upload-analyze-footer-done-label">סיום ושיוך</span>
+              <span class="upload-analyze-footer-done-loader" aria-hidden="true"></span>
+              <span class="upload-analyze-footer-done-success" aria-hidden="true">
+                <span class="upload-analyze-footer-done-check"></span>
+                <span>שויך בהצלחה</span>
+              </span>
+            </button>
+          </div>
+        </aside>
+        <section class="upload-analyze-preview-panel" aria-label="תצוגה מקדימה של המסמך">
+          <div class="upload-analyze-preview-meta">
+            <p class="upload-analyze-preview-filename" id="uploadAnalyzePreviewFilename">—</p>
+            <p class="upload-analyze-preview-type" id="uploadAnalyzePreviewType">—</p>
+          </div>
+          <div class="upload-analyze-preview-frame" id="uploadAnalyzePreviewFrame">
+            <div class="upload-analyze-preview-placeholder" id="uploadAnalyzePreviewPlaceholder">
+              <svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M14 8h14l10 10v22a4 4 0 01-4 4H14a4 4 0 01-4-4V12a4 4 0 014-4z" stroke="currentColor" stroke-width="2"/><path d="M28 8v10h10" stroke="currentColor" stroke-width="2"/></svg>
+              <span>תצוגה של המסמך</span>
+            </div>
+            <img id="uploadAnalyzePreviewImage" src="poa-sample.png" alt="" style="display:none;">
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <script>
   const NOTES_ICON_SVG = '<svg class="inbox-notes-icon" width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 2.5h7.2L14.5 5.6V14a1 1 0 01-1 1H4.5a1 1 0 01-1-1V3.5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.5 2.8V5.5H14.2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 8h6M6 10h4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>';
   const INBOX_AI_ICON_SVG = '<svg class="inbox-ai-icon" width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 1.8 9.95 5.05 13.3 5.05 10.55 7.05 11.5 10.3 9 8.35 6.5 10.3 7.45 7.05 4.7 5.05 8.05 5.05 9 1.8Z" fill="currentColor"/><path d="M14.6 8.2 15.2 9.95 17 10.55 15.2 11.15 14.6 12.9 14 11.15 12.2 10.55 14 9.95 14.6 8.2Z" fill="currentColor" opacity=".75"/><path d="M4.4 11.7 4.85 13 6.1 13.45 4.85 13.9 4.4 15.2 3.95 13.9 2.7 13.45 3.95 13 4.4 11.7Z" fill="currentColor" opacity=".55"/></svg>';
@@ -3113,6 +4075,7 @@
 
   function closeAllCapsuleMenus() {
     document.querySelectorAll('.capsule-select.open').forEach(el => el.classList.remove('open'));
+    closeUploadAnalyzeCatalogMenus();
     closeStatusMultiFilter();
     closePreviewMenu();
     closePreviewHqStatusMenu();
@@ -3132,8 +4095,8 @@
   ];
 
   const UPLOAD_FILTER_OPTIONS = [
-    { value: 'uploaded', label: 'בוצעה העלאה' },
-    { value: 'not-uploaded', label: 'טרם בוצעה העלאה' }
+    { value: 'uploaded', label: 'בוצעה העלאת מסמך' },
+    { value: 'not-uploaded', label: 'טרם בוצעה העלאת מסמך' }
   ];
 
   function getSelectedFilterStatuses() {
@@ -3284,7 +4247,536 @@
   }
 
   function handleUploadDocuments() {
-    // Demo placeholder for bulk document upload.
+    openUploadAnalyzeModal();
+  }
+
+  let uploadAnalyzeLottie = null;
+  let uploadAnalyzeScanTimer = null;
+  let uploadAnalyzeSelectedIndex = 0;
+  const UPLOAD_ANALYZE_TOTAL_DOCS = 12;
+
+  const UPLOAD_ANALYZE_FILES = [
+    { filename: 'doc4323.pdf', suggestedType: 'ייפוי כוח מתמשך', preview: 'poa' },
+    { filename: 'confidentiality_agreement.pdf', suggestedType: 'הסבר זכויות לווה', preview: 'generic' },
+    { filename: 'annual_report_2023.pdf', suggestedType: 'תנאים עיקריים', preview: 'generic' },
+    { filename: 'registration_form.pdf', suggestedType: 'סיכום תנאים', preview: 'generic' },
+    { filename: 'id_card_scan.jpg', suggestedType: 'תעודת זהות', preview: 'generic' },
+    { filename: 'profile_picture.png', suggestedType: 'אישור יתרות בנקאי', preview: 'generic' },
+    { filename: 'vacation_request.docx', suggestedType: 'לוח סילוקין', preview: 'generic' },
+    { filename: 'medical_certificate.pdf', suggestedType: 'דף מידע על ביטוח', preview: 'generic' },
+    { filename: 'contact_details.xlsx', suggestedType: 'גילוי נאות', preview: 'generic' },
+    { filename: 'bank_balance.pdf', suggestedType: 'אישור מס הכנסה', preview: 'generic' },
+    { filename: 'property_deed.pdf', suggestedType: 'נסח טאבו', preview: 'generic' },
+    { filename: 'purchase_contract.pdf', suggestedType: 'חוזה רכישה חתום', preview: 'generic' }
+  ];
+
+  function getUploadAnalyzeCatalogOptions() {
+    const names = [...document.querySelectorAll('.inbox-row .inbox-name')]
+      .map(el => el.textContent.trim())
+      .filter(Boolean);
+    return names.length ? names : UPLOAD_ANALYZE_FILES.map(f => f.suggestedType);
+  }
+
+  function setUploadAnalyzeScanProgress(current) {
+    const subtitle = document.getElementById('uploadAnalyzeSubtitle');
+    if (!subtitle) return;
+    const safe = Math.min(Math.max(1, current), UPLOAD_ANALYZE_TOTAL_DOCS);
+    subtitle.textContent = `${safe}/${UPLOAD_ANALYZE_TOTAL_DOCS} מסמכים נסרקו`;
+  }
+
+  function stopUploadAnalyzeScanProgress() {
+    if (uploadAnalyzeScanTimer) {
+      clearInterval(uploadAnalyzeScanTimer);
+      uploadAnalyzeScanTimer = null;
+    }
+  }
+
+  function showUploadAnalyzeStep(step) {
+    const loading = document.getElementById('uploadAnalyzeLoadingStep');
+    const review = document.getElementById('uploadAnalyzeReviewStep');
+    if (!loading || !review) return;
+    const isLoading = step === 'loading';
+    loading.classList.toggle('is-active', isLoading);
+    loading.hidden = !isLoading;
+    review.classList.toggle('is-active', !isLoading);
+    review.hidden = isLoading;
+  }
+
+  function startUploadAnalyzeScanProgress() {
+    stopUploadAnalyzeScanProgress();
+    showUploadAnalyzeStep('loading');
+    let current = 1;
+    setUploadAnalyzeScanProgress(current);
+    uploadAnalyzeScanTimer = setInterval(() => {
+      if (current >= UPLOAD_ANALYZE_TOTAL_DOCS) {
+        stopUploadAnalyzeScanProgress();
+        if (uploadAnalyzeLottie) uploadAnalyzeLottie.stop();
+        openUploadAnalyzeReview();
+        return;
+      }
+      current += 1;
+      setUploadAnalyzeScanProgress(current);
+    }, 450);
+  }
+
+  function ensureUploadAnalyzeLottie() {
+    const container = document.getElementById('uploadAnalyzeLottie');
+    if (!container || typeof lottie === 'undefined') return null;
+    if (uploadAnalyzeLottie) return uploadAnalyzeLottie;
+    uploadAnalyzeLottie = lottie.loadAnimation({
+      container,
+      renderer: 'svg',
+      loop: true,
+      autoplay: false,
+      path: 'assets/fibi-loader.json'
+    });
+    return uploadAnalyzeLottie;
+  }
+
+  let uploadAnalyzeAnimating = false;
+
+  function resetUploadAnalyzeReviewState() {
+    UPLOAD_ANALYZE_FILES.forEach((file) => {
+      file.approved = false;
+      file.catalogType = file.suggestedType;
+    });
+    uploadAnalyzeSelectedIndex = 0;
+    uploadAnalyzeAnimating = false;
+  }
+
+  function getUploadAnalyzeFile(index) {
+    return UPLOAD_ANALYZE_FILES[index];
+  }
+
+  function getUploadAnalyzeRow(index) {
+    return document.querySelector(`.upload-analyze-row[data-index="${index}"]`);
+  }
+
+  function getUploadAnalyzeCatalogType(index) {
+    const file = getUploadAnalyzeFile(index);
+    if (!file) return '';
+    return file.catalogType || file.suggestedType;
+  }
+
+  function getUploadAnalyzeCatalogOptionList(selectedType) {
+    const options = getUploadAnalyzeCatalogOptions();
+    const unique = [...new Set(options)];
+    if (selectedType && !unique.includes(selectedType)) unique.unshift(selectedType);
+    return unique;
+  }
+
+  function buildUploadAnalyzeCatalogDropdownHtml(index, selectedType) {
+    const selected = selectedType || '';
+    const optionsHtml = getUploadAnalyzeCatalogOptionList(selected).map((type) => `
+      <button type="button"
+        class="capsule-select-option${type === selected ? ' selected' : ''}"
+        data-value="${escapeHtml(type)}"
+        onclick="event.stopPropagation(); pickUploadAnalyzeCatalog(${index}, this.dataset.value)">
+        ${escapeHtml(type)}
+      </button>
+    `).join('');
+    return `
+      <div class="upload-analyze-catalog" data-index="${index}" onclick="event.stopPropagation()">
+        <button type="button"
+          class="upload-analyze-catalog-trigger"
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          aria-label="סוג מסמך"
+          onclick="event.stopPropagation(); toggleUploadAnalyzeCatalog(${index})">
+          <span class="upload-analyze-catalog-label">${escapeHtml(selected)}</span>
+          <span class="capsule-select-chevron" aria-hidden="true"></span>
+        </button>
+        <div class="upload-analyze-catalog-menu" role="listbox">
+          <div class="upload-analyze-catalog-search">
+            <span class="upload-analyze-catalog-search-icon" aria-hidden="true"></span>
+            <input type="search"
+              placeholder="חיפוש קטלוג..."
+              autocomplete="off"
+              aria-label="חיפוש קטלוג"
+              onclick="event.stopPropagation()"
+              oninput="filterUploadAnalyzeCatalog(${index}, this.value)">
+          </div>
+          <div class="upload-analyze-catalog-options">${optionsHtml}</div>
+          <div class="upload-analyze-catalog-empty">לא נמצאו תוצאות</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function closeUploadAnalyzeCatalogMenus() {
+    document.querySelectorAll('.upload-analyze-catalog.open').forEach((wrap) => {
+      wrap.classList.remove('open');
+      const trigger = wrap.querySelector('.upload-analyze-catalog-trigger');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      const input = wrap.querySelector('.upload-analyze-catalog-search input');
+      if (input) {
+        input.value = '';
+        filterUploadAnalyzeCatalog(Number(wrap.dataset.index), '');
+      }
+    });
+  }
+
+  function positionUploadAnalyzeCatalogMenu(wrap) {
+    const menu = wrap.querySelector('.upload-analyze-catalog-menu');
+    const trigger = wrap.querySelector('.upload-analyze-catalog-trigger');
+    if (!menu || !trigger) return;
+    const rect = trigger.getBoundingClientRect();
+    const menuWidth = Math.max(rect.width, 260);
+    let right = window.innerWidth - rect.right;
+    if (right + menuWidth > window.innerWidth - 12) {
+      right = Math.max(12, window.innerWidth - menuWidth - 12);
+    }
+    let top = rect.bottom + 6;
+    const estimatedHeight = 300;
+    if (top + estimatedHeight > window.innerHeight - 12) {
+      top = Math.max(12, rect.top - estimatedHeight - 6);
+    }
+    menu.style.top = `${top}px`;
+    menu.style.right = `${right}px`;
+    menu.style.left = 'auto';
+    menu.style.minWidth = `${menuWidth}px`;
+  }
+
+  function toggleUploadAnalyzeCatalog(index) {
+    const wrap = document.querySelector(`.upload-analyze-catalog[data-index="${index}"]`);
+    if (!wrap) return;
+    const willOpen = !wrap.classList.contains('open');
+    closeUploadAnalyzeCatalogMenus();
+    if (!willOpen) return;
+    wrap.classList.add('open');
+    const trigger = wrap.querySelector('.upload-analyze-catalog-trigger');
+    if (trigger) trigger.setAttribute('aria-expanded', 'true');
+    positionUploadAnalyzeCatalogMenu(wrap);
+    selectUploadAnalyzeRow(index);
+    const input = wrap.querySelector('.upload-analyze-catalog-search input');
+    if (input) {
+      input.value = '';
+      filterUploadAnalyzeCatalog(index, '');
+      requestAnimationFrame(() => input.focus());
+    }
+  }
+
+  function filterUploadAnalyzeCatalog(index, query) {
+    const wrap = document.querySelector(`.upload-analyze-catalog[data-index="${index}"]`);
+    if (!wrap) return;
+    const q = String(query || '').trim().toLowerCase();
+    const options = wrap.querySelectorAll('.upload-analyze-catalog-options .capsule-select-option');
+    let visible = 0;
+    options.forEach((btn) => {
+      const match = !q || (btn.dataset.value || '').toLowerCase().includes(q);
+      btn.hidden = !match;
+      if (match) visible += 1;
+    });
+    const empty = wrap.querySelector('.upload-analyze-catalog-empty');
+    if (empty) empty.classList.toggle('is-visible', visible === 0);
+  }
+
+  function pickUploadAnalyzeCatalog(index, type) {
+    const file = getUploadAnalyzeFile(index);
+    const wrap = document.querySelector(`.upload-analyze-catalog[data-index="${index}"]`);
+    if (!file || !type) return;
+    file.catalogType = type;
+    if (wrap) {
+      const label = wrap.querySelector('.upload-analyze-catalog-label');
+      if (label) label.textContent = type;
+      wrap.querySelectorAll('.upload-analyze-catalog-options .capsule-select-option').forEach((btn) => {
+        btn.classList.toggle('selected', btn.dataset.value === type);
+      });
+    }
+    closeUploadAnalyzeCatalogMenus();
+    selectUploadAnalyzeRow(index);
+    updateUploadAnalyzePreview(index);
+  }
+
+  function toggleUploadAnalyzeAcc(which) {
+    const acc = document.getElementById(
+      which === 'approved' ? 'uploadAnalyzeApprovedAcc' : 'uploadAnalyzePendingAcc'
+    );
+    if (!acc) return;
+    acc.classList.toggle('is-collapsed');
+  }
+
+  function setUploadAnalyzeAccOpen(which, open) {
+    const acc = document.getElementById(
+      which === 'approved' ? 'uploadAnalyzeApprovedAcc' : 'uploadAnalyzePendingAcc'
+    );
+    if (!acc) return;
+    acc.classList.toggle('is-collapsed', !open);
+  }
+
+  function syncUploadAnalyzeAccTitles() {
+    const pending = UPLOAD_ANALYZE_FILES.filter((f) => !f.approved).length;
+    const approved = UPLOAD_ANALYZE_FILES.filter((f) => f.approved).length;
+    const pendingTitle = document.getElementById('uploadAnalyzePendingTitle');
+    const approvedTitle = document.getElementById('uploadAnalyzeApprovedTitle');
+    if (pendingTitle) pendingTitle.textContent = `מחכים לאישור קטלוג (${pending})`;
+    if (approvedTitle) approvedTitle.textContent = `מאושרים קטלוג (${approved})`;
+  }
+
+  function updateUploadAnalyzeApproveStatus() {
+    const status = document.getElementById('uploadAnalyzeApproveStatus');
+    const doneBtn = document.getElementById('uploadAnalyzeDoneBtn');
+    if (!status || !doneBtn) return;
+    const total = UPLOAD_ANALYZE_FILES.length;
+    const approved = UPLOAD_ANALYZE_FILES.filter((f) => f.approved).length;
+    status.textContent = `${approved}/${total} אושרו`;
+    doneBtn.disabled = approved < total || total === 0;
+  }
+
+  function updateUploadAnalyzePreview(index) {
+    const file = getUploadAnalyzeFile(index);
+    const filenameEl = document.getElementById('uploadAnalyzePreviewFilename');
+    const typeEl = document.getElementById('uploadAnalyzePreviewType');
+    const placeholder = document.getElementById('uploadAnalyzePreviewPlaceholder');
+    const image = document.getElementById('uploadAnalyzePreviewImage');
+    if (!file || !filenameEl || !typeEl) return;
+
+    const selectedType = getUploadAnalyzeCatalogType(index);
+    filenameEl.textContent = file.filename;
+    typeEl.textContent = `מקוטלג כ־${selectedType}`;
+
+    if (file.preview === 'poa' && image) {
+      image.style.display = 'block';
+      image.alt = file.filename;
+      if (placeholder) placeholder.style.display = 'none';
+    } else {
+      if (image) image.style.display = 'none';
+      if (placeholder) placeholder.style.display = 'flex';
+    }
+  }
+
+  function selectUploadAnalyzeRow(index) {
+    const rows = document.querySelectorAll('#uploadAnalyzePendingBody .upload-analyze-row, #uploadAnalyzeApprovedBody .upload-analyze-row');
+    if (!getUploadAnalyzeFile(index)) return;
+    uploadAnalyzeSelectedIndex = index;
+    rows.forEach((row) => {
+      row.classList.toggle('is-selected', Number(row.dataset.index) === index);
+    });
+    updateUploadAnalyzePreview(index);
+  }
+
+  function buildUploadAnalyzePendingRowHtml(index, withEnter) {
+    const file = getUploadAnalyzeFile(index);
+    const enterClass = withEnter ? ' is-moving-in' : '';
+    const selectedClass = uploadAnalyzeSelectedIndex === index ? ' is-selected' : '';
+    return `
+      <div class="upload-analyze-row${enterClass}${selectedClass}" role="option" data-index="${index}" onclick="selectUploadAnalyzeRow(${index})">
+        <span class="upload-analyze-filename" title="${escapeHtml(file.filename)}">${escapeHtml(file.filename)}</span>
+        ${buildUploadAnalyzeCatalogDropdownHtml(index, file.catalogType || file.suggestedType)}
+        <button type="button" class="upload-analyze-approve-btn" onclick="event.stopPropagation(); approveUploadAnalyzeRow(${index})">אישור</button>
+      </div>
+    `;
+  }
+
+  function buildUploadAnalyzeApprovedRowHtml(index, withEnter) {
+    const file = getUploadAnalyzeFile(index);
+    const catalog = file.catalogType || file.suggestedType;
+    const enterClass = withEnter ? ' is-moving-in' : '';
+    const selectedClass = uploadAnalyzeSelectedIndex === index ? ' is-selected' : '';
+    return `
+      <div class="upload-analyze-row${enterClass}${selectedClass}" role="option" data-index="${index}" onclick="selectUploadAnalyzeRow(${index})">
+        <span class="upload-analyze-filename" title="${escapeHtml(file.filename)}">${escapeHtml(file.filename)}</span>
+        <span class="upload-analyze-type-text" title="${escapeHtml(catalog)}">${escapeHtml(catalog)}</span>
+        <button type="button" class="upload-analyze-edit-btn" onclick="event.stopPropagation(); editUploadAnalyzeRow(${index})">עריכה</button>
+      </div>
+    `;
+  }
+
+  function renderUploadAnalyzeEmpty(body, message) {
+    if (!body) return;
+    body.innerHTML = `<div class="upload-analyze-acc-empty">${escapeHtml(message)}</div>`;
+  }
+
+  function renderUploadAnalyzeReviewList() {
+    const pendingBody = document.getElementById('uploadAnalyzePendingBody');
+    const approvedBody = document.getElementById('uploadAnalyzeApprovedBody');
+    if (!pendingBody || !approvedBody) return;
+
+    const pending = UPLOAD_ANALYZE_FILES
+      .map((file, index) => ({ file, index }))
+      .filter(({ file }) => !file.approved);
+    const approved = UPLOAD_ANALYZE_FILES
+      .map((file, index) => ({ file, index }))
+      .filter(({ file }) => file.approved);
+
+    pendingBody.innerHTML = pending.length
+      ? pending.map(({ index }) => buildUploadAnalyzePendingRowHtml(index, false)).join('')
+      : '';
+    if (!pending.length) renderUploadAnalyzeEmpty(pendingBody, 'אין מסמכים ממתינים');
+
+    approvedBody.innerHTML = approved.length
+      ? approved.map(({ index }) => buildUploadAnalyzeApprovedRowHtml(index, false)).join('')
+      : '';
+    if (!approved.length) renderUploadAnalyzeEmpty(approvedBody, 'אין מסמכים מאושרים עדיין');
+
+    setUploadAnalyzeAccOpen('pending', true);
+    setUploadAnalyzeAccOpen('approved', false);
+
+    syncUploadAnalyzeAccTitles();
+    updateUploadAnalyzeApproveStatus();
+
+    const firstPending = pending[0]?.index;
+    const firstAny = firstPending ?? approved[0]?.index ?? 0;
+    selectUploadAnalyzeRow(firstAny);
+  }
+
+  function openUploadAnalyzeCatalogSelect(index) {
+    toggleUploadAnalyzeCatalog(index);
+  }
+
+  function approveUploadAnalyzeRow(index) {
+    const file = getUploadAnalyzeFile(index);
+    const row = getUploadAnalyzeRow(index);
+    const pendingBody = document.getElementById('uploadAnalyzePendingBody');
+    const approvedBody = document.getElementById('uploadAnalyzeApprovedBody');
+    if (!file || !row || file.approved || uploadAnalyzeAnimating || !pendingBody || !approvedBody) return;
+
+    closeUploadAnalyzeCatalogMenus();
+    file.catalogType = getUploadAnalyzeCatalogType(index);
+    uploadAnalyzeAnimating = true;
+    setUploadAnalyzeAccOpen('approved', true);
+
+    const pendingRows = [...pendingBody.querySelectorAll('.upload-analyze-row')];
+    const pos = pendingRows.findIndex((r) => Number(r.dataset.index) === index);
+    const nextPendingIndex = pos >= 0
+      ? Number((pendingRows[pos + 1] || pendingRows[pos - 1] || {}).dataset?.index)
+      : NaN;
+
+    row.classList.add('is-moving-out');
+
+    window.setTimeout(() => {
+      file.approved = true;
+      row.remove();
+
+      if (![...pendingBody.querySelectorAll('.upload-analyze-row')].length) {
+        renderUploadAnalyzeEmpty(pendingBody, 'אין מסמכים ממתינים');
+      }
+
+      approvedBody.querySelector('.upload-analyze-acc-empty')?.remove();
+      approvedBody.insertAdjacentHTML('afterbegin', buildUploadAnalyzeApprovedRowHtml(index, true));
+      const newRow = getUploadAnalyzeRow(index);
+      if (newRow) {
+        newRow.addEventListener('animationend', () => newRow.classList.remove('is-moving-in'), { once: true });
+      }
+
+      syncUploadAnalyzeAccTitles();
+      updateUploadAnalyzeApproveStatus();
+      if (Number.isFinite(nextPendingIndex) && nextPendingIndex !== index) {
+        selectUploadAnalyzeRow(nextPendingIndex);
+      } else {
+        selectUploadAnalyzeRow(index);
+      }
+      uploadAnalyzeAnimating = false;
+    }, 280);
+  }
+
+  function editUploadAnalyzeRow(index) {
+    const file = getUploadAnalyzeFile(index);
+    const row = getUploadAnalyzeRow(index);
+    const pendingBody = document.getElementById('uploadAnalyzePendingBody');
+    const approvedBody = document.getElementById('uploadAnalyzeApprovedBody');
+    if (!file || !row || !file.approved || uploadAnalyzeAnimating || !pendingBody || !approvedBody) return;
+
+    uploadAnalyzeAnimating = true;
+    setUploadAnalyzeAccOpen('pending', true);
+    row.classList.add('is-moving-out');
+
+    window.setTimeout(() => {
+      file.approved = false;
+      row.remove();
+
+      if (![...approvedBody.querySelectorAll('.upload-analyze-row')].length) {
+        renderUploadAnalyzeEmpty(approvedBody, 'אין מסמכים מאושרים עדיין');
+      }
+
+      pendingBody.querySelector('.upload-analyze-acc-empty')?.remove();
+      pendingBody.insertAdjacentHTML('afterbegin', buildUploadAnalyzePendingRowHtml(index, true));
+      const newRow = getUploadAnalyzeRow(index);
+      if (newRow) {
+        newRow.addEventListener('animationend', () => newRow.classList.remove('is-moving-in'), { once: true });
+      }
+
+      syncUploadAnalyzeAccTitles();
+      updateUploadAnalyzeApproveStatus();
+      selectUploadAnalyzeRow(index);
+      uploadAnalyzeAnimating = false;
+      openUploadAnalyzeCatalogSelect(index);
+    }, 280);
+  }
+
+  function openUploadAnalyzeReview() {
+    resetUploadAnalyzeReviewState();
+    showUploadAnalyzeStep('review');
+    renderUploadAnalyzeReviewList();
+    const scroll = document.querySelector('.upload-analyze-list-scroll');
+    if (scroll && !scroll.dataset.catalogScrollBound) {
+      scroll.dataset.catalogScrollBound = '1';
+      scroll.addEventListener('scroll', closeUploadAnalyzeCatalogMenus, { passive: true });
+    }
+  }
+
+  let uploadAnalyzeFinishTimer = null;
+
+  function resetUploadAnalyzeDoneButton() {
+    const doneBtn = document.getElementById('uploadAnalyzeDoneBtn');
+    if (!doneBtn) return;
+    if (uploadAnalyzeFinishTimer) {
+      clearTimeout(uploadAnalyzeFinishTimer);
+      uploadAnalyzeFinishTimer = null;
+    }
+    doneBtn.classList.remove('is-busy', 'is-success');
+    doneBtn.disabled = true;
+  }
+
+  function finishUploadAnalyzeReview() {
+    const doneBtn = document.getElementById('uploadAnalyzeDoneBtn');
+    if (!doneBtn || doneBtn.disabled || doneBtn.classList.contains('is-busy') || doneBtn.classList.contains('is-success')) {
+      return;
+    }
+
+    closeUploadAnalyzeCatalogMenus();
+    doneBtn.disabled = true;
+    doneBtn.classList.remove('is-success');
+    doneBtn.classList.add('is-busy');
+
+    if (uploadAnalyzeFinishTimer) clearTimeout(uploadAnalyzeFinishTimer);
+    uploadAnalyzeFinishTimer = setTimeout(() => {
+      doneBtn.classList.remove('is-busy');
+      doneBtn.classList.add('is-success');
+      uploadAnalyzeFinishTimer = setTimeout(() => {
+        uploadAnalyzeFinishTimer = null;
+        closeUploadAnalyzeModal();
+      }, 900);
+    }, 650);
+  }
+
+  window.addEventListener('resize', closeUploadAnalyzeCatalogMenus);
+
+
+  function openUploadAnalyzeModal() {
+    const modal = document.getElementById('uploadAnalyzeModal');
+    if (!modal) return;
+    resetUploadAnalyzeDoneButton();
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    showUploadAnalyzeStep('loading');
+    startUploadAnalyzeScanProgress();
+    const anim = ensureUploadAnalyzeLottie();
+    if (anim) {
+      anim.goToAndPlay(0, true);
+    }
+  }
+
+  function closeUploadAnalyzeModal() {
+    const modal = document.getElementById('uploadAnalyzeModal');
+    if (!modal) return;
+    closeUploadAnalyzeCatalogMenus();
+    resetUploadAnalyzeDoneButton();
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    stopUploadAnalyzeScanProgress();
+    if (uploadAnalyzeLottie) uploadAnalyzeLottie.stop();
+    showUploadAnalyzeStep('loading');
   }
 
   function handleRowUploadDocument(e, docId) {
@@ -3710,12 +5202,20 @@
 
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
+    if (document.getElementById('uploadAnalyzeModal')?.classList.contains('open')) {
+      closeUploadAnalyzeModal();
+      return;
+    }
     if (document.getElementById('addTaskModal')?.classList.contains('open')) {
       closeAddTaskPopup();
       return;
     }
     if (document.getElementById('hqInvalidNoteModal')?.classList.contains('open')) {
       closeInvalidNotePopup();
+      return;
+    }
+    if (getActiveSidePanelMode()) {
+      closeDocSidePanel();
     }
   });
 
@@ -3928,6 +5428,7 @@
 
   const docs = {
     poa:      { name: 'ייפוי כוח מתמשך',            code: 'משכ 542', previewId: 'preview-poa', pages: 1, uploadedAt: '05/07/2026' },
+    appraisal:{ name: 'דוח שמאות מקרקעין',           code: 'משכ 640', previewId: 'preview-appraisal', pages: 1, uploadedAt: '14/07/2026' },
     id601:    { name: 'תעודת זהות',                  code: 'משכ 601', previewId: 'preview-generic', pages: 1, uploadedAt: '03/07/2026' },
     id612:    { name: 'תלושי שכר 3 חודשים אחרונים',  code: 'משכ 612', previewId: 'preview-generic', pages: 1, uploadedAt: '02/07/2026' },
     id604:    { name: 'אישור יתרות בנקאי',            code: 'משכ 604', previewId: 'preview-generic', pages: 1, uploadedAt: '01/07/2026' },
@@ -4072,6 +5573,9 @@
       { author: 'יוסי כהן', date: '06/07/2026 09:15', text: 'יש לבקש מהלקוח לחתום מחדש בעמוד 2.' },
       { author: 'דנה לוי', date: '07/07/2026 11:40', text: 'נשלחה תזכורת ללקוח ב-SMS.' }
     ],
+    appraisal: [
+      { author: 'דנה לוי', date: '14/07/2026 10:20', text: 'שימו לב לפער בין השטח הרשום בטאבו (27.60 מ"ר) לבין השטח הבנוי בפועל (53.00 מ"ר).' }
+    ],
     id329: [
       { author: 'דנה לוי', date: '04/07/2026 16:20', text: 'המסמך אושר על ידי המנהל.' }
     ],
@@ -4085,6 +5589,9 @@
     poa: [
       { date: '05/07/2026 14:05', text: 'זוהה אי-התאמה בין שם המשפחה בטופס לבין שם המשפחה בתעודת הזהות שהועלתה.' },
       { date: '06/07/2026 08:42', text: 'החתימה בעמוד 2 נראית חלקית — מומלץ לבקש חתימה מחדש לפני אישור המסמך.' }
+    ],
+    appraisal: [
+      { date: '14/07/2026 10:12', text: 'זוהתה חריגת בנייה פוטנציאלית: השטח הבנוי גדול ב-92% מהשטח הרשום. מומלץ לבדוק היתרי בנייה.' }
     ],
     id329: [
       { date: '04/07/2026 15:55', text: 'כל השדות החובה מולאו כראוי. לא נמצאו חריגות במסמך.' }
@@ -4173,10 +5680,22 @@
   }
 
   function getActiveSidePanelMode() {
-    const layout = document.getElementById('docPreviewLayout');
-    if (layout.classList.contains('ai-open')) return 'ai';
-    if (layout.classList.contains('notes-open')) return 'notes';
+    const panel = document.getElementById('docNotesPanel');
+    if (!panel?.classList.contains('is-open')) return null;
+    if (panel.classList.contains('mode-summary')) return 'summary';
+    if (panel.classList.contains('mode-ai')) return 'ai';
+    if (panel.classList.contains('mode-notes')) return 'notes';
     return null;
+  }
+
+  function updatePreviewSummaryBtn() {
+    const wrap = document.getElementById('previewSummaryWrap');
+    if (!wrap) return;
+    const show = previewCurrentDocId === 'appraisal';
+    wrap.classList.toggle('is-visible', show);
+    if (!show && getActiveSidePanelMode() === 'summary') {
+      closeDocSidePanel();
+    }
   }
 
   function closeDocSidePanel() {
@@ -4184,51 +5703,83 @@
   }
 
   function toggleDocSidePanel(mode, forceOpen) {
-    const layout = document.getElementById('docPreviewLayout');
     const panel = document.getElementById('docNotesPanel');
     const notesBtn = document.getElementById('previewNotesBtn');
     const aiBtn = document.getElementById('previewAiBtn');
+    const summaryBtn = document.getElementById('previewSummaryBtn');
     const title = document.getElementById('docSidePanelTitle');
+    if (!panel || !notesBtn || !aiBtn || !title) return;
+
     const currentMode = getActiveSidePanelMode();
     const isSameModeOpen = currentMode === mode;
     const isOpen = forceOpen !== undefined ? forceOpen : !(isSameModeOpen && mode);
 
-    layout.classList.toggle('notes-open', isOpen && mode === 'notes');
-    layout.classList.toggle('ai-open', isOpen && mode === 'ai');
+    panel.classList.toggle('is-open', isOpen);
+    panel.classList.toggle('mode-notes', isOpen && mode === 'notes');
+    panel.classList.toggle('mode-ai', isOpen && mode === 'ai');
+    panel.classList.toggle('mode-summary', isOpen && mode === 'summary');
     panel.setAttribute('aria-hidden', String(!isOpen));
 
     notesBtn.classList.toggle('active', isOpen && mode === 'notes');
     notesBtn.setAttribute('aria-expanded', String(isOpen && mode === 'notes'));
     aiBtn.classList.toggle('active', isOpen && mode === 'ai');
     aiBtn.setAttribute('aria-expanded', String(isOpen && mode === 'ai'));
+    if (summaryBtn) {
+      summaryBtn.classList.toggle('active', isOpen && mode === 'summary');
+      summaryBtn.setAttribute('aria-expanded', String(isOpen && mode === 'summary'));
+    }
 
     if (!isOpen) {
       title.textContent = 'הערות';
+      document.getElementById('docNotesInput')?.blur();
       return;
     }
 
     if (mode === 'ai') {
       title.innerHTML = '<span class="doc-notes-title-ai">' + AI_ICON_SVG_MD + 'ניתוח AI</span>';
       renderDocAiNotes();
+    } else if (mode === 'summary') {
+      title.textContent = 'דו״ח מסכם';
+      panel.scrollTop = 0;
     } else {
       title.textContent = 'הערות';
       renderDocNotes();
-      document.getElementById('docNotesInput').focus();
+      const input = document.getElementById('docNotesInput');
+      if (!input) return;
+      const scrollers = [
+        document.querySelector('.left-col'),
+        document.querySelector('.doc-preview-main'),
+        document.querySelector('.inbox-list')
+      ].filter(Boolean);
+      const tops = scrollers.map((el) => el.scrollTop);
+      const lefts = scrollers.map((el) => el.scrollLeft);
+      requestAnimationFrame(() => {
+        input.focus({ preventScroll: true });
+        scrollers.forEach((el, i) => {
+          el.scrollTop = tops[i];
+          el.scrollLeft = lefts[i];
+        });
+      });
     }
   }
 
   function toggleDocNotesPanel(forceOpen) {
-    const layout = document.getElementById('docPreviewLayout');
-    const isNotesOpen = layout.classList.contains('notes-open');
+    const isNotesOpen = getActiveSidePanelMode() === 'notes';
     const shouldOpen = forceOpen !== undefined ? forceOpen : !isNotesOpen;
     toggleDocSidePanel('notes', shouldOpen);
   }
 
   function toggleDocAiPanel(forceOpen) {
-    const layout = document.getElementById('docPreviewLayout');
-    const isAiOpen = layout.classList.contains('ai-open');
+    const isAiOpen = getActiveSidePanelMode() === 'ai';
     const shouldOpen = forceOpen !== undefined ? forceOpen : !isAiOpen;
     toggleDocSidePanel('ai', shouldOpen);
+  }
+
+  function toggleDocSummaryPanel(forceOpen) {
+    if (previewCurrentDocId !== 'appraisal') return;
+    const isOpen = getActiveSidePanelMode() === 'summary';
+    const shouldOpen = forceOpen !== undefined ? forceOpen : !isOpen;
+    toggleDocSidePanel('summary', shouldOpen);
   }
 
   function addDocNote() {
@@ -4283,6 +5834,7 @@
     applySelectedDocumentContent(id);
     updatePreviewNotesBadge();
     updatePreviewAiBadge();
+    updatePreviewSummaryBtn();
     renderPreviewHqStatus();
     const panelMode = getActiveSidePanelMode();
     if (panelMode === 'notes') renderDocNotes();
@@ -4400,12 +5952,28 @@
   }
 
   initCapsuleSelects();
+  updatePreviewSummaryBtn();
   initInboxRowIndicators();
   syncStatusMultiFilterUi();
   seedDemoHqStatusesForBanker();
   applySelectedDocumentContent(previewCurrentDocId);
   updatePreviewNotesBadge();
   updatePreviewAiBadge();
+
+  (function bindSummaryPanelWheel() {
+    const panel = document.getElementById('docNotesPanel');
+    if (!panel || panel.dataset.wheelBound) return;
+    panel.dataset.wheelBound = '1';
+    panel.addEventListener('wheel', (e) => {
+      if (!panel.classList.contains('is-open') || !panel.classList.contains('mode-summary')) return;
+      const max = panel.scrollHeight - panel.clientHeight;
+      if (max <= 0) return;
+      const next = Math.min(max, Math.max(0, panel.scrollTop + e.deltaY));
+      panel.scrollTop = next;
+      e.preventDefault();
+      e.stopPropagation();
+    }, { passive: false });
+  })();
 
   document.querySelector('.inbox-list')?.addEventListener('scroll', closePreviewHqStatusMenu, { passive: true });
   window.addEventListener('resize', closePreviewHqStatusMenu);
