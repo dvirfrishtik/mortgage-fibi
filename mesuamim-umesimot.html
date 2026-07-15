@@ -2309,9 +2309,25 @@
       padding: 7px 14px;
       cursor: pointer;
       white-space: nowrap;
-      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
     }
-    .upload-analyze-approve-btn:hover,
+    .upload-analyze-approve-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+      background: var(--surface);
+      color: var(--text-muted);
+      border-color: var(--border-light);
+    }
+    .upload-analyze-approve-btn.is-primary:not(:disabled) {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+    }
+    .upload-analyze-approve-btn.is-primary:not(:disabled):hover {
+      background: var(--navy-dark);
+      border-color: var(--navy-dark);
+      color: #fff;
+    }
     .upload-analyze-edit-btn:hover {
       background: var(--navy-50);
       border-color: var(--navy-100);
@@ -2729,6 +2745,10 @@
     .doc-summary-flag-mark.is-ok {
       background: #E7F6EC;
       color: var(--green);
+    }
+    .doc-summary-flag-mark.is-danger {
+      background: #FDECEA;
+      color: var(--red);
     }
     .doc-summary-flag-mark.is-warn {
       background: #FFF1C9;
@@ -3172,10 +3192,10 @@
               <h3 class="doc-summary-card-title">5. דגלים אדומים</h3>
             </div>
             <ol class="doc-summary-flag-list">
-              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>השמאות לא מופנית לבנק הבינלאומי</strong></div><span class="doc-summary-flag-mark is-ok" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.2 6.2 4.7 8.7 9.8 3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
-              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>סכנת קריסה</strong></div><span class="doc-summary-flag-mark is-ok" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.2 6.2 4.7 8.7 9.8 3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
-              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>אין אחריות כלפי הבנק הבינלאומי בהסתמכות על השמאות</strong></div><span class="doc-summary-flag-mark is-ok" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.2 6.2 4.7 8.7 9.8 3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
-              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>קיים דייר מוגן בנכס</strong></div><span class="doc-summary-flag-mark is-ok" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.2 6.2 4.7 8.7 9.8 3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>השמאות לא מופנית לבנק הבינלאומי</strong></div><span class="doc-summary-flag-mark is-danger" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M6 2.2v5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="6" cy="9.5" r="0.95" fill="currentColor"/></svg></span></li>
+              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>סכנת קריסה</strong></div><span class="doc-summary-flag-mark is-danger" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M6 2.2v5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="6" cy="9.5" r="0.95" fill="currentColor"/></svg></span></li>
+              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>אין אחריות כלפי הבנק הבינלאומי בהסתמכות על השמאות</strong></div><span class="doc-summary-flag-mark is-danger" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M6 2.2v5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="6" cy="9.5" r="0.95" fill="currentColor"/></svg></span></li>
+              <li class="doc-summary-flag-item"><div class="doc-summary-flag-main"><strong>קיים דייר מוגן בנכס</strong></div><span class="doc-summary-flag-mark is-danger" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M6 2.2v5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="6" cy="9.5" r="0.95" fill="currentColor"/></svg></span></li>
             </ol>
             <p class="doc-summary-footnote">לא נמצאו דגלים אדומים.</p>
           </section>
@@ -4545,6 +4565,15 @@
     }
   }
 
+  function syncUploadAnalyzeApproveButtons() {
+    document.querySelectorAll('#uploadAnalyzePendingBody .upload-analyze-approve-btn').forEach((btn) => {
+      const row = btn.closest('.upload-analyze-row');
+      const isSelected = row && Number(row.dataset.index) === uploadAnalyzeSelectedIndex;
+      btn.disabled = !isSelected;
+      btn.classList.toggle('is-primary', !!isSelected);
+    });
+  }
+
   function selectUploadAnalyzeRow(index) {
     const rows = document.querySelectorAll('#uploadAnalyzePendingBody .upload-analyze-row, #uploadAnalyzeApprovedBody .upload-analyze-row');
     if (!getUploadAnalyzeFile(index)) return;
@@ -4552,18 +4581,23 @@
     rows.forEach((row) => {
       row.classList.toggle('is-selected', Number(row.dataset.index) === index);
     });
+    syncUploadAnalyzeApproveButtons();
     updateUploadAnalyzePreview(index);
   }
 
   function buildUploadAnalyzePendingRowHtml(index, withEnter) {
     const file = getUploadAnalyzeFile(index);
     const enterClass = withEnter ? ' is-moving-in' : '';
-    const selectedClass = uploadAnalyzeSelectedIndex === index ? ' is-selected' : '';
+    const isSelected = uploadAnalyzeSelectedIndex === index;
+    const selectedClass = isSelected ? ' is-selected' : '';
+    const approveAttrs = isSelected
+      ? 'class="upload-analyze-approve-btn is-primary"'
+      : 'class="upload-analyze-approve-btn" disabled';
     return `
       <div class="upload-analyze-row${enterClass}${selectedClass}" role="option" data-index="${index}" onclick="selectUploadAnalyzeRow(${index})">
         <span class="upload-analyze-filename" title="${escapeHtml(file.filename)}">${escapeHtml(file.filename)}</span>
         ${buildUploadAnalyzeCatalogDropdownHtml(index, file.catalogType || file.suggestedType)}
-        <button type="button" class="upload-analyze-approve-btn" onclick="event.stopPropagation(); approveUploadAnalyzeRow(${index})">אישור</button>
+        <button type="button" ${approveAttrs} onclick="event.stopPropagation(); approveUploadAnalyzeRow(${index})">אישור</button>
       </div>
     `;
   }
@@ -4630,6 +4664,7 @@
     const pendingBody = document.getElementById('uploadAnalyzePendingBody');
     const approvedBody = document.getElementById('uploadAnalyzeApprovedBody');
     if (!file || !row || file.approved || uploadAnalyzeAnimating || !pendingBody || !approvedBody) return;
+    if (uploadAnalyzeSelectedIndex !== index) return;
 
     closeUploadAnalyzeCatalogMenus();
     file.catalogType = getUploadAnalyzeCatalogType(index);
