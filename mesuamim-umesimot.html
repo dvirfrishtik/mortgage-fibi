@@ -6,10 +6,17 @@
   <title>מסמכים ומשימות — בנק הבינלאומי</title>
   <link rel="stylesheet" href="snifit.css">
   <script>
+    window.__CASE_PAGE_EMPTY__ = false;
     try {
       if (sessionStorage.getItem('casePageEnter') === '1') {
         document.documentElement.classList.add('case-page-loading');
         sessionStorage.removeItem('casePageEnter');
+      }
+      const emptyFromQuery = new URLSearchParams(location.search).get('empty') === '1';
+      if (emptyFromQuery || sessionStorage.getItem('casePageEmpty') === '1') {
+        window.__CASE_PAGE_EMPTY__ = true;
+        document.documentElement.classList.add('case-page-empty');
+        sessionStorage.removeItem('casePageEmpty');
       }
     } catch (e) {}
   </script>
@@ -1762,6 +1769,31 @@
     .inbox-row--missing .inbox-banker-tag,
     .inbox-row--missing .inbox-hq-status {
       display: none !important;
+    }
+    #preview-generic.is-missing-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--navy-600, #5a6478);
+    }
+    #preview-generic.is-missing-empty .legal-doc-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    #preview-generic.is-missing-empty .legal-doc-subtitle {
+      margin-top: 10px;
+      max-width: 320px;
+      line-height: 1.5;
+      color: #7a8499;
+    }
+    .center-col.is-preview-missing .preview-action-bar {
+      opacity: 0.45;
+      pointer-events: none;
     }
     /* Missing/unuploaded docs never reach HQ — only after upload + טופל */
     body[data-persona="hq"] .inbox-row--missing {
@@ -6384,7 +6416,8 @@
     const block = document.getElementById('previewTitleBlock');
     const tabsEl = document.getElementById('previewVersionTabs');
     const titleEl = document.getElementById('previewTitle');
-    const versions = getDocVersions(docId);
+    const row = document.querySelector(`.inbox-row[data-doc="${docId}"]`);
+    const versions = isMissingDocRow(row) ? [] : getDocVersions(docId);
     if (!block || !tabsEl || !titleEl) return;
 
     if (versions.length < 2) {
@@ -6418,10 +6451,14 @@
     const row = document.querySelector(`.inbox-row[data-doc="${id}"]`);
     const version = getActiveDocVersion(id);
     const isMissing = isMissingDocRow(row);
+    const centerCol = document.querySelector('.center-col');
+    if (centerCol) centerCol.classList.toggle('is-preview-missing', isMissing);
 
     document.querySelectorAll('.legal-doc').forEach(p => p.style.display = 'none');
+    const genericPreview = document.getElementById('preview-generic');
+    if (genericPreview) genericPreview.classList.toggle('is-missing-empty', isMissing);
     if (isMissing) {
-      document.getElementById('preview-generic').style.display = 'block';
+      genericPreview.style.display = 'flex';
       document.getElementById('genericTitle').textContent = doc.name;
       const subtitle = document.querySelector('#preview-generic .legal-doc-subtitle');
       if (subtitle) subtitle.textContent = 'המסמך טרם הועלה. יש להוסיף את המסמך כדי להמשיך בטיפול.';
@@ -6482,6 +6519,39 @@
       { date: '03/07/2026 08:01', text: 'איכות התמונה נמוכה — ייתכן שחלק מהטקסט לא יהיה קריא לאחר סריקה.' }
     ]
   };
+
+  function applyNewCaseEmptyDocumentsState() {
+    document.querySelectorAll('.inbox-row[data-doc]').forEach(row => {
+      const docId = row.dataset.doc;
+      if (!docId) return;
+
+      row.classList.add('inbox-row--missing');
+      row.dataset.uploaded = 'false';
+      row.classList.remove('active', 'is-done-with-hq', 'inbox-row--hq-valid');
+      delete row.dataset.indicatorsInit;
+
+      const info = row.querySelector('.inbox-info');
+      if (info) {
+        info.querySelectorAll('.inbox-code, .inbox-meta, .inbox-row-indicators').forEach(el => el.remove());
+      }
+
+      row.querySelectorAll(
+        '.status-select, .capsule-select, .inbox-row-actions, .inbox-upload-btn, .inbox-banker-tag, .inbox-hq-status'
+      ).forEach(el => el.remove());
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'inbox-upload-btn';
+      btn.textContent = '+ הוספת המסמך';
+      btn.addEventListener('click', (event) => handleRowUploadDocument(event, docId));
+      row.appendChild(btn);
+    });
+
+    Object.keys(docNotesStore).forEach(key => { delete docNotesStore[key]; });
+    Object.keys(docAiNotesStore).forEach(key => { delete docAiNotesStore[key]; });
+    Object.keys(docHqStatusStore).forEach(key => { delete docHqStatusStore[key]; });
+    try { persistHqStatuses(); } catch (_) {}
+  }
 
   function getDocAiNotes(docId) {
     if (!docAiNotesStore[docId]) docAiNotesStore[docId] = [];
@@ -6824,13 +6894,20 @@
     });
   }
 
+  if (window.__CASE_PAGE_EMPTY__) {
+    applyNewCaseEmptyDocumentsState();
+  }
   initCapsuleSelects();
   initInboxRowIndicators();
   syncStatusMultiFilterUi();
-  seedDemoHqStatusesForBanker();
-  applySelectedDocumentContent(previewCurrentDocId);
-  updatePreviewNotesBadge();
-  updatePreviewAiBadge();
+  if (!window.__CASE_PAGE_EMPTY__) {
+    seedDemoHqStatusesForBanker();
+  }
+  const initialDocId = window.__CASE_PAGE_EMPTY__
+    ? (document.querySelector('.inbox-row[data-doc]')?.dataset?.doc || previewCurrentDocId)
+    : previewCurrentDocId;
+  selectDocument(initialDocId);
+  filterDocuments();
 
   (function bindSummaryPanelWheel() {
     const panel = document.getElementById('docNotesPanel');

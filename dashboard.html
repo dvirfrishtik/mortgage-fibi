@@ -2042,8 +2042,11 @@
 
   function goToNewCaseDocuments() {
     closeNewCaseModal();
-    try { sessionStorage.setItem('casePageEnter', '1'); } catch (_) {}
-    window.location.href = 'mesuamim-umesimot.html';
+    try {
+      sessionStorage.setItem('casePageEnter', '1');
+      sessionStorage.setItem('casePageEmpty', '1');
+    } catch (_) {}
+    window.location.href = 'mesuamim-umesimot.html?empty=1';
   }
 
   function newCaseSelectRadio(label, name) {
