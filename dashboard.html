@@ -3,34 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>לוח בקרה — בנק הבינלאומי</title>
+  <title>תיקי משכנתא פעילים — בנק הבינלאומי</title>
   <link rel="stylesheet" href="snifit.css">
   <style>
-    .page-header {
-      background: white;
-      border-bottom: 1px solid var(--border);
-      padding: 20px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    html, body {
+      height: 100%;
+      overflow: hidden;
     }
-    .page-title { font-size: 20px; font-weight: 700; color: var(--navy); }
-    .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    tr.is-opening td {
+      background: var(--navy-50) !important;
+    }
+    .header,
+    .stats-row,
+    .filters {
+      flex-shrink: 0;
+    }
     .btn-new {
       background: var(--navy);
-      color: white;
+      color: #fff;
       border: none;
-      padding: 10px 22px;
+      padding: 8px 16px;
       border-radius: var(--radius-sm);
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: inherit;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 8px;
-      transition: background 0.2s;
+      gap: 6px;
+      transition: background 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
-    .btn-new:hover { background: var(--navy-dark); }
+    .btn-new:hover {
+      background: var(--navy-dark);
+    }
+    .btn-new-icon {
+      width: 14px;
+      height: 14px;
+      display: block;
+      flex-shrink: 0;
+    }
 
     .stats-row {
       padding: 20px 32px;
@@ -38,12 +57,113 @@
       grid-template-columns: repeat(4, 1fr);
       gap: 16px;
     }
+    .stats-row .stat-card {
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s, transform 0.15s;
+    }
+    .stats-row .stat-card:hover {
+      border-color: var(--navy-100);
+      background: var(--navy-50);
+      box-shadow: 0 4px 14px rgba(27, 42, 107, 0.1);
+      transform: translateY(-1px);
+    }
+    .stats-row .stat-card:active {
+      transform: translateY(0);
+      box-shadow: var(--shadow-sm);
+    }
 
     .filters {
       padding: 0 32px 16px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .table-section-title-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+    .table-section-title {
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+      background: transparent;
+      padding: 4px 6px;
+      margin: -4px -6px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--navy);
+      white-space: nowrap;
+      cursor: pointer;
+      line-height: 1.3;
+    }
+    .table-section-title:hover,
+    .table-section-title-wrap.open .table-section-title {
+      background: rgba(27, 42, 107, 0.05);
+    }
+    .table-section-title-count {
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .table-section-chevron {
+      width: 10px;
+      height: 10px;
+      display: block;
+      flex-shrink: 0;
+      color: var(--navy);
+      opacity: 0.7;
+      transition: transform 0.15s;
+    }
+    .table-section-title-wrap.open .table-section-chevron {
+      transform: rotate(180deg);
+      opacity: 1;
+    }
+    .table-section-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      inset-inline-start: 0;
+      z-index: 50;
+      min-width: 168px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 20px rgba(27, 42, 107, 0.12);
+      padding: 4px;
+    }
+    .table-section-title-wrap.open .table-section-dropdown {
+      display: block;
+    }
+    .table-section-option {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-body);
+      cursor: pointer;
+      text-align: right;
+    }
+    .table-section-option:hover {
+      background: rgba(27, 42, 107, 0.05);
+      color: var(--navy);
+    }
+    .filters-controls {
+      display: flex;
+      align-items: center;
       gap: 12px;
+      flex-wrap: wrap;
+      margin-inline-start: auto;
     }
     .search-box {
       display: flex;
@@ -53,37 +173,857 @@
       border-radius: var(--radius-sm);
       padding: 8px 14px;
       gap: 8px;
-      flex: 1;
-      max-width: 320px;
+      width: 260px;
+      max-width: 100%;
+      flex: 0 0 auto;
     }
     .search-box input {
       border: none;
       outline: none;
+      font-family: inherit;
       font-size: 13px;
       width: 100%;
       direction: rtl;
       background: transparent;
     }
-    .filter-btn {
+
+    .table-wrap {
+      flex: 1;
+      min-height: 0;
+      padding: 0 32px 24px;
+      display: flex;
+      flex-direction: column;
+    }
+    .table-card {
+      flex: 1;
+      min-height: 0;
       background: white;
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 8px 16px;
-      font-size: 13px;
-      color: var(--text-body);
-      cursor: pointer;
-      transition: all 0.15s;
+      border-radius: var(--radius-lg);
+      overflow: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: #C5CAD6 transparent;
     }
-    .filter-btn:hover { border-color: var(--navy); color: var(--navy); }
-    .filter-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+    .table-card::-webkit-scrollbar { width: 8px; }
+    .table-card::-webkit-scrollbar-thumb {
+      background: #C5CAD6;
+      border-radius: 99px;
+    }
+    /* border-collapse:collapse breaks position:sticky in most browsers */
+    .table-card table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    .table-card thead th {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--navy);
+      box-shadow: 0 1px 0 var(--border);
+    }
+    .table-card tbody tr:first-child td {
+      border-top: none;
+    }
+    .table-card th,
+    .table-card td {
+      text-align: right;
+      vertical-align: middle;
+    }
+    .col-client {
+      width: 160px;
+    }
+    .col-case-id {
+      width: 96px;
+      white-space: nowrap;
+    }
+    .case-id-num {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-body);
+      font-variant-numeric: tabular-nums;
+    }
+    .col-deal {
+      width: 190px;
+    }
+    .col-date {
+      width: 130px;
+      white-space: nowrap;
+    }
+    .col-progress {
+      width: 150px;
+    }
+    .col-doc-status {
+      width: 120px;
+    }
+    .col-precheck,
+    th.precheck-col,
+    td.precheck-cell {
+      width: 120px;
+      text-align: right;
+    }
+    .col-spacer {
+      width: auto;
+      padding: 0 !important;
+      border: none;
+    }
+    th.col-menu,
+    td.col-menu {
+      width: 96px;
+      text-align: center;
+      padding-inline: 8px;
+      vertical-align: middle;
+    }
+    .row-actions {
+      display: inline-grid;
+      grid-template-columns: 32px 32px;
+      align-items: center;
+      justify-items: center;
+      column-gap: 2px;
+      height: 32px;
+      vertical-align: middle;
+    }
+    .row-actions .row-menu-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+    }
+    .row-tasks-badge {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border-radius: 99px;
+      color: var(--navy);
+      cursor: default;
+      flex-shrink: 0;
+      line-height: 1;
+      box-sizing: border-box;
+    }
+    .row-tasks-badge--empty {
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .row-tasks-badge:not(.row-tasks-badge--empty):hover {
+      background: rgba(27, 42, 107, 0.06);
+    }
+    .row-tasks-icon-wrap {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .row-tasks-badge svg {
+      width: 15px;
+      height: 15px;
+      display: block;
+      flex-shrink: 0;
+    }
+    .row-tasks-count {
+      position: absolute;
+      top: -5px;
+      inset-inline-end: -7px;
+      z-index: 1;
+      min-width: 13px;
+      height: 13px;
+      padding: 0 3px;
+      border-radius: 99px;
+      background: var(--navy);
+      color: white;
+      font-size: 8px;
+      font-weight: 700;
+      line-height: 13px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      pointer-events: none;
+      box-shadow: 0 0 0 1.5px var(--surface);
+    }
+    .table-card td.col-deal,
+    .table-card td.col-date {
+      white-space: nowrap;
+    }
+    .table-card .progress-mini {
+      gap: 10px;
+    }
+    .table-card .progress-mini-track {
+      width: 96px;
+    }
+    .table-card .progress-mini-fill,
+    .table-card .progress-mini-fill.warn,
+    .table-card .progress-mini-fill.done {
+      background: var(--navy);
+    }
+    .doc-status-dist {
+      display: inline-flex;
+      align-items: center;
+      cursor: default;
+    }
+    .doc-status-dist-bar {
+      display: flex;
+      width: 96px;
+      height: 5px;
+      border-radius: 99px;
+      overflow: hidden;
+      background: var(--border);
+      direction: ltr;
+    }
+    .doc-status-dist-bar .seg {
+      height: 100%;
+      min-width: 0;
+    }
+    .doc-status-dist-bar .seg.pending { background: var(--orange); }
+    .doc-status-dist-bar .seg.returned { background: var(--red); }
+    .doc-status-dist-bar .seg.done { background: var(--green); }
+    .dash-status-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      text-align: right;
+      min-width: 148px;
+    }
+    .dash-status-legend-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.2;
+      color: #fff;
+    }
+    .dash-status-legend-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .dash-status-legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dash-status-legend-dot.pending { background: var(--orange); }
+    .dash-status-legend-dot.returned { background: var(--red); }
+    .dash-status-legend-dot.done { background: var(--green); }
+    .dash-status-legend-count {
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      color: #fff;
+    }
+    .precheck-icon {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      vertical-align: middle;
+    }
+    .precheck-icon img,
+    .precheck-icon svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+    .precheck-icon--done {
+      color: var(--navy);
+    }
+    /* Same tooltip design as status tooltips on the case page */
+    .dash-icon-tooltip {
+      position: fixed;
+      z-index: 1000;
+      background: #1F2937;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.25;
+      white-space: nowrap;
+      padding: 7px 10px;
+      border-radius: 6px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18);
+      pointer-events: none;
+      opacity: 0;
+      transform: translate(-50%, -100%);
+      transition: opacity 0.12s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      text-align: right;
+    }
+    .dash-icon-tooltip-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.65);
+      letter-spacing: 0.01em;
+    }
+    .dash-icon-tooltip-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .dash-icon-tooltip.is-visible {
+      opacity: 1;
+    }
+    .dash-icon-tooltip.has-legend {
+      white-space: normal;
+      padding: 10px 12px;
+      gap: 8px;
+      border-radius: 8px;
+    }
 
-    .table-wrap { padding: 0 32px 32px; }
-    .table-card {
+    .row-menu-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .row-menu-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 99px;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+    .row-menu-btn:hover,
+    .row-menu-wrap.open .row-menu-btn {
+      background: rgba(27, 42, 107, 0.06);
+      color: var(--navy);
+    }
+    .row-menu-btn-dots {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      align-items: center;
+    }
+    .row-menu-btn-dots span {
+      width: 3.5px;
+      height: 3.5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .row-menu-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      inset-inline-end: 0;
+      z-index: 40;
+      min-width: 148px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 20px rgba(27, 42, 107, 0.12);
+      padding: 4px;
+    }
+    .row-menu-wrap.open .row-menu-dropdown {
+      display: block;
+    }
+    .row-menu-option {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: right;
+      color: #E57373;
+    }
+    .row-menu-option:hover {
+      background: #FDECEC;
+      color: #D32F2F;
+    }
+
+    /* ── New case modal (same shell as upload analyze) ── */
+    .new-case-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .new-case-modal.open { display: flex; }
+    .new-case-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 16, 40, 0.72);
+      animation: dashModalFadeIn 0.2s ease-out;
+    }
+    .new-case-modal-card {
+      position: relative;
+      width: 80vw;
+      height: 90vh;
+      max-width: 80vw;
+      max-height: 90vh;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: dashModalPopIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @media (min-width: 1920px) {
+      .new-case-modal-card {
+        width: 60vw;
+        height: 90vh;
+        max-width: 60vw;
+        max-height: 90vh;
+      }
+    }
+    @keyframes dashModalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes dashModalPopIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .new-case-modal-close {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: auto;
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.14);
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .new-case-modal-close:hover {
+      background: rgba(255, 255, 255, 0.24);
+      color: #fff;
+    }
+    .new-case-modal-header {
+      flex-shrink: 0;
+      padding: 16px 24px 14px;
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .new-case-modal-title {
+      margin: 0;
+      padding-bottom: 12px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      width: 100%;
+      line-height: 1.3;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .new-case-steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .new-case-step-item {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 112px;
+      padding: 6px 10px;
+      border-radius: 99px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.2;
+      white-space: nowrap;
+      color: rgba(255, 255, 255, 0.32);
+      background: transparent;
+      border: 1px dashed rgba(255, 255, 255, 0.22);
+      cursor: not-allowed;
+      box-sizing: border-box;
+      opacity: 0.55;
+      transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+    }
+    .new-case-step-item.is-active {
+      color: var(--navy);
+      background: var(--yellow);
+      border: 1px solid var(--yellow);
+      cursor: default;
+      opacity: 1;
+    }
+    .new-case-step-item.is-done {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      opacity: 1;
+      cursor: default;
+    }
+    .new-case-step-item.is-clickable {
+      cursor: pointer;
+    }
+    .new-case-step-item.is-clickable:hover {
+      background: rgba(255, 255, 255, 0.32);
+      border-color: rgba(255, 255, 255, 0.8);
+      color: #fff;
+    }
+    .new-case-step-item:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .new-case-step-item.is-active:disabled,
+    .new-case-step-item.is-done:disabled {
+      opacity: 1;
+      cursor: default;
+    }
+    .new-case-step-arrow {
+      width: 16px;
+      height: 1.5px;
+      background: rgba(255, 255, 255, 0.16);
+      border-radius: 2px;
+      font-size: 0;
+      color: transparent;
+      line-height: 0;
+      flex-shrink: 0;
+    }
+    .new-case-step-item.is-active + .new-case-step-arrow,
+    .new-case-step-item.is-done + .new-case-step-arrow {
+      background: rgba(255, 255, 255, 0.45);
+    }
+    .new-case-modal-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 20px 28px 12px;
+      background: #fff;
+    }
+    .new-case-pane { display: none; }
+    .new-case-pane.is-active { display: block; }
+    .new-case-empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .new-case-empty-title {
+      margin: 0 0 8px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .new-case-empty-text {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .new-case-success {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100%;
+      flex: 1;
+      padding: 48px 24px;
+      text-align: center;
+    }
+    .new-case-pane[data-pane="4"].is-active {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+    }
+    .new-case-success-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--yellow);
+      color: var(--navy);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.35);
+      transform: scale(0.6);
+      opacity: 0;
+    }
+    .new-case-success-icon.is-animating {
+      animation:
+        newCaseSuccessPop 0.55s cubic-bezier(0.34, 1.45, 0.64, 1) 0.05s both,
+        newCaseSuccessGlow 0.9s ease-out 0.15s both;
+    }
+    .new-case-success-icon svg {
+      width: 32px;
+      height: 32px;
+      display: block;
+    }
+    .new-case-success-icon path {
+      stroke-dasharray: 28;
+      stroke-dashoffset: 28;
+    }
+    .new-case-success-icon.is-animating path {
+      animation: newCaseSuccessCheckDraw 0.4s ease 0.32s forwards;
+    }
+    @keyframes newCaseSuccessPop {
+      from { opacity: 0; transform: scale(0.55); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes newCaseSuccessGlow {
+      0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4); }
+      70% { box-shadow: 0 0 0 14px rgba(255, 193, 7, 0); }
+      100% { box-shadow: 0 0 0 8px rgba(255, 193, 7, 0.18); }
+    }
+    @keyframes newCaseSuccessCheckDraw {
+      to { stroke-dashoffset: 0; }
+    }
+    .new-case-success-title {
+      margin: 0 0 6px;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+    }
+    .new-case-success-case {
+      margin: 0 0 28px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .new-case-success-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      width: 100%;
+      max-width: 280px;
+    }
+    .new-case-success-actions .btn-add,
+    .new-case-success-actions .btn-cancel {
+      width: 100%;
+      justify-content: center;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .new-case-success-actions .btn-add {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .new-case-success-actions .btn-add-chevron {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .new-case-success-icon,
+      .new-case-success-icon.is-animating,
+      .new-case-success-icon.is-animating path {
+        animation: none;
+        opacity: 1;
+        transform: none;
+        box-shadow: 0 0 0 8px rgba(255, 193, 7, 0.18);
+      }
+      .new-case-success-icon path { stroke-dashoffset: 0; }
+    }
+    .new-case-modal.is-success .new-case-steps {
+      display: none;
+    }
+    .new-case-modal.is-success .new-case-modal-title {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .new-case-modal.is-success .new-case-modal-footer {
+      display: none;
+    }
+    .new-case-modal.is-success .new-case-modal-body {
+      display: flex;
+      flex-direction: column;
+    }
+    .new-case-modal .form-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: visible;
+      margin-bottom: 16px;
+    }
+    .new-case-modal .form-card-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--navy-50);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .new-case-modal .form-card-body { padding: 18px; }
+    .new-case-modal .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .new-case-modal .form-row.single { grid-template-columns: 1fr; }
+    .new-case-modal .form-row:last-child { margin-bottom: 0; }
+    .new-case-modal .question-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 12px;
+    }
+    .new-case-modal .question-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-faint);
+      margin-bottom: 4px;
+    }
+    .new-case-modal .question-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-body);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    .new-case-modal .intro-banner {
+      background: var(--navy-50);
+      border: 1px solid var(--navy-100);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: var(--navy);
+    }
+    .new-case-precheck-list {
       background: white;
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       overflow: hidden;
     }
+    .new-case-precheck-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .new-case-precheck-item:last-child { border-bottom: none; }
+    .new-case-precheck-item:hover { background: var(--navy-50); }
+    .new-case-precheck-check {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 1.5px solid #C8CDD8;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: transparent;
+      transition: background 0.12s, border-color 0.12s, color 0.12s;
+    }
+    .new-case-precheck-item.is-checked .new-case-precheck-check {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+    }
+    .new-case-precheck-check svg {
+      width: 12px;
+      height: 12px;
+      display: block;
+    }
+    .new-case-precheck-text {
+      flex: 1;
+      text-align: right;
+    }
+    .new-case-precheck-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 2px;
+    }
+    .new-case-precheck-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .new-case-modal-footer {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      border-top: 1px solid var(--border-light);
+      background: var(--surface);
+    }
+    .new-case-btn-back {
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--navy);
+      border-radius: var(--radius-sm);
+      padding: 9px 16px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .new-case-btn-back:hover { border-color: var(--navy); background: var(--navy-50); }
+    .new-case-btn-back[hidden] { display: none !important; }
+    .new-case-btn-next {
+      border: none;
+      background: var(--navy);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      padding: 9px 18px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-inline-start: auto;
+    }
+    .new-case-btn-next:hover { background: var(--navy-dark); }
+
   </style>
 </head>
 <body>
@@ -96,48 +1036,47 @@
   </div>
 </header>
 
-<div class="page-header">
-  <div>
-    <div class="page-title">לוח בקרה</div>
-    <div class="page-subtitle">התיקים שלך — עדכון אחרון: היום, 09:42</div>
-  </div>
-  <button class="btn-new" onclick="window.location.href='ptikhat-tik.html'">
-    + פתח תיק חדש
-  </button>
-</div>
-
 <div class="stats-row">
   <div class="stat-card">
-    <div class="stat-label">סה"כ תיקים פעילים</div>
-    <div class="stat-value">24</div>
-    <div class="stat-sub">מכל סוגי העסקאות</div>
+    <div class="stat-label">מסמכים ממתינים לבדיקה מעל 3 ימים</div>
+    <div class="stat-value">8</div>
   </div>
-  <div class="stat-card orange">
-    <div class="stat-label">ממתינים לטיפול</div>
-    <div class="stat-value">7</div>
-    <div class="stat-sub">מסמכים חסרים / בדיקה נדרשת</div>
+  <div class="stat-card">
+    <div class="stat-label">הערות מהמטה ממתינות</div>
+    <div class="stat-value">4</div>
   </div>
-  <div class="stat-card green">
-    <div class="stat-label">הושלמו החודש</div>
-    <div class="stat-value">5</div>
-    <div class="stat-sub">תיקים שנסגרו בהצלחה</div>
+  <div class="stat-card">
+    <div class="stat-label">משימות פתוחות</div>
+    <div class="stat-value">12</div>
   </div>
-  <div class="stat-card red">
-    <div class="stat-label">דחופים</div>
+  <div class="stat-card">
+    <div class="stat-label">פעיל מעל חודש</div>
     <div class="stat-value">2</div>
-    <div class="stat-sub">מעל 30 יום ללא עדכון</div>
   </div>
 </div>
 
 <div class="filters">
-  <div class="search-box">
-    🔍
-    <input type="text" placeholder="חיפוש לפי שם לקוח או ת.ז...">
+  <div class="table-section-title-wrap" id="casesViewMenu">
+    <button type="button" class="table-section-title" aria-haspopup="menu" aria-expanded="false" onclick="toggleCasesViewMenu(event)">
+      <span id="casesViewLabel">תיקי משכנתא פעילים (<span class="table-section-title-count" id="activeCasesCount">10</span>)</span>
+      <svg class="table-section-chevron" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+        <path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="table-section-dropdown" role="menu">
+      <button type="button" class="table-section-option" role="menuitem" id="casesViewSwitchBtn" onclick="switchCasesView(event)">ארכיון תיקים</button>
+    </div>
   </div>
-  <button class="filter-btn active">הכל</button>
-  <button class="filter-btn">ממתין לטיפול</button>
-  <button class="filter-btn">בתהליך</button>
-  <button class="filter-btn">הושלם</button>
+  <div class="filters-controls">
+    <div class="search-box">
+      🔍
+      <input type="text" placeholder="חיפוש לפי שם לקוח או ת.ז...">
+    </div>
+    <button type="button" class="btn-new" onclick="openNewCaseModal()">
+      <svg class="btn-new-icon" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 2.5v9M2.5 7h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      תיק חדש
+    </button>
+  </div>
 </div>
 
 <div class="table-wrap">
@@ -145,77 +1084,114 @@
     <table>
       <thead>
         <tr>
-          <th>לקוח</th>
-          <th>סוג עסקה</th>
-          <th>תאריך פתיחה</th>
-          <th>התקדמות מסמכים</th>
-          <th>סטטוס</th>
-          <th>פעולה</th>
+          <th class="col-client">לקוח</th>
+          <th class="col-case-id">מס׳ תיק</th>
+          <th class="col-deal">סוג עסקה</th>
+          <th class="col-date">תאריך פתיחה</th>
+          <th class="col-progress">סטטוס העלאה</th>
+          <th class="precheck-col col-precheck">בדיקת קדם</th>
+          <th class="col-doc-status">סטטוס מסמכים</th>
+          <th class="col-spacer" aria-hidden="true"></th>
+          <th class="col-menu" aria-label="פעולות"></th>
         </tr>
       </thead>
       <tbody>
-        <tr onclick="window.location.href='mesuamim-umesimot.html'">
-          <td>
-            <div class="client-name">ישראל ישראלי</div>
-            <div class="client-id">ת.ז 023456789 · #12345</div>
+        <tr data-case-view="active" onclick="openMortgageCase(event)">
+          <td class="col-client">
+            <div class="client-name">אורי נחום</div>
+            <div class="client-id">ת.ז 123456780</div>
           </td>
-          <td>רכישת דירה יד שניה</td>
-          <td>05/06/2026</td>
-          <td>
+          <td class="col-case-id"><span class="case-id-num">#12335</span></td>
+          <td class="col-deal">בניה עצמית</td>
+          <td class="col-date">12/05/2026</td>
+          <td class="col-progress">
             <div class="progress-mini">
               <div class="progress-mini-track">
-                <div class="progress-mini-fill warn" style="width:33%"></div>
+                <div class="progress-mini-fill warn" style="width:10%"></div>
               </div>
-              <span class="progress-mini-text">6/18</span>
+              <span class="progress-mini-text">2/22</span>
             </div>
           </td>
-          <td><span class="badge review">⚠️ מסמכים חסרים</span></td>
-          <td><a class="action-link" href="mesuamim-umesimot.html">פתח תיק</a></td>
-        </tr>
-        <tr>
-          <td>
-            <div class="client-name">רחל כהן</div>
-            <div class="client-id">ת.ז 034567890 · #12344</div>
+          <td class="precheck-cell">
+            <span class="precheck-icon precheck-icon--pending" data-tooltip-title="בדיקת קדם" data-tooltip="טרם עבר בדיקת קדם" aria-label="טרם עבר בדיקת קדם">
+              <img src="assets/status-pending.png" alt="" width="18" height="18">
+            </span>
           </td>
-          <td>שיפוצים</td>
-          <td>03/06/2026</td>
-          <td>
+          <td class="col-doc-status">
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;pending&quot;, &quot;label&quot;: &quot;ממתין לבדיקה&quot;, &quot;count&quot;: 2}]" aria-label="ממתין לבדיקה: 2">
+              <div class="doc-status-dist-bar"><span class="seg pending" style="flex:2"></span></div>
+            </div>
+          </td>
+          <td class="col-spacer" aria-hidden="true"></td>
+          <td class="col-menu" onclick="event.stopPropagation()">
+            <div class="row-actions">
+            <span class="row-tasks-badge row-tasks-badge--empty" aria-hidden="true"></span>
+            <div class="row-menu-wrap">
+              <button type="button" class="row-menu-btn" aria-label="אפשרויות נוספות" aria-haspopup="menu" aria-expanded="false" onclick="toggleRowMenu(event, this)">
+                <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              </button>
+              <div class="row-menu-dropdown" role="menu">
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+              </div>
+            </div>
+            </div>
+          </td>
+        </tr>
+        <tr data-case-view="active" onclick="openMortgageCase(event)">
+          <td class="col-client">
+            <div class="client-name">מיכל פרידמן</div>
+            <div class="client-id">ת.ז 090123456</div>
+          </td>
+          <td class="col-case-id"><span class="case-id-num">#12338</span></td>
+          <td class="col-deal">רכישת דירה יד שניה</td>
+          <td class="col-date">20/05/2026</td>
+          <td class="col-progress">
             <div class="progress-mini">
               <div class="progress-mini-track">
-                <div class="progress-mini-fill done" style="width:100%"></div>
+                <div class="progress-mini-fill warn" style="width:15%"></div>
               </div>
-              <span class="progress-mini-text">12/12</span>
+              <span class="progress-mini-text">3/20</span>
             </div>
           </td>
-          <td><span class="badge complete">✓ הושלם</span></td>
-          <td><a class="action-link" href="#">צפה</a></td>
-        </tr>
-        <tr>
-          <td>
-            <div class="client-name">משה לוי</div>
-            <div class="client-id">ת.ז 045678901 · #12343</div>
+          <td class="precheck-cell">
+            <span class="precheck-icon precheck-icon--pending" data-tooltip-title="בדיקת קדם" data-tooltip="טרם עבר בדיקת קדם" aria-label="טרם עבר בדיקת קדם">
+              <img src="assets/status-pending.png" alt="" width="18" height="18">
+            </span>
           </td>
-          <td>רכישה מקבלן</td>
-          <td>01/06/2026</td>
-          <td>
-            <div class="progress-mini">
-              <div class="progress-mini-track">
-                <div class="progress-mini-fill" style="width:60%"></div>
-              </div>
-              <span class="progress-mini-text">13/22</span>
+          <td class="col-doc-status">
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;pending&quot;, &quot;label&quot;: &quot;ממתין לבדיקה&quot;, &quot;count&quot;: 2}, {&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 1}]" aria-label="ממתין לבדיקה: 2 · טופל: 1">
+              <div class="doc-status-dist-bar"><span class="seg pending" style="flex:2"></span><span class="seg done" style="flex:1"></span></div>
             </div>
           </td>
-          <td><span class="badge open">🔵 בתהליך</span></td>
-          <td><a class="action-link" href="#">פתח תיק</a></td>
+          <td class="col-spacer" aria-hidden="true"></td>
+          <td class="col-menu" onclick="event.stopPropagation()">
+            <div class="row-actions">
+            <span class="row-tasks-badge" data-tooltip-title="משימות" data-tooltip="2 משימות פתוחות" aria-label="2 משימות פתוחות">
+              <span class="row-tasks-icon-wrap">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.25 2.75h7.5A1.5 1.5 0 0113.25 4.25v9a1.5 1.5 0 01-1.5 1.5h-7.5a1.5 1.5 0 01-1.5-1.5v-9a1.5 1.5 0 011.5-1.5z" stroke="currentColor" stroke-width="1.3"/><path d="M6 1.75h4v1.5H6v-1.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M5.75 7.25h4.5M5.75 10h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <span class="row-tasks-count">2</span>
+              </span>
+            </span>
+            <div class="row-menu-wrap">
+              <button type="button" class="row-menu-btn" aria-label="אפשרויות נוספות" aria-haspopup="menu" aria-expanded="false" onclick="toggleRowMenu(event, this)">
+                <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              </button>
+              <div class="row-menu-dropdown" role="menu">
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+              </div>
+            </div>
+            </div>
+          </td>
         </tr>
-        <tr>
-          <td>
+        <tr data-case-view="active" onclick="openMortgageCase(event)">
+          <td class="col-client">
             <div class="client-name">שרה אברהם</div>
-            <div class="client-id">ת.ז 056789012 · #12342</div>
+            <div class="client-id">ת.ז 056789012</div>
           </td>
-          <td>כיסוי חובות</td>
-          <td>29/05/2026</td>
-          <td>
+          <td class="col-case-id"><span class="case-id-num">#12342</span></td>
+          <td class="col-deal">כיסוי חובות</td>
+          <td class="col-date">29/05/2026</td>
+          <td class="col-progress">
             <div class="progress-mini">
               <div class="progress-mini-track">
                 <div class="progress-mini-fill warn" style="width:20%"></div>
@@ -223,17 +1199,250 @@
               <span class="progress-mini-text">3/16</span>
             </div>
           </td>
-          <td><span class="badge missing">🔴 דחוף</span></td>
-          <td><a class="action-link" href="#">פתח תיק</a></td>
-        </tr>
-        <tr>
-          <td>
-            <div class="client-name">דוד ברקוביץ</div>
-            <div class="client-id">ת.ז 067890123 · #12341</div>
+          <td class="precheck-cell">
+            <span class="precheck-icon precheck-icon--done" data-tooltip-title="בדיקת קדם" data-tooltip="עבר בדיקת קדם" aria-label="עבר בדיקת קדם">
+              <svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7.25" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 9.2 7.8 11.5 12.5 6.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
           </td>
-          <td>בניה עצמית</td>
-          <td>27/05/2026</td>
-          <td>
+          <td class="col-doc-status">
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;pending&quot;, &quot;label&quot;: &quot;ממתין לבדיקה&quot;, &quot;count&quot;: 2}, {&quot;key&quot;: &quot;returned&quot;, &quot;label&quot;: &quot;חזר לטיפול&quot;, &quot;count&quot;: 1}]" aria-label="ממתין לבדיקה: 2 · חזר לטיפול: 1">
+              <div class="doc-status-dist-bar"><span class="seg pending" style="flex:2"></span><span class="seg returned" style="flex:1"></span></div>
+            </div>
+          </td>
+          <td class="col-spacer" aria-hidden="true"></td>
+          <td class="col-menu" onclick="event.stopPropagation()">
+            <div class="row-actions">
+            <span class="row-tasks-badge row-tasks-badge--empty" aria-hidden="true"></span>
+            <div class="row-menu-wrap">
+              <button type="button" class="row-menu-btn" aria-label="אפשרויות נוספות" aria-haspopup="menu" aria-expanded="false" onclick="toggleRowMenu(event, this)">
+                <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              </button>
+              <div class="row-menu-dropdown" role="menu">
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+              </div>
+            </div>
+            </div>
+          </td>
+        </tr>
+        <tr data-case-view="active" onclick="openMortgageCase(event)">
+          <td class="col-client">
+            <div class="client-name">גיל רוזן</div>
+            <div class="client-id">ת.ז 145678902</div>
+          </td>
+          <td class="col-case-id"><span class="case-id-num">#12333</span></td>
+          <td class="col-deal">רכישה מקבלן</td>
+          <td class="col-date">08/05/2026</td>
+          <td class="col-progress">
+            <div class="progress-mini">
+              <div class="progress-mini-track">
+                <div class="progress-mini-fill warn" style="width:30%"></div>
+              </div>
+              <span class="progress-mini-text">6/20</span>
+            </div>
+          </td>
+          <td class="precheck-cell">
+            <span class="precheck-icon precheck-icon--pending" data-tooltip-title="בדיקת קדם" data-tooltip="טרם עבר בדיקת קדם" aria-label="טרם עבר בדיקת קדם">
+              <img src="assets/status-pending.png" alt="" width="18" height="18">
+            </span>
+          </td>
+          <td class="col-doc-status">
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;pending&quot;, &quot;label&quot;: &quot;ממתין לבדיקה&quot;, &quot;count&quot;: 3}, {&quot;key&quot;: &quot;returned&quot;, &quot;label&quot;: &quot;חזר לטיפול&quot;, &quot;count&quot;: 1}, {&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 2}]" aria-label="ממתין לבדיקה: 3 · חזר לטיפול: 1 · טופל: 2">
+              <div class="doc-status-dist-bar"><span class="seg pending" style="flex:3"></span><span class="seg returned" style="flex:1"></span><span class="seg done" style="flex:2"></span></div>
+            </div>
+          </td>
+          <td class="col-spacer" aria-hidden="true"></td>
+          <td class="col-menu" onclick="event.stopPropagation()">
+            <div class="row-actions">
+            <span class="row-tasks-badge row-tasks-badge--empty" aria-hidden="true"></span>
+            <div class="row-menu-wrap">
+              <button type="button" class="row-menu-btn" aria-label="אפשרויות נוספות" aria-haspopup="menu" aria-expanded="false" onclick="toggleRowMenu(event, this)">
+                <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              </button>
+              <div class="row-menu-dropdown" role="menu">
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+              </div>
+            </div>
+            </div>
+          </td>
+        </tr>
+        <tr data-case-view="active" onclick="openMortgageCase(event)">
+          <td class="col-client">
+            <div class="client-name">ישראל ישראלי</div>
+            <div class="client-id">ת.ז 023456789</div>
+          </td>
+          <td class="col-case-id"><span class="case-id-num">#12345</span></td>
+          <td class="col-deal">רכישת דירה יד שניה</td>
+          <td class="col-date">05/06/2026</td>
+          <td class="col-progress">
+            <div class="progress-mini">
+              <div class="progress-mini-track">
+                <div class="progress-mini-fill warn" style="width:33%"></div>
+              </div>
+              <span class="progress-mini-text">6/18</span>
+            </div>
+          </td>
+          <td class="precheck-cell">
+            <span class="precheck-icon precheck-icon--pending" data-tooltip-title="בדיקת קדם" data-tooltip="טרם עבר בדיקת קדם" aria-label="טרם עבר בדיקת קדם">
+              <img src="assets/status-pending.png" alt="" width="18" height="18">
+            </span>
+          </td>
+          <td class="col-doc-status">
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;pending&quot;, &quot;label&quot;: &quot;ממתין לבדיקה&quot;, &quot;count&quot;: 4}, {&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 2}]" aria-label="ממתין לבדיקה: 4 · טופל: 2">
+              <div class="doc-status-dist-bar"><span class="seg pending" style="flex:4"></span><span class="seg done" style="flex:2"></span></div>
+            </div>
+          </td>
+          <td class="col-spacer" aria-hidden="true"></td>
+          <td class="col-menu" onclick="event.stopPropagation()">
+            <div class="row-actions">
+            <span class="row-tasks-badge" data-tooltip-title="משימות" data-tooltip="3 משימות פתוחות" aria-label="3 משימות פתוחות">
+              <span class="row-tasks-icon-wrap">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.25 2.75h7.5A1.5 1.5 0 0113.25 4.25v9a1.5 1.5 0 01-1.5 1.5h-7.5a1.5 1.5 0 01-1.5-1.5v-9a1.5 1.5 0 011.5-1.5z" stroke="currentColor" stroke-width="1.3"/><path d="M6 1.75h4v1.5H6v-1.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M5.75 7.25h4.5M5.75 10h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <span class="row-tasks-count">3</span>
+              </span>
+            </span>
+            <div class="row-menu-wrap">
+              <button type="button" class="row-menu-btn" aria-label="אפשרויות נוספות" aria-haspopup="menu" aria-expanded="false" onclick="toggleRowMenu(event, this)">
+                <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              </button>
+              <div class="row-menu-dropdown" role="menu">
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+              </div>
+            </div>
+            </div>
+          </td>
+        </tr>
+        <tr data-case-view="active" onclick="openMortgageCase(event)">
+          <td class="col-client">
+            <div class="client-name">איתי שמעוני</div>
+            <div class="client-id">ת.ז 089012345</div>
+          </td>
+          <td class="col-case-id"><span class="case-id-num">#12339</span></td>
+          <td class="col-deal">רכישה מקבלן</td>
+          <td class="col-date">22/05/2026</td>
+          <td class="col-progress">
+            <div class="progress-mini">
+              <div class="progress-mini-track">
+                <div class="progress-mini-fill" style="width:45%"></div>
+              </div>
+              <span class="progress-mini-text">9/20</span>
+            </div>
+          </td>
+          <td class="precheck-cell">
+            <span class="precheck-icon precheck-icon--pending" data-tooltip-title="בדיקת קדם" data-tooltip="טרם עבר בדיקת קדם" aria-label="טרם עבר בדיקת קדם">
+              <img src="assets/status-pending.png" alt="" width="18" height="18">
+            </span>
+          </td>
+          <td class="col-doc-status">
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;pending&quot;, &quot;label&quot;: &quot;ממתין לבדיקה&quot;, &quot;count&quot;: 4}, {&quot;key&quot;: &quot;returned&quot;, &quot;label&quot;: &quot;חזר לטיפול&quot;, &quot;count&quot;: 1}, {&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 4}]" aria-label="ממתין לבדיקה: 4 · חזר לטיפול: 1 · טופל: 4">
+              <div class="doc-status-dist-bar"><span class="seg pending" style="flex:4"></span><span class="seg returned" style="flex:1"></span><span class="seg done" style="flex:4"></span></div>
+            </div>
+          </td>
+          <td class="col-spacer" aria-hidden="true"></td>
+          <td class="col-menu" onclick="event.stopPropagation()">
+            <div class="row-actions">
+            <span class="row-tasks-badge row-tasks-badge--empty" aria-hidden="true"></span>
+            <div class="row-menu-wrap">
+              <button type="button" class="row-menu-btn" aria-label="אפשרויות נוספות" aria-haspopup="menu" aria-expanded="false" onclick="toggleRowMenu(event, this)">
+                <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              </button>
+              <div class="row-menu-dropdown" role="menu">
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+              </div>
+            </div>
+            </div>
+          </td>
+        </tr>
+        <tr data-case-view="active" onclick="openMortgageCase(event)">
+          <td class="col-client">
+            <div class="client-name">תמר בן דוד</div>
+            <div class="client-id">ת.ז 112345678</div>
+          </td>
+          <td class="col-case-id"><span class="case-id-num">#12336</span></td>
+          <td class="col-deal">כיסוי חובות</td>
+          <td class="col-date">15/05/2026</td>
+          <td class="col-progress">
+            <div class="progress-mini">
+              <div class="progress-mini-track">
+                <div class="progress-mini-fill" style="width:55%"></div>
+              </div>
+              <span class="progress-mini-text">11/20</span>
+            </div>
+          </td>
+          <td class="precheck-cell">
+            <span class="precheck-icon precheck-icon--pending" data-tooltip-title="בדיקת קדם" data-tooltip="טרם עבר בדיקת קדם" aria-label="טרם עבר בדיקת קדם">
+              <img src="assets/status-pending.png" alt="" width="18" height="18">
+            </span>
+          </td>
+          <td class="col-doc-status">
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;pending&quot;, &quot;label&quot;: &quot;ממתין לבדיקה&quot;, &quot;count&quot;: 5}, {&quot;key&quot;: &quot;returned&quot;, &quot;label&quot;: &quot;חזר לטיפול&quot;, &quot;count&quot;: 1}, {&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 5}]" aria-label="ממתין לבדיקה: 5 · חזר לטיפול: 1 · טופל: 5">
+              <div class="doc-status-dist-bar"><span class="seg pending" style="flex:5"></span><span class="seg returned" style="flex:1"></span><span class="seg done" style="flex:5"></span></div>
+            </div>
+          </td>
+          <td class="col-spacer" aria-hidden="true"></td>
+          <td class="col-menu" onclick="event.stopPropagation()">
+            <div class="row-actions">
+            <span class="row-tasks-badge row-tasks-badge--empty" aria-hidden="true"></span>
+            <div class="row-menu-wrap">
+              <button type="button" class="row-menu-btn" aria-label="אפשרויות נוספות" aria-haspopup="menu" aria-expanded="false" onclick="toggleRowMenu(event, this)">
+                <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              </button>
+              <div class="row-menu-dropdown" role="menu">
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+              </div>
+            </div>
+            </div>
+          </td>
+        </tr>
+        <tr data-case-view="active" onclick="openMortgageCase(event)">
+          <td class="col-client">
+            <div class="client-name">משה לוי</div>
+            <div class="client-id">ת.ז 045678901</div>
+          </td>
+          <td class="col-case-id"><span class="case-id-num">#12343</span></td>
+          <td class="col-deal">רכישה מקבלן</td>
+          <td class="col-date">01/06/2026</td>
+          <td class="col-progress">
+            <div class="progress-mini">
+              <div class="progress-mini-track">
+                <div class="progress-mini-fill" style="width:60%"></div>
+              </div>
+              <span class="progress-mini-text">13/22</span>
+            </div>
+          </td>
+          <td class="precheck-cell">
+            <span class="precheck-icon precheck-icon--done" data-tooltip-title="בדיקת קדם" data-tooltip="עבר בדיקת קדם" aria-label="עבר בדיקת קדם">
+              <svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7.25" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 9.2 7.8 11.5 12.5 6.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </td>
+          <td class="col-doc-status">
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;pending&quot;, &quot;label&quot;: &quot;ממתין לבדיקה&quot;, &quot;count&quot;: 5}, {&quot;key&quot;: &quot;returned&quot;, &quot;label&quot;: &quot;חזר לטיפול&quot;, &quot;count&quot;: 1}, {&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 7}]" aria-label="ממתין לבדיקה: 5 · חזר לטיפול: 1 · טופל: 7">
+              <div class="doc-status-dist-bar"><span class="seg pending" style="flex:5"></span><span class="seg returned" style="flex:1"></span><span class="seg done" style="flex:7"></span></div>
+            </div>
+          </td>
+          <td class="col-spacer" aria-hidden="true"></td>
+          <td class="col-menu" onclick="event.stopPropagation()">
+            <div class="row-actions">
+            <span class="row-tasks-badge row-tasks-badge--empty" aria-hidden="true"></span>
+            <div class="row-menu-wrap">
+              <button type="button" class="row-menu-btn" aria-label="אפשרויות נוספות" aria-haspopup="menu" aria-expanded="false" onclick="toggleRowMenu(event, this)">
+                <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              </button>
+              <div class="row-menu-dropdown" role="menu">
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+              </div>
+            </div>
+            </div>
+          </td>
+        </tr>
+        <tr data-case-view="active" onclick="openMortgageCase(event)">
+          <td class="col-client">
+            <div class="client-name">דוד ברקוביץ</div>
+            <div class="client-id">ת.ז 067890123</div>
+          </td>
+          <td class="col-case-id"><span class="case-id-num">#12341</span></td>
+          <td class="col-deal">בניה עצמית</td>
+          <td class="col-date">27/05/2026</td>
+          <td class="col-progress">
             <div class="progress-mini">
               <div class="progress-mini-track">
                 <div class="progress-mini-fill" style="width:75%"></div>
@@ -241,17 +1450,127 @@
               <span class="progress-mini-text">18/24</span>
             </div>
           </td>
-          <td><span class="badge open">🔵 בתהליך</span></td>
-          <td><a class="action-link" href="#">פתח תיק</a></td>
-        </tr>
-        <tr>
-          <td>
-            <div class="client-name">נועה גולדברג</div>
-            <div class="client-id">ת.ז 078901234 · #12340</div>
+          <td class="precheck-cell">
+            <span class="precheck-icon precheck-icon--pending" data-tooltip-title="בדיקת קדם" data-tooltip="טרם עבר בדיקת קדם" aria-label="טרם עבר בדיקת קדם">
+              <img src="assets/status-pending.png" alt="" width="18" height="18">
+            </span>
           </td>
-          <td>רכישת דירה יד שניה</td>
-          <td>25/05/2026</td>
-          <td>
+          <td class="col-doc-status">
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;pending&quot;, &quot;label&quot;: &quot;ממתין לבדיקה&quot;, &quot;count&quot;: 4}, {&quot;key&quot;: &quot;returned&quot;, &quot;label&quot;: &quot;חזר לטיפול&quot;, &quot;count&quot;: 2}, {&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 12}]" aria-label="ממתין לבדיקה: 4 · חזר לטיפול: 2 · טופל: 12">
+              <div class="doc-status-dist-bar"><span class="seg pending" style="flex:4"></span><span class="seg returned" style="flex:2"></span><span class="seg done" style="flex:12"></span></div>
+            </div>
+          </td>
+          <td class="col-spacer" aria-hidden="true"></td>
+          <td class="col-menu" onclick="event.stopPropagation()">
+            <div class="row-actions">
+            <span class="row-tasks-badge" data-tooltip-title="משימות" data-tooltip="5 משימות פתוחות" aria-label="5 משימות פתוחות">
+              <span class="row-tasks-icon-wrap">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.25 2.75h7.5A1.5 1.5 0 0113.25 4.25v9a1.5 1.5 0 01-1.5 1.5h-7.5a1.5 1.5 0 01-1.5-1.5v-9a1.5 1.5 0 011.5-1.5z" stroke="currentColor" stroke-width="1.3"/><path d="M6 1.75h4v1.5H6v-1.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M5.75 7.25h4.5M5.75 10h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <span class="row-tasks-count">5</span>
+              </span>
+            </span>
+            <div class="row-menu-wrap">
+              <button type="button" class="row-menu-btn" aria-label="אפשרויות נוספות" aria-haspopup="menu" aria-expanded="false" onclick="toggleRowMenu(event, this)">
+                <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              </button>
+              <div class="row-menu-dropdown" role="menu">
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+              </div>
+            </div>
+            </div>
+          </td>
+        </tr>
+        <tr data-case-view="active" onclick="openMortgageCase(event)">
+          <td class="col-client">
+            <div class="client-name">הילה אזולאי</div>
+            <div class="client-id">ת.ז 134567891</div>
+          </td>
+          <td class="col-case-id"><span class="case-id-num">#12334</span></td>
+          <td class="col-deal">רכישת דירה יד שניה</td>
+          <td class="col-date">10/05/2026</td>
+          <td class="col-progress">
+            <div class="progress-mini">
+              <div class="progress-mini-track">
+                <div class="progress-mini-fill" style="width:80%"></div>
+              </div>
+              <span class="progress-mini-text">16/20</span>
+            </div>
+          </td>
+          <td class="precheck-cell">
+            <span class="precheck-icon precheck-icon--done" data-tooltip-title="בדיקת קדם" data-tooltip="עבר בדיקת קדם" aria-label="עבר בדיקת קדם">
+              <svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7.25" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 9.2 7.8 11.5 12.5 6.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </td>
+          <td class="col-doc-status">
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;pending&quot;, &quot;label&quot;: &quot;ממתין לבדיקה&quot;, &quot;count&quot;: 3}, {&quot;key&quot;: &quot;returned&quot;, &quot;label&quot;: &quot;חזר לטיפול&quot;, &quot;count&quot;: 1}, {&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 12}]" aria-label="ממתין לבדיקה: 3 · חזר לטיפול: 1 · טופל: 12">
+              <div class="doc-status-dist-bar"><span class="seg pending" style="flex:3"></span><span class="seg returned" style="flex:1"></span><span class="seg done" style="flex:12"></span></div>
+            </div>
+          </td>
+          <td class="col-spacer" aria-hidden="true"></td>
+          <td class="col-menu" onclick="event.stopPropagation()">
+            <div class="row-actions">
+            <span class="row-tasks-badge row-tasks-badge--empty" aria-hidden="true"></span>
+            <div class="row-menu-wrap">
+              <button type="button" class="row-menu-btn" aria-label="אפשרויות נוספות" aria-haspopup="menu" aria-expanded="false" onclick="toggleRowMenu(event, this)">
+                <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              </button>
+              <div class="row-menu-dropdown" role="menu">
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+              </div>
+            </div>
+            </div>
+          </td>
+        </tr>
+        <tr data-case-view="archive" hidden onclick="openMortgageCase(event)">
+          <td class="col-client">
+            <div class="client-name">רחל כהן</div>
+            <div class="client-id">ת.ז 034567890</div>
+          </td>
+          <td class="col-case-id"><span class="case-id-num">#12344</span></td>
+          <td class="col-deal">שיפוצים</td>
+          <td class="col-date">03/06/2026</td>
+          <td class="col-progress">
+            <div class="progress-mini">
+              <div class="progress-mini-track">
+                <div class="progress-mini-fill done" style="width:100%"></div>
+              </div>
+              <span class="progress-mini-text">12/12</span>
+            </div>
+          </td>
+          <td class="precheck-cell">
+            <span class="precheck-icon precheck-icon--done" data-tooltip-title="בדיקת קדם" data-tooltip="עבר בדיקת קדם" aria-label="עבר בדיקת קדם">
+              <svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7.25" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 9.2 7.8 11.5 12.5 6.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </td>
+          <td class="col-doc-status">
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 12}]" aria-label="טופל: 12">
+              <div class="doc-status-dist-bar"><span class="seg done" style="flex:12"></span></div>
+            </div>
+          </td>
+          <td class="col-spacer" aria-hidden="true"></td>
+          <td class="col-menu" onclick="event.stopPropagation()">
+            <div class="row-actions">
+            <span class="row-tasks-badge row-tasks-badge--empty" aria-hidden="true"></span>
+            <div class="row-menu-wrap">
+              <button type="button" class="row-menu-btn" aria-label="אפשרויות נוספות" aria-haspopup="menu" aria-expanded="false" onclick="toggleRowMenu(event, this)">
+                <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              </button>
+              <div class="row-menu-dropdown" role="menu">
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+              </div>
+            </div>
+            </div>
+          </td>
+        </tr>
+        <tr data-case-view="archive" hidden onclick="openMortgageCase(event)">
+          <td class="col-client">
+            <div class="client-name">נועה גולדברג</div>
+            <div class="client-id">ת.ז 078901234</div>
+          </td>
+          <td class="col-case-id"><span class="case-id-num">#12340</span></td>
+          <td class="col-deal">רכישת דירה יד שניה</td>
+          <td class="col-date">25/05/2026</td>
+          <td class="col-progress">
             <div class="progress-mini">
               <div class="progress-mini-track">
                 <div class="progress-mini-fill done" style="width:100%"></div>
@@ -259,13 +1578,501 @@
               <span class="progress-mini-text">20/20</span>
             </div>
           </td>
-          <td><span class="badge complete">✓ הושלם</span></td>
-          <td><a class="action-link" href="#">צפה</a></td>
+          <td class="precheck-cell">
+            <span class="precheck-icon precheck-icon--done" data-tooltip-title="בדיקת קדם" data-tooltip="עבר בדיקת קדם" aria-label="עבר בדיקת קדם">
+              <svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7.25" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 9.2 7.8 11.5 12.5 6.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </td>
+          <td class="col-doc-status">
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 20}]" aria-label="טופל: 20">
+              <div class="doc-status-dist-bar"><span class="seg done" style="flex:20"></span></div>
+            </div>
+          </td>
+          <td class="col-spacer" aria-hidden="true"></td>
+          <td class="col-menu" onclick="event.stopPropagation()">
+            <div class="row-actions">
+            <span class="row-tasks-badge row-tasks-badge--empty" aria-hidden="true"></span>
+            <div class="row-menu-wrap">
+              <button type="button" class="row-menu-btn" aria-label="אפשרויות נוספות" aria-haspopup="menu" aria-expanded="false" onclick="toggleRowMenu(event, this)">
+                <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              </button>
+              <div class="row-menu-dropdown" role="menu">
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+              </div>
+            </div>
+            </div>
+          </td>
+        </tr>
+        <tr data-case-view="archive" hidden onclick="openMortgageCase(event)">
+          <td class="col-client">
+            <div class="client-name">יוסי מזרחי</div>
+            <div class="client-id">ת.ז 101234567</div>
+          </td>
+          <td class="col-case-id"><span class="case-id-num">#12337</span></td>
+          <td class="col-deal">שיפוצים</td>
+          <td class="col-date">18/05/2026</td>
+          <td class="col-progress">
+            <div class="progress-mini">
+              <div class="progress-mini-track">
+                <div class="progress-mini-fill done" style="width:100%"></div>
+              </div>
+              <span class="progress-mini-text">14/14</span>
+            </div>
+          </td>
+          <td class="precheck-cell">
+            <span class="precheck-icon precheck-icon--done" data-tooltip-title="בדיקת קדם" data-tooltip="עבר בדיקת קדם" aria-label="עבר בדיקת קדם">
+              <svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7.25" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 9.2 7.8 11.5 12.5 6.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </td>
+          <td class="col-doc-status">
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 14}]" aria-label="טופל: 14">
+              <div class="doc-status-dist-bar"><span class="seg done" style="flex:14"></span></div>
+            </div>
+          </td>
+          <td class="col-spacer" aria-hidden="true"></td>
+          <td class="col-menu" onclick="event.stopPropagation()">
+            <div class="row-actions">
+            <span class="row-tasks-badge row-tasks-badge--empty" aria-hidden="true"></span>
+            <div class="row-menu-wrap">
+              <button type="button" class="row-menu-btn" aria-label="אפשרויות נוספות" aria-haspopup="menu" aria-expanded="false" onclick="toggleRowMenu(event, this)">
+                <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              </button>
+              <div class="row-menu-dropdown" role="menu">
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+              </div>
+            </div>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 </div>
+
+<script>
+  function closeAllRowMenus() {
+    document.querySelectorAll('.row-menu-wrap.open').forEach((wrap) => {
+      wrap.classList.remove('open');
+      const btn = wrap.querySelector('.row-menu-btn');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  function closeCasesViewMenu() {
+    const wrap = document.getElementById('casesViewMenu');
+    if (!wrap) return;
+    wrap.classList.remove('open');
+    const btn = wrap.querySelector('.table-section-title');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleCasesViewMenu(e) {
+    e.stopPropagation();
+    const wrap = document.getElementById('casesViewMenu');
+    if (!wrap) return;
+    const willOpen = !wrap.classList.contains('open');
+    closeAllRowMenus();
+    closeCasesViewMenu();
+    if (!willOpen) return;
+    wrap.classList.add('open');
+    const btn = wrap.querySelector('.table-section-title');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  }
+
+  const CASES_VIEW_COUNTS = { active: 10, archive: 3 };
+  let currentCasesView = 'active';
+
+  function syncCasesViewUi() {
+    const isArchive = currentCasesView === 'archive';
+    const count = CASES_VIEW_COUNTS[currentCasesView];
+    const label = document.getElementById('casesViewLabel');
+    const switchBtn = document.getElementById('casesViewSwitchBtn');
+    const countEl = document.getElementById('activeCasesCount');
+    if (label) {
+      label.innerHTML = isArchive
+        ? `ארכיון תיקים (<span class="table-section-title-count" id="activeCasesCount">${count}</span>)`
+        : `תיקי משכנתא פעילים (<span class="table-section-title-count" id="activeCasesCount">${count}</span>)`;
+    } else if (countEl) {
+      countEl.textContent = String(count);
+    }
+    if (switchBtn) {
+      switchBtn.textContent = isArchive ? 'תיקי משכנתא פעילים' : 'ארכיון תיקים';
+    }
+    document.querySelectorAll('.table-card tbody tr[data-case-view]').forEach((row) => {
+      row.hidden = row.dataset.caseView !== currentCasesView;
+    });
+    closeAllRowMenus();
+  }
+
+  function switchCasesView(e) {
+    e.stopPropagation();
+    currentCasesView = currentCasesView === 'active' ? 'archive' : 'active';
+    closeCasesViewMenu();
+    syncCasesViewUi();
+  }
+
+  function toggleRowMenu(e, btn) {
+    e.stopPropagation();
+    const wrap = btn.closest('.row-menu-wrap');
+    if (!wrap) return;
+    const willOpen = !wrap.classList.contains('open');
+    closeAllRowMenus();
+    closeCasesViewMenu();
+    if (!willOpen) return;
+    wrap.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  }
+
+  function handleDeleteCase(e) {
+    e.stopPropagation();
+    closeAllRowMenus();
+  }
+
+  document.addEventListener('click', () => {
+    closeAllRowMenus();
+    closeCasesViewMenu();
+    hideDashIconTooltip();
+  });
+
+  let dashIconTooltipEl = null;
+
+  function getDashIconTooltipEl() {
+    if (dashIconTooltipEl) return dashIconTooltipEl;
+    dashIconTooltipEl = document.createElement('div');
+    dashIconTooltipEl.className = 'dash-icon-tooltip';
+    dashIconTooltipEl.setAttribute('role', 'tooltip');
+    document.body.appendChild(dashIconTooltipEl);
+    return dashIconTooltipEl;
+  }
+
+  function hideDashIconTooltip() {
+    const tip = getDashIconTooltipEl();
+    tip.classList.remove('is-visible', 'has-legend');
+    tip.innerHTML = '';
+  }
+
+  function showDashIconTooltip(anchor) {
+    if (!anchor) return;
+    const tip = getDashIconTooltipEl();
+    tip.classList.remove('has-legend');
+    const legendRaw = anchor.getAttribute('data-status-legend');
+    if (legendRaw) {
+      let items = [];
+      try { items = JSON.parse(legendRaw); } catch (_) { items = []; }
+      const title = anchor.getAttribute('data-tooltip-title') || 'סטטוס מסמכים';
+      const rows = items.map((item) => (
+        `<div class="dash-status-legend-row">` +
+          `<span class="dash-status-legend-label">` +
+            `<span class="dash-status-legend-dot ${item.key}" aria-hidden="true"></span>` +
+            `${item.label}` +
+          `</span>` +
+          `<span class="dash-status-legend-count">${item.count}</span>` +
+        `</div>`
+      )).join('');
+      tip.classList.add('has-legend');
+      tip.innerHTML =
+        `<span class="dash-icon-tooltip-title">${title}</span>` +
+        `<div class="dash-status-legend">${rows || '<span class="dash-icon-tooltip-text">אין מסמכים בטיפול</span>'}</div>`;
+    } else {
+      const text = anchor.getAttribute('data-tooltip');
+      if (!text) return;
+      const title = anchor.getAttribute('data-tooltip-title') || '';
+      tip.innerHTML =
+        (title ? `<span class="dash-icon-tooltip-title">${title}</span>` : '') +
+        `<span class="dash-icon-tooltip-text">${text}</span>`;
+    }
+    const rect = anchor.getBoundingClientRect();
+    tip.style.left = `${Math.round(rect.left + rect.width / 2)}px`;
+    tip.style.top = `${Math.round(rect.top - 8)}px`;
+    tip.classList.add('is-visible');
+  }
+
+  function getDashTooltipAnchor(target) {
+    return target?.closest?.('.precheck-icon[data-tooltip], .row-tasks-badge[data-tooltip], .doc-status-dist[data-status-legend], .doc-status-dist[data-tooltip]');
+  }
+
+  document.addEventListener('mouseover', (e) => {
+    const anchor = getDashTooltipAnchor(e.target);
+    if (!anchor) return;
+    showDashIconTooltip(anchor);
+  });
+
+  document.addEventListener('mouseout', (e) => {
+    const anchor = getDashTooltipAnchor(e.target);
+    if (!anchor) return;
+    const next = e.relatedTarget;
+    if (next && anchor.contains(next)) return;
+    hideDashIconTooltip();
+  });
+
+  document.querySelector('.table-card')?.addEventListener('scroll', hideDashIconTooltip, { passive: true });
+  window.addEventListener('scroll', hideDashIconTooltip, { passive: true });
+</script>
+
+
+<div class="new-case-modal" id="newCaseModal" aria-hidden="true">
+  <div class="new-case-modal-backdrop" onclick="closeNewCaseModal()"></div>
+  <div class="new-case-modal-card" role="dialog" aria-modal="true" aria-labelledby="newCaseModalTitle">
+    <button type="button" class="new-case-modal-close" onclick="closeNewCaseModal()" aria-label="סגור">&times;</button>
+    <div class="new-case-modal-header">
+      <h2 class="new-case-modal-title" id="newCaseModalTitle">פתיחת תיק חדש</h2>
+      <div class="new-case-steps" id="newCaseSteps">
+        <button type="button" class="new-case-step-item is-active" data-step="1" onclick="newCaseGoToStep(1)">פרטי תיק</button>
+        <span class="new-case-step-arrow" aria-hidden="true"></span>
+        <button type="button" class="new-case-step-item" data-step="2" onclick="newCaseGoToStep(2)">שאלון</button>
+        <span class="new-case-step-arrow" aria-hidden="true"></span>
+        <button type="button" class="new-case-step-item" data-step="3" onclick="newCaseGoToStep(3)">בדיקת קדם</button>
+      </div>
+    </div>
+    <div class="new-case-modal-body">
+      <div class="new-case-pane is-active" data-pane="1">
+        <div class="form-card">
+          <div class="form-card-header">פרטי לקוח</div>
+          <div class="form-card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">תעודת זהות <span class="required">*</span></label>
+                <input type="text" class="form-input" placeholder="000000000" maxlength="9">
+              </div>
+              <div class="form-group">
+                <label class="form-label">שם מלא <span class="required">*</span></label>
+                <input type="text" class="form-input" placeholder="שם פרטי ושם משפחה" value="ישראל ישראלי">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">טלפון <span class="required">*</span></label>
+                <input type="tel" class="form-input" placeholder="05X-XXXXXXX">
+              </div>
+              <div class="form-group">
+                <label class="form-label">דואר אלקטרוני <span class="required">*</span></label>
+                <input type="email" class="form-input" placeholder="name@email.com">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-card">
+          <div class="form-card-header">פרטי העסקה</div>
+          <div class="form-card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">סוג עסקה <span class="required">*</span></label>
+                <select class="form-select">
+                  <option selected>רכישת דירה יד שניה</option>
+                  <option>רכישה מקבלן</option>
+                  <option>בניה עצמית</option>
+                  <option>שיפוצים</option>
+                  <option>כיסוי חובות</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">סוג בטוחה <span class="required">*</span></label>
+                <select class="form-select">
+                  <option selected>משכנתא</option>
+                  <option>הערת אזהרה</option>
+                  <option>התחייבות עורך דין</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label class="form-label">מקום רישום הנכס <span class="required">*</span></label>
+                <input type="text" class="form-input" placeholder="עיר / טאבו / רמ״י">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="new-case-pane" data-pane="2">
+        <div class="new-case-empty-state">
+          <p class="new-case-empty-title">השאלון יתווסף בקרוב</p>
+          <p class="new-case-empty-text">שלב זה נמצא בפיתוח ויהיה זמין בקרוב.</p>
+        </div>
+      </div>
+
+      <div class="new-case-pane" data-pane="3">
+        <div class="new-case-empty-state">
+          <p class="new-case-empty-title">בדיקת קדם תתווסף בקרוב</p>
+          <p class="new-case-empty-text">שלב זה נמצא בפיתוח ויהיה זמין בקרוב.</p>
+        </div>
+      </div>
+
+      <div class="new-case-pane" data-pane="4">
+        <div class="new-case-success">
+          <div class="new-case-success-icon" id="newCaseSuccessIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5 9.5 17 19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="new-case-success-title">תיק המשכנתא נפתח בהצלחה</h3>
+          <p class="new-case-success-case" id="newCaseSuccessNumber">מס׳ תיק #12487</p>
+          <div class="new-case-success-actions">
+            <button type="button" class="btn-add" onclick="goToNewCaseDocuments()">
+              להתחלת טיפול בתיק
+              <svg class="btn-add-chevron" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M8.5 3.5 5 7l3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button type="button" class="btn-cancel" onclick="openNewCaseModal()">ליצירת תיק חדש</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="new-case-modal-footer">
+      <button type="button" class="new-case-btn-back" id="newCaseBackBtn" hidden onclick="newCasePrevStep()">חזרה</button>
+      <button type="button" class="new-case-btn-next" id="newCaseNextBtn" onclick="newCaseNextStep()">המשך לשאלון</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let newCaseStep = 1;
+  let newCaseMaxStep = 1;
+
+  function openNewCaseModal() {
+    const modal = document.getElementById('newCaseModal');
+    if (!modal) return;
+    newCaseStep = 1;
+    newCaseMaxStep = 1;
+    syncNewCaseStepUi();
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeNewCaseModal() {
+    const modal = document.getElementById('newCaseModal');
+    if (!modal) return;
+    modal.classList.remove('open', 'is-success');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  function syncNewCaseStepUi() {
+    const modal = document.getElementById('newCaseModal');
+    const isSuccess = newCaseStep === 4;
+    modal?.classList.toggle('is-success', isSuccess);
+
+    const title = document.getElementById('newCaseModalTitle');
+    if (title) title.textContent = isSuccess ? 'תיק המשכנתא נפתח בהצלחה' : 'פתיחת תיק חדש';
+
+    if (isSuccess) {
+      const numEl = document.getElementById('newCaseSuccessNumber');
+      if (numEl && !numEl.dataset.locked) {
+        const caseNo = 12000 + Math.floor(Math.random() * 8000);
+        numEl.textContent = `מס׳ תיק #${caseNo}`;
+        numEl.dataset.locked = '1';
+      }
+      playNewCaseSuccessAnim();
+    } else {
+      const numEl = document.getElementById('newCaseSuccessNumber');
+      if (numEl) delete numEl.dataset.locked;
+      document.getElementById('newCaseSuccessIcon')?.classList.remove('is-animating');
+    }
+
+    document.querySelectorAll('.new-case-pane').forEach((pane) => {
+      pane.classList.toggle('is-active', Number(pane.dataset.pane) === newCaseStep);
+    });
+    document.querySelectorAll('.new-case-step-item').forEach((item) => {
+      const step = Number(item.dataset.step);
+      if (isSuccess) {
+        item.classList.add('is-done');
+        item.classList.remove('is-active', 'is-clickable');
+        item.setAttribute('aria-current', 'false');
+        item.disabled = true;
+        return;
+      }
+      const isActive = step === newCaseStep;
+      const isReached = step <= newCaseMaxStep;
+      item.classList.toggle('is-active', isActive);
+      item.classList.toggle('is-done', isReached && !isActive);
+      item.classList.toggle('is-clickable', isReached && !isActive);
+      item.setAttribute('aria-current', isActive ? 'step' : 'false');
+      item.disabled = !isReached;
+    });
+    const backBtn = document.getElementById('newCaseBackBtn');
+    const nextBtn = document.getElementById('newCaseNextBtn');
+    if (backBtn) backBtn.hidden = newCaseStep === 1 || isSuccess;
+    if (nextBtn) {
+      nextBtn.hidden = isSuccess;
+      if (newCaseStep === 1) nextBtn.textContent = 'המשך לשאלון';
+      else if (newCaseStep === 2) nextBtn.textContent = 'המשך לבדיקת קדם';
+      else nextBtn.textContent = 'סיום ופתיחת תיק';
+    }
+    document.querySelector('.new-case-modal-body')?.scrollTo({ top: 0 });
+  }
+
+  function playNewCaseSuccessAnim() {
+    const icon = document.getElementById('newCaseSuccessIcon');
+    if (!icon) return;
+    icon.classList.remove('is-animating');
+    void icon.offsetWidth;
+    icon.classList.add('is-animating');
+  }
+
+  function newCaseGoToStep(step) {
+    if (newCaseStep === 4) return;
+    if (step < 1 || step > 3) return;
+    if (step > newCaseMaxStep) return;
+    if (step === newCaseStep) return;
+    newCaseStep = step;
+    syncNewCaseStepUi();
+  }
+
+  function newCaseNextStep() {
+    if (newCaseStep < 3) {
+      newCaseStep += 1;
+      newCaseMaxStep = Math.max(newCaseMaxStep, newCaseStep);
+      syncNewCaseStepUi();
+      return;
+    }
+    if (newCaseStep === 3) {
+      newCaseStep = 4;
+      syncNewCaseStepUi();
+    }
+  }
+
+  function newCasePrevStep() {
+    if (newCaseStep === 4 || newCaseStep <= 1) return;
+    newCaseStep -= 1;
+    syncNewCaseStepUi();
+  }
+
+  function openMortgageCase(event) {
+    const row = event?.currentTarget;
+    if (row) row.classList.add('is-opening');
+    try { sessionStorage.setItem('casePageEnter', '1'); } catch (_) {}
+    window.location.href = 'mesuamim-umesimot.html';
+  }
+
+  function goToNewCaseDocuments() {
+    closeNewCaseModal();
+    try { sessionStorage.setItem('casePageEnter', '1'); } catch (_) {}
+    window.location.href = 'mesuamim-umesimot.html';
+  }
+
+  function newCaseSelectRadio(label, name) {
+    document.querySelectorAll(`#newCaseModal [name="${name}"]`).forEach((r) => {
+      r.closest('.radio-option')?.classList.remove('selected');
+    });
+    label.classList.add('selected');
+    const input = label.querySelector('input');
+    if (input) input.checked = true;
+  }
+
+  function newCaseSelectYesNo(btn) {
+    const group = btn.closest('.yesno-group');
+    if (!group) return;
+    group.querySelectorAll('.yesno-btn').forEach((b) => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function toggleNewCasePrecheck(item) {
+    item.classList.toggle('is-checked');
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (document.getElementById('newCaseModal')?.classList.contains('open')) {
+      closeNewCaseModal();
+    }
+  });
+</script>
 
 </body>
 </html>

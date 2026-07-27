@@ -5,8 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>מסמכים ומשימות — בנק הבינלאומי</title>
   <link rel="stylesheet" href="snifit.css">
+  <script>
+    try {
+      if (sessionStorage.getItem('casePageEnter') === '1') {
+        document.documentElement.classList.add('case-page-loading');
+        sessionStorage.removeItem('casePageEnter');
+      }
+    } catch (e) {}
+  </script>
   <style>
     html, body { height: 100%; }
+    .case-page-body {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .case-page-loader {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+    }
+    .case-page-loader-lottie {
+      width: min(200px, 42vw);
+      height: min(200px, 42vw);
+    }
+    html.case-page-loading .case-page-loader {
+      display: flex;
+    }
+    html.case-page-loading .case-page-inner {
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .case-page-inner {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+    }
+    html.case-page-ready .case-page-inner {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+      animation: casePageInnerIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    html.case-page-ready .case-page-loader {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease;
+    }
+    @keyframes casePageInnerIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html.case-page-ready .case-page-inner {
+        animation: none;
+      }
+    }
     /* Fixed height (not min-height) + overflow:hidden: the page itself never
        scrolls. Every panel below manages its own internal scrolling instead,
        so the whole app always fits within one viewport height. */
@@ -44,41 +107,119 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 24px;
+      gap: 20px;
       margin-bottom: 8px;
     }
     .hero-track {
       font-size: 19px;
       font-weight: 700;
       white-space: nowrap;
+      min-width: 0;
     }
-    /* The progress bar sits inline on the far side of the title row
-       (the visual left edge, since it's last in this RTL flex row). */
-    .hero-progress {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-    }
-    .hero-progress-label { font-size: 13px; opacity: 0.75; white-space: nowrap; }
-    .hero-progress-track {
-      width: 140px;
-      height: 6px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 99px;
-      overflow: hidden;
-    }
-    .hero-progress-fill { height: 100%; background: var(--yellow); border-radius: 99px; }
-    .hero-progress-pct { font-size: 13px; font-weight: 700; color: var(--yellow); white-space: nowrap; }
     .hero-kpi-line {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
       gap: 5px 16px;
       font-size: 13px;
       opacity: 0.9;
     }
     .hero-kpi-line b { font-weight: 700; opacity: 1; }
     .hero-kpi-line .accent { color: var(--yellow); font-weight: 700; }
+    .hero-flow-actions {
+      display: inline-flex;
+      align-items: stretch;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .hero-flow-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: 138px;
+      box-sizing: border-box;
+      padding: 6px 9px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+      text-align: right;
+    }
+    .hero-flow-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    .hero-flow-btn.is-pending {
+      border-color: rgba(255, 193, 7, 0.45);
+      background: rgba(255, 193, 7, 0.12);
+      color: #fff;
+    }
+    .hero-flow-btn.is-pending:hover {
+      background: rgba(255, 193, 7, 0.18);
+      border-color: rgba(255, 193, 7, 0.6);
+    }
+    .hero-flow-copy {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 1px;
+      min-width: 0;
+      flex: 1;
+      line-height: 1.2;
+    }
+    .hero-flow-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .hero-flow-mark {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .hero-flow-btn.is-done .hero-flow-mark {
+      background: rgba(255, 255, 255, 0.14);
+      color: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+    }
+    .hero-flow-btn.is-pending .hero-flow-mark {
+      width: 16px;
+      height: 16px;
+      border-radius: 0;
+      background: transparent;
+      border: none;
+      color: var(--yellow);
+    }
+    .hero-flow-mark svg {
+      width: 9px;
+      height: 9px;
+      display: block;
+    }
+    .hero-flow-btn.is-pending .hero-flow-mark svg {
+      width: 14px;
+      height: 14px;
+    }
+    .hero-flow-note {
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    .hero-flow-btn.is-done .hero-flow-note {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .hero-flow-btn.is-pending .hero-flow-note {
+      color: var(--yellow);
+    }
 
     /* ── PAGE BODY ──
        Two regions sit in the .app-shell flex row:
@@ -2057,7 +2198,7 @@
     .upload-analyze-modal-backdrop {
       position: absolute;
       inset: 0;
-      background: rgba(19, 32, 79, 0.5);
+      background: rgba(10, 16, 40, 0.72);
       animation: hqModalFadeIn 0.2s ease-out;
     }
     .upload-analyze-modal-card {
@@ -3181,17 +3322,37 @@
   </div>
 </header>
 
+<div class="case-page-body">
+  <div class="case-page-loader" id="casePageLoader" aria-hidden="true">
+    <div class="case-page-loader-lottie" id="casePageLottie" role="status" aria-label="טוען את התיק"></div>
+  </div>
+  <div class="case-page-inner" id="casePageInner">
+
 <!-- CASE DETAILS HERO — compact: title+progress share one row, and all
      the case metadata is a single small line underneath. -->
 <div class="hero-band">
   <a href="dashboard.html" class="hero-back-link">→ חזרה לרשימת התיקים</a>
   <div class="hero-main-row">
     <div class="hero-track">תיק #12345 — ישראל ישראל | 437829343</div>
-    <div class="hero-progress">
-      <span class="hero-progress-label">התקדמות כוללת</span>
-      <div class="hero-progress-track"><div class="hero-progress-fill" style="width:24%"></div></div>
-      <span class="hero-progress-pct">24%</span>
-      <span class="hero-progress-label"><strong>13</strong>/55</span>
+    <div class="hero-flow-actions">
+      <button type="button" class="hero-flow-btn is-done" aria-label="שאלון — הושלם">
+        <span class="hero-flow-mark" aria-hidden="true">
+          <svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2 4.8 8.5 9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="hero-flow-copy">
+          <span class="hero-flow-title">שאלון</span>
+          <span class="hero-flow-note">הושלם</span>
+        </span>
+      </button>
+      <button type="button" class="hero-flow-btn is-pending" aria-label="בדיקת קדם — טרם הושלם">
+        <span class="hero-flow-mark" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.4" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3.2l2.2 1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="hero-flow-copy">
+          <span class="hero-flow-title">בדיקת קדם</span>
+          <span class="hero-flow-note">טרם הושלם</span>
+        </span>
+      </button>
     </div>
   </div>
   <div class="hero-kpi-line">
@@ -4011,6 +4172,8 @@
   </div><!-- /.docs-sidebar -->
 </div><!-- /.doc-region -->
 </div><!-- /.app-shell -->
+  </div><!-- /.case-page-inner -->
+</div><!-- /.case-page-body -->
 
 <div class="hq-note-modal" id="hqInvalidNoteModal" aria-hidden="true">
   <div class="hq-note-modal-backdrop" onclick="closeInvalidNotePopup()"></div>
@@ -6712,6 +6875,41 @@
 
   // Initialize persona (default: banker)
   setPersona(localStorage.getItem('demoPersona') || 'banker');
+
+  (function bootCasePageLoader() {
+    const root = document.documentElement;
+    if (!root.classList.contains('case-page-loading')) return;
+
+    const loader = document.getElementById('casePageLoader');
+    const lottieEl = document.getElementById('casePageLottie');
+    if (loader) loader.setAttribute('aria-hidden', 'false');
+
+    let anim = null;
+    if (lottieEl && typeof lottie !== 'undefined') {
+      anim = lottie.loadAnimation({
+        container: lottieEl,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: 'assets/fibi-loader.json'
+      });
+    }
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const delay = reduceMotion ? 0 : 1250;
+
+    window.setTimeout(() => {
+      root.classList.remove('case-page-loading');
+      root.classList.add('case-page-ready');
+      if (loader) loader.setAttribute('aria-hidden', 'true');
+      window.setTimeout(() => {
+        if (anim) {
+          try { anim.destroy(); } catch (_) {}
+        }
+        if (loader) loader.style.display = 'none';
+      }, 320);
+    }, delay);
+  })();
 </script>
 </body>
 </html>
