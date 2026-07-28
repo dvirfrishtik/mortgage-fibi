@@ -95,7 +95,7 @@
       margin: -4px -6px;
       border-radius: var(--radius-sm);
       font-family: inherit;
-      font-size: 19px;
+      font-size: 22px;
       font-weight: 700;
       color: var(--navy);
       white-space: nowrap;
@@ -111,8 +111,8 @@
       color: var(--navy);
     }
     .table-section-chevron {
-      width: 10px;
-      height: 10px;
+      width: 12px;
+      height: 12px;
       display: block;
       flex-shrink: 0;
       color: var(--navy);
@@ -508,36 +508,51 @@
       text-align: right;
       vertical-align: middle;
     }
+    .table-card th {
+      padding: 14px 20px;
+      font-size: 13px;
+    }
+    .table-card td {
+      padding: 15px 20px;
+      font-size: 14px;
+    }
+    .table-card .client-name {
+      font-size: 14px;
+    }
+    .table-card .client-id {
+      font-size: 12px;
+      margin-top: 3px;
+    }
     .col-client {
-      width: 160px;
+      width: 172px;
     }
     .col-case-id {
-      width: 96px;
+      width: 104px;
       white-space: nowrap;
     }
     .case-id-num {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
       color: var(--text-body);
       font-variant-numeric: tabular-nums;
     }
     .col-deal {
-      width: 190px;
+      width: 200px;
     }
     .col-date {
-      width: 130px;
+      width: 138px;
       white-space: nowrap;
     }
     .col-progress {
-      width: 150px;
+      width: 160px;
     }
     .col-doc-status {
-      width: 120px;
+      width: 128px;
     }
     .col-precheck,
     th.precheck-col,
     td.precheck-cell {
-      width: 120px;
+      width: 128px;
       text-align: right;
     }
     .col-spacer {
@@ -547,26 +562,26 @@
     }
     th.col-menu,
     td.col-menu {
-      width: 96px;
+      width: 104px;
       text-align: center;
       padding-inline: 8px;
       vertical-align: middle;
     }
     .row-actions {
       display: inline-grid;
-      grid-template-columns: 32px 32px;
+      grid-template-columns: 34px 34px;
       align-items: center;
       justify-items: center;
       column-gap: 2px;
-      height: 32px;
+      height: 34px;
       vertical-align: middle;
     }
     .row-actions .row-menu-wrap {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       flex-shrink: 0;
     }
     .row-tasks-badge {
@@ -574,8 +589,8 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       padding: 0;
       border-radius: 99px;
       color: var(--navy);
@@ -593,16 +608,16 @@
     }
     .row-tasks-icon-wrap {
       position: relative;
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
     .row-tasks-badge svg {
-      width: 15px;
-      height: 15px;
+      width: 16px;
+      height: 16px;
       display: block;
       flex-shrink: 0;
     }
@@ -611,15 +626,15 @@
       top: -5px;
       inset-inline-end: -7px;
       z-index: 1;
-      min-width: 13px;
-      height: 13px;
+      min-width: 14px;
+      height: 14px;
       padding: 0 3px;
       border-radius: 99px;
       background: var(--navy);
       color: white;
-      font-size: 8px;
+      font-size: 9px;
       font-weight: 700;
-      line-height: 13px;
+      line-height: 14px;
       text-align: center;
       font-variant-numeric: tabular-nums;
       pointer-events: none;
@@ -633,7 +648,11 @@
       gap: 10px;
     }
     .table-card .progress-mini-track {
-      width: 96px;
+      width: 104px;
+      height: 6px;
+    }
+    .table-card .progress-mini-text {
+      font-size: 13px;
     }
     .table-card .progress-mini-fill,
     .table-card .progress-mini-fill.warn,
@@ -647,8 +666,8 @@
     }
     .doc-status-dist-bar {
       display: flex;
-      width: 96px;
-      height: 5px;
+      width: 104px;
+      height: 6px;
       border-radius: 99px;
       overflow: hidden;
       background: var(--border);
@@ -704,14 +723,14 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       vertical-align: middle;
     }
     .precheck-icon img,
     .precheck-icon svg {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       display: block;
     }
     .precheck-icon--done {
@@ -768,8 +787,8 @@
       justify-content: center;
     }
     .row-menu-btn {
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       border: none;
       border-radius: 99px;
       background: transparent;
