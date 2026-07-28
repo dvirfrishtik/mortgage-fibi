@@ -186,6 +186,282 @@
       direction: rtl;
       background: transparent;
     }
+    .btn-filters {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      color: var(--navy);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: none;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .btn-filters:hover {
+      background: var(--navy-50);
+      border-color: var(--navy-100);
+    }
+    .btn-filters[aria-expanded="true"] {
+      background: var(--navy-50);
+      border-color: var(--navy-100);
+    }
+    .btn-filters.has-active {
+      border-color: var(--navy-100);
+      background: var(--navy-50);
+      color: var(--navy);
+    }
+    .btn-filters-icon {
+      width: 14px;
+      height: 14px;
+      display: block;
+      flex-shrink: 0;
+    }
+    .btn-filters-count {
+      display: none;
+      min-width: 17px;
+      height: 17px;
+      padding: 0 5px;
+      border-radius: 99px;
+      background: var(--navy);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 17px;
+      text-align: center;
+    }
+    .btn-filters.has-active .btn-filters-count {
+      display: inline-block;
+    }
+
+    .filters-drawer-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      background: rgba(19, 32, 79, 0.28);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.22s ease, visibility 0.22s ease;
+    }
+    .filters-drawer-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .filters-drawer {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: auto;
+      z-index: 1201;
+      width: min(380px, 92vw);
+      background: #fff;
+      border-inline-end: 1px solid var(--border);
+      box-shadow: 12px 0 40px rgba(19, 32, 79, 0.12);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(-104%);
+      transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .filters-drawer-overlay.open .filters-drawer {
+      transform: translateX(0);
+    }
+    .filters-drawer-header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px;
+      background: #fff;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .filters-drawer-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.01em;
+    }
+    .filters-drawer-close {
+      width: 32px;
+      height: 32px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .filters-drawer-close:hover {
+      background: var(--navy-50);
+      border-color: var(--border-light);
+      color: var(--navy);
+    }
+    .filters-drawer-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 4px 0 12px;
+      overscroll-behavior: contain;
+      background: #fff;
+    }
+    .filters-section {
+      padding: 14px 18px 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .filters-section:last-child {
+      border-bottom: none;
+    }
+    .filters-section-title {
+      margin: 0 0 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+    }
+    .filters-check-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .filters-check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-body);
+      user-select: none;
+      transition: background 0.12s;
+    }
+    .filters-check:hover {
+      background: var(--navy-50);
+    }
+    .filters-check input {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--navy);
+      flex-shrink: 0;
+      margin: 0;
+    }
+    .filters-date-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .filters-date-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .filters-date-field span {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-faint);
+    }
+    .filters-date-field input {
+      width: 100%;
+      box-sizing: border-box;
+      height: 36px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text-body);
+      background: #fff;
+      direction: rtl;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .filters-date-field input:focus {
+      outline: none;
+      border-color: var(--navy-100);
+      box-shadow: 0 0 0 3px rgba(27, 42, 107, 0.08);
+    }
+    .filters-city-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding: 7px 11px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--navy-50);
+      color: var(--text-muted);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .filters-city-search:focus-within {
+      background: #fff;
+      border-color: var(--navy-100);
+    }
+    .filters-city-search input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text-body);
+      background: transparent;
+      direction: rtl;
+    }
+    .filters-city-list {
+      max-height: 200px;
+      overflow: auto;
+      overscroll-behavior: contain;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+      background: #fff;
+    }
+    .filters-city-list .filters-check.is-hidden {
+      display: none;
+    }
+    .filters-city-empty {
+      display: none;
+      padding: 16px 10px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-faint);
+    }
+    .filters-city-list.is-empty .filters-city-empty {
+      display: block;
+    }
+    .filters-drawer-footer {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border-top: 1px solid var(--border-light);
+      background: #FAFBFD;
+    }
+    .filters-drawer-footer .btn-add,
+    .filters-drawer-footer .btn-cancel {
+      flex: 1;
+      justify-content: center;
+      height: 36px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .filters-drawer-footer .btn-cancel {
+      background: #fff;
+    }
 
     .table-wrap {
       flex: 1;
@@ -1068,9 +1344,16 @@
     </div>
   </div>
   <div class="filters-controls">
+    <button type="button" class="btn-filters" id="casesFiltersBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="casesFiltersDrawer" onclick="openCasesFiltersDrawer()">
+      <svg class="btn-filters-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M2.75 3.25h10.5L9.4 8.1v3.65L6.6 13.25V8.1L2.75 3.25Z" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/>
+      </svg>
+      סננים
+      <span class="btn-filters-count" id="casesFiltersCount">0</span>
+    </button>
     <div class="search-box">
       🔍
-      <input type="text" placeholder="חיפוש לפי שם לקוח או ת.ז...">
+      <input type="text" id="casesSearchInput" placeholder="חיפוש לפי שם לקוח או ת.ז..." oninput="applyDashboardFilters()">
     </div>
     <button type="button" class="btn-new" onclick="openNewCaseModal()">
       <svg class="btn-new-icon" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 2.5v9M2.5 7h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
@@ -1649,6 +1932,64 @@
   </div>
 </div>
 
+<div class="filters-drawer-overlay" id="casesFiltersOverlay" hidden onclick="onCasesFiltersOverlayClick(event)">
+  <aside class="filters-drawer" id="casesFiltersDrawer" role="dialog" aria-modal="true" aria-labelledby="casesFiltersTitle" onclick="event.stopPropagation()">
+    <div class="filters-drawer-header">
+      <h2 class="filters-drawer-title" id="casesFiltersTitle">סננים</h2>
+      <button type="button" class="filters-drawer-close" aria-label="סגירה" onclick="closeCasesFiltersDrawer()">×</button>
+    </div>
+    <div class="filters-drawer-body">
+      <section class="filters-section">
+        <h3 class="filters-section-title">סוג עסקה</h3>
+        <div class="filters-check-list" id="filterDealTypeList">
+          <label class="filters-check"><input type="checkbox" name="filterDeal" value="רכישת דירה יד שניה" onchange="applyDashboardFilters()">רכישת דירה יד שניה</label>
+          <label class="filters-check"><input type="checkbox" name="filterDeal" value="רכישה מקבלן" onchange="applyDashboardFilters()">רכישה מקבלן</label>
+          <label class="filters-check"><input type="checkbox" name="filterDeal" value="בניה עצמית" onchange="applyDashboardFilters()">בניה עצמית</label>
+          <label class="filters-check"><input type="checkbox" name="filterDeal" value="שיפוצים" onchange="applyDashboardFilters()">שיפוצים</label>
+          <label class="filters-check"><input type="checkbox" name="filterDeal" value="כיסוי חובות" onchange="applyDashboardFilters()">כיסוי חובות</label>
+        </div>
+      </section>
+
+      <section class="filters-section">
+        <h3 class="filters-section-title">תאריך פתיחה</h3>
+        <div class="filters-date-row">
+          <label class="filters-date-field">
+            <span>מתאריך</span>
+            <input type="date" id="filterDateFrom" onchange="applyDashboardFilters()">
+          </label>
+          <label class="filters-date-field">
+            <span>עד תאריך</span>
+            <input type="date" id="filterDateTo" onchange="applyDashboardFilters()">
+          </label>
+        </div>
+      </section>
+
+      <section class="filters-section">
+        <h3 class="filters-section-title">בדיקת קדם</h3>
+        <div class="filters-check-list">
+          <label class="filters-check"><input type="checkbox" name="filterPrecheck" value="done" onchange="applyDashboardFilters()">הושלם</label>
+          <label class="filters-check"><input type="checkbox" name="filterPrecheck" value="pending" onchange="applyDashboardFilters()">לא הושלם</label>
+        </div>
+      </section>
+
+      <section class="filters-section">
+        <h3 class="filters-section-title">מיקום עסקה</h3>
+        <div class="filters-city-search">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="6.2" cy="6.2" r="4.2" stroke="currentColor" stroke-width="1.4"/><path d="m9.3 9.3 2.4 2.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <input type="search" id="filterCitySearch" placeholder="חיפוש עיר..." oninput="filterCityOptions()">
+        </div>
+        <div class="filters-city-list" id="filterCityList">
+          <div class="filters-city-empty">לא נמצאו ערים</div>
+        </div>
+      </section>
+    </div>
+    <div class="filters-drawer-footer">
+      <button type="button" class="btn-cancel" onclick="clearCasesFilters()">נקה הכל</button>
+      <button type="button" class="btn-add" onclick="closeCasesFiltersDrawer()">החל</button>
+    </div>
+  </aside>
+</div>
+
 <script>
   function closeAllRowMenus() {
     document.querySelectorAll('.row-menu-wrap.open').forEach((wrap) => {
@@ -1679,28 +2020,209 @@
     if (btn) btn.setAttribute('aria-expanded', 'true');
   }
 
-  const CASES_VIEW_COUNTS = { active: 10, archive: 3 };
   let currentCasesView = 'active';
+
+  const CASE_CITY_BY_ID = {
+    '12335': 'תל אביב',
+    '12338': 'ירושלים',
+    '12342': 'חיפה',
+    '12333': 'ראשון לציון',
+    '12345': 'תל אביב',
+    '12339': 'באר שבע',
+    '12336': 'נתניה',
+    '12343': 'פתח תקווה',
+    '12341': 'הרצליה',
+    '12334': 'רעננה',
+    '12344': 'אשדוד',
+    '12340': 'חולון',
+    '12337': 'רמת גן'
+  };
+
+  const FILTER_CITIES = [
+    'תל אביב', 'ירושלים', 'חיפה', 'ראשון לציון', 'באר שבע',
+    'נתניה', 'פתח תקווה', 'הרצליה', 'רעננה', 'אשדוד', 'חולון', 'רמת גן'
+  ];
+
+  function parseHeDate(value) {
+    if (!value) return null;
+    const parts = String(value).trim().split('/');
+    if (parts.length !== 3) return null;
+    const day = Number(parts[0]);
+    const month = Number(parts[1]);
+    const year = Number(parts[2]);
+    if (!day || !month || !year) return null;
+    return new Date(year, month - 1, day);
+  }
+
+  function parseInputDate(value) {
+    if (!value) return null;
+    const parts = String(value).split('-').map(Number);
+    if (parts.length !== 3) return null;
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+  }
+
+  function enrichCaseRows() {
+    document.querySelectorAll('.table-card tbody tr[data-case-view]').forEach((row) => {
+      const deal = (row.querySelector('.col-deal')?.textContent || '').trim();
+      const opened = (row.querySelector('.col-date')?.textContent || '').trim();
+      const caseId = (row.querySelector('.case-id-num')?.textContent || '').replace('#', '').trim();
+      const precheckDone = !!row.querySelector('.precheck-icon--done');
+      row.dataset.deal = deal;
+      row.dataset.opened = opened;
+      row.dataset.precheck = precheckDone ? 'done' : 'pending';
+      row.dataset.city = CASE_CITY_BY_ID[caseId] || '';
+    });
+  }
+
+  function buildCityFilterOptions() {
+    const list = document.getElementById('filterCityList');
+    if (!list) return;
+    const empty = list.querySelector('.filters-city-empty');
+    list.querySelectorAll('.filters-check').forEach((el) => el.remove());
+    FILTER_CITIES.forEach((city) => {
+      const label = document.createElement('label');
+      label.className = 'filters-check';
+      label.dataset.cityName = city;
+      label.innerHTML = `<input type="checkbox" name="filterCity" value="${city}" onchange="applyDashboardFilters()">${city}`;
+      list.insertBefore(label, empty);
+    });
+  }
+
+  function filterCityOptions() {
+    const query = (document.getElementById('filterCitySearch')?.value || '').trim().toLowerCase();
+    const list = document.getElementById('filterCityList');
+    if (!list) return;
+    let visible = 0;
+    list.querySelectorAll('.filters-check').forEach((label) => {
+      const name = (label.dataset.cityName || '').toLowerCase();
+      const show = !query || name.includes(query);
+      label.classList.toggle('is-hidden', !show);
+      if (show) visible += 1;
+    });
+    list.classList.toggle('is-empty', visible === 0);
+  }
+
+  function getCheckedValues(name) {
+    return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map((el) => el.value);
+  }
+
+  function getActiveFilterCount() {
+    let count = 0;
+    count += getCheckedValues('filterDeal').length;
+    count += getCheckedValues('filterPrecheck').length;
+    count += getCheckedValues('filterCity').length;
+    if (document.getElementById('filterDateFrom')?.value) count += 1;
+    if (document.getElementById('filterDateTo')?.value) count += 1;
+    return count;
+  }
+
+  function syncFiltersButtonState() {
+    const btn = document.getElementById('casesFiltersBtn');
+    const countEl = document.getElementById('casesFiltersCount');
+    const count = getActiveFilterCount();
+    if (btn) btn.classList.toggle('has-active', count > 0);
+    if (countEl) countEl.textContent = String(count);
+  }
+
+  function rowMatchesDashboardFilters(row) {
+    const query = (document.getElementById('casesSearchInput')?.value || '').trim().toLowerCase();
+    if (query) {
+      const name = (row.querySelector('.client-name')?.textContent || '').toLowerCase();
+      const id = (row.querySelector('.client-id')?.textContent || '').toLowerCase();
+      const caseId = (row.querySelector('.case-id-num')?.textContent || '').toLowerCase();
+      if (!name.includes(query) && !id.includes(query) && !caseId.includes(query)) return false;
+    }
+
+    const deals = getCheckedValues('filterDeal');
+    if (deals.length && !deals.includes(row.dataset.deal || '')) return false;
+
+    const prechecks = getCheckedValues('filterPrecheck');
+    if (prechecks.length && !prechecks.includes(row.dataset.precheck || '')) return false;
+
+    const cities = getCheckedValues('filterCity');
+    if (cities.length && !cities.includes(row.dataset.city || '')) return false;
+
+    const from = parseInputDate(document.getElementById('filterDateFrom')?.value);
+    const to = parseInputDate(document.getElementById('filterDateTo')?.value);
+    if (from || to) {
+      const opened = parseHeDate(row.dataset.opened);
+      if (!opened) return false;
+      if (from && opened < from) return false;
+      if (to) {
+        const toEnd = new Date(to.getFullYear(), to.getMonth(), to.getDate(), 23, 59, 59);
+        if (opened > toEnd) return false;
+      }
+    }
+
+    return true;
+  }
+
+  function applyDashboardFilters() {
+    let visible = 0;
+    document.querySelectorAll('.table-card tbody tr[data-case-view]').forEach((row) => {
+      const inView = row.dataset.caseView === currentCasesView;
+      const match = inView && rowMatchesDashboardFilters(row);
+      row.hidden = !match;
+      if (match) visible += 1;
+    });
+
+    const label = document.getElementById('casesViewLabel');
+    const isArchive = currentCasesView === 'archive';
+    if (label) {
+      label.innerHTML = isArchive
+        ? `ארכיון תיקים (<span class="table-section-title-count" id="activeCasesCount">${visible}</span>)`
+        : `תיקי משכנתא פעילים (<span class="table-section-title-count" id="activeCasesCount">${visible}</span>)`;
+    }
+    syncFiltersButtonState();
+  }
+
+  function clearCasesFilters() {
+    document.querySelectorAll('#casesFiltersDrawer input[type="checkbox"]').forEach((el) => {
+      el.checked = false;
+    });
+    const from = document.getElementById('filterDateFrom');
+    const to = document.getElementById('filterDateTo');
+    const citySearch = document.getElementById('filterCitySearch');
+    if (from) from.value = '';
+    if (to) to.value = '';
+    if (citySearch) citySearch.value = '';
+    filterCityOptions();
+    applyDashboardFilters();
+  }
+
+  function openCasesFiltersDrawer() {
+    const overlay = document.getElementById('casesFiltersOverlay');
+    const btn = document.getElementById('casesFiltersBtn');
+    if (!overlay) return;
+    overlay.hidden = false;
+    requestAnimationFrame(() => overlay.classList.add('open'));
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCasesFiltersDrawer() {
+    const overlay = document.getElementById('casesFiltersOverlay');
+    const btn = document.getElementById('casesFiltersBtn');
+    if (!overlay) return;
+    overlay.classList.remove('open');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    window.setTimeout(() => {
+      if (!overlay.classList.contains('open')) overlay.hidden = true;
+    }, 240);
+  }
+
+  function onCasesFiltersOverlayClick(e) {
+    if (e.target === e.currentTarget) closeCasesFiltersDrawer();
+  }
 
   function syncCasesViewUi() {
     const isArchive = currentCasesView === 'archive';
-    const count = CASES_VIEW_COUNTS[currentCasesView];
-    const label = document.getElementById('casesViewLabel');
     const switchBtn = document.getElementById('casesViewSwitchBtn');
-    const countEl = document.getElementById('activeCasesCount');
-    if (label) {
-      label.innerHTML = isArchive
-        ? `ארכיון תיקים (<span class="table-section-title-count" id="activeCasesCount">${count}</span>)`
-        : `תיקי משכנתא פעילים (<span class="table-section-title-count" id="activeCasesCount">${count}</span>)`;
-    } else if (countEl) {
-      countEl.textContent = String(count);
-    }
     if (switchBtn) {
       switchBtn.textContent = isArchive ? 'תיקי משכנתא פעילים' : 'ארכיון תיקים';
     }
-    document.querySelectorAll('.table-card tbody tr[data-case-view]').forEach((row) => {
-      row.hidden = row.dataset.caseView !== currentCasesView;
-    });
+    applyDashboardFilters();
     closeAllRowMenus();
   }
 
@@ -1807,6 +2329,14 @@
 
   document.querySelector('.table-card')?.addEventListener('scroll', hideDashIconTooltip, { passive: true });
   window.addEventListener('scroll', hideDashIconTooltip, { passive: true });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeCasesFiltersDrawer();
+  });
+
+  enrichCaseRows();
+  buildCityFilterOptions();
+  syncCasesViewUi();
 </script>
 
 
