@@ -337,6 +337,17 @@
       flex-direction: column;
       gap: 1px;
     }
+    .filters-radio-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .filters-date-custom {
+      margin-top: 10px;
+    }
+    .filters-date-custom[hidden] {
+      display: none !important;
+    }
     .filters-check {
       display: flex;
       align-items: center;
@@ -822,7 +833,7 @@
       top: calc(100% + 4px);
       inset-inline-end: 0;
       z-index: 40;
-      min-width: 148px;
+      min-width: 168px;
       background: white;
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -835,6 +846,7 @@
     .row-menu-option {
       display: flex;
       align-items: center;
+      gap: 8px;
       width: 100%;
       border: none;
       background: transparent;
@@ -845,11 +857,36 @@
       font-weight: 600;
       cursor: pointer;
       text-align: right;
-      color: #E57373;
+      color: var(--navy);
+    }
+    .row-menu-option-icon {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: currentColor;
+      opacity: 0.85;
+    }
+    .row-menu-option-icon svg {
+      display: block;
+      width: 14px;
+      height: 14px;
     }
     .row-menu-option:hover {
+      background: var(--navy-50);
+      color: var(--navy);
+    }
+    .row-menu-option--danger {
+      color: #E57373;
+    }
+    .row-menu-option--danger:hover {
       background: #FDECEC;
       color: #D32F2F;
+    }
+    tr[data-case-view="archive"] .row-menu-option:nth-child(2) {
+      display: none;
     }
 
     /* ── New case modal (same shell as upload analyze) ── */
@@ -962,21 +999,22 @@
       border-radius: 99px;
       font-family: inherit;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 600;
       line-height: 1.2;
       white-space: nowrap;
-      color: rgba(255, 255, 255, 0.32);
+      color: rgba(255, 255, 255, 0.58);
       background: transparent;
-      border: 1px dashed rgba(255, 255, 255, 0.22);
+      border: 1px dashed rgba(255, 255, 255, 0.3);
       cursor: not-allowed;
       box-sizing: border-box;
-      opacity: 0.55;
+      opacity: 1;
       transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
     }
     .new-case-step-item.is-active {
       color: var(--navy);
       background: var(--yellow);
       border: 1px solid var(--yellow);
+      font-weight: 700;
       cursor: default;
       opacity: 1;
     }
@@ -984,6 +1022,7 @@
       color: #fff;
       background: rgba(255, 255, 255, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.55);
+      font-weight: 700;
       opacity: 1;
       cursor: default;
     }
@@ -996,8 +1035,11 @@
       color: #fff;
     }
     .new-case-step-item:disabled {
-      opacity: 0.55;
+      opacity: 1;
       cursor: not-allowed;
+      color: rgba(255, 255, 255, 0.58);
+      background: transparent;
+      border-color: rgba(255, 255, 255, 0.3);
     }
     .new-case-step-item.is-active:disabled,
     .new-case-step-item.is-done:disabled {
@@ -1007,7 +1049,7 @@
     .new-case-step-arrow {
       width: 16px;
       height: 1.5px;
-      background: rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.22);
       border-radius: 2px;
       font-size: 0;
       color: transparent;
@@ -1191,6 +1233,104 @@
       color: var(--navy);
     }
     .new-case-modal .form-card-body { padding: 18px; }
+    .new-case-modal select.form-select-native { display: none; }
+    .new-case-modal .capsule-select--form {
+      position: relative;
+      width: 100%;
+    }
+    .new-case-modal .capsule-select--form .capsule-select-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      min-height: auto;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 400;
+      font-family: inherit;
+      line-height: 1.35;
+      cursor: pointer;
+      white-space: nowrap;
+      background: #fff;
+      color: var(--text-body);
+      box-shadow: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .new-case-modal .capsule-select--form .capsule-select-trigger:hover {
+      border-color: var(--navy-100);
+      box-shadow: none;
+    }
+    .new-case-modal .capsule-select--form.open .capsule-select-trigger {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px var(--navy-50);
+    }
+    .new-case-modal .capsule-select--form .capsule-select-label {
+      flex: 1;
+      min-width: 0;
+      display: block;
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .new-case-modal .capsule-select--form .capsule-select-chevron {
+      width: 11px;
+      height: 7px;
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236B7280' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      transition: transform 0.2s;
+    }
+    .new-case-modal .capsule-select--form.open .capsule-select-chevron {
+      transform: rotate(180deg);
+    }
+    .new-case-modal .capsule-select--form .capsule-select-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      inset-inline-end: 0;
+      inset-inline-start: 0;
+      z-index: 300;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      padding: 4px;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+    .new-case-modal .capsule-select--form.open .capsule-select-menu {
+      display: block;
+    }
+    .new-case-modal .capsule-select--form .capsule-select-option {
+      display: block;
+      width: 100%;
+      text-align: right;
+      border: none;
+      background: transparent;
+      padding: 9px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--text-body);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      transition: background 0.12s, color 0.12s;
+    }
+    .new-case-modal .capsule-select--form .capsule-select-option:hover {
+      background: var(--navy-50);
+      color: var(--navy);
+    }
+    .new-case-modal .capsule-select--form .capsule-select-option.selected {
+      background: var(--navy-50);
+      color: var(--navy);
+      font-weight: 700;
+    }
     .new-case-modal .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1218,6 +1358,54 @@
       color: var(--text-body);
       margin-bottom: 12px;
       line-height: 1.45;
+    }
+    .new-case-modal .employment-capsule-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .new-case-modal .employment-capsule {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 88px;
+      padding: 8px 16px;
+      border-radius: 99px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-body);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .new-case-modal .employment-capsule:hover {
+      border-color: var(--navy-100);
+      background: var(--navy-50);
+    }
+    .new-case-modal .employment-capsule.selected {
+      border-color: var(--navy);
+      background: var(--navy-50);
+      color: var(--navy);
+      font-weight: 700;
+    }
+    .new-case-modal .employment-other-field {
+      margin-top: 12px;
+    }
+    .new-case-modal .employment-other-field[hidden] {
+      display: none;
+    }
+    .new-case-modal .new-case-questionnaire-more {
+      margin: 8px 0 0;
+      padding: 14px 16px;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--navy-50);
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.5;
     }
     .new-case-modal .intro-banner {
       background: var(--navy-50);
@@ -1283,6 +1471,236 @@
       color: var(--text-muted);
       line-height: 1.4;
     }
+
+    /* ── Precheck step (step 3) layout ── */
+    .new-case-modal-body:has(.new-case-pane[data-pane="3"].is-active) {
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .new-case-pane[data-pane="3"].is-active {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+    .precheck-step {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+    }
+    .precheck-step-docs {
+      width: min(44%, 540px);
+      flex-shrink: 0;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      border-inline-end: 1px solid var(--border);
+    }
+    .precheck-step-docs-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--surface);
+    }
+    .precheck-step-docs-footer {
+      flex-shrink: 0;
+      padding: 14px 16px;
+      border-top: 1px solid var(--border-light);
+      background: var(--surface);
+    }
+    .precheck-submit-btn {
+      width: 100%;
+      height: 40px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--navy);
+      color: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .precheck-submit-btn:hover {
+      background: var(--navy-dark);
+    }
+    .precheck-step-docs-label {
+      margin: 0;
+      padding: 14px 16px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-faint);
+    }
+    .precheck-doc-list {
+      border-top: 1px solid var(--border-light);
+    }
+    .precheck-doc-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      border-bottom: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .precheck-doc-item:last-child {
+      border-bottom: none;
+    }
+    .precheck-doc-item:hover {
+      background: #F5F6F8;
+    }
+    .precheck-doc-item.is-selected {
+      background: #F7F8FA;
+      border-right: 3px solid var(--border);
+      padding-right: 13px;
+    }
+    .precheck-doc-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .precheck-doc-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-body);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .precheck-doc-upload-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 128px;
+      min-height: 28px;
+      padding: 5px 12px;
+      border-radius: 99px;
+      border: 1px dashed var(--navy-100);
+      background: var(--navy-50);
+      color: var(--navy);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.2;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .precheck-doc-upload-btn:hover {
+      background: #E4E8F6;
+      border-color: var(--navy);
+    }
+    .precheck-step-main {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+    .precheck-step-main-idle,
+    .precheck-step-main-generating,
+    .precheck-step-main-report {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 48px;
+      text-align: center;
+      min-height: 0;
+    }
+    .precheck-step-main-idle[hidden],
+    .precheck-step-main-generating[hidden],
+    .precheck-step-main-report[hidden] {
+      display: none;
+    }
+    .precheck-step-main-idle-text {
+      margin: 0;
+      max-width: 360px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-faint);
+    }
+    .precheck-step-loader {
+      width: min(200px, 32vw);
+      height: min(200px, 32vw);
+      margin-bottom: 20px;
+    }
+    .precheck-step-generating-title {
+      margin: 0 0 10px;
+      font-size: clamp(20px, 2vw, 26px);
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.35;
+    }
+    .precheck-step-generating-subtitle {
+      margin: 0;
+      min-height: 1.45em;
+      font-size: clamp(14px, 1.4vw, 17px);
+      font-weight: 500;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    .precheck-step-generating-typed.is-typing::after {
+      content: '';
+      display: inline-block;
+      width: 2px;
+      height: 0.95em;
+      margin-inline-start: 2px;
+      vertical-align: -0.08em;
+      background: var(--text-muted);
+      animation: precheckSubtitleCaret 0.85s step-end infinite;
+    }
+    @keyframes precheckSubtitleCaret {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .precheck-report-doc {
+      width: min(100%, 520px);
+      aspect-ratio: 1 / 1.35;
+      max-height: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: #FAFBFC;
+      box-shadow: 0 2px 14px rgba(27, 42, 107, 0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .precheck-report-doc-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 28px;
+      text-align: center;
+    }
+    .precheck-report-doc-icon {
+      width: 52px;
+      height: 52px;
+      color: var(--text-faint);
+      opacity: 0.55;
+    }
+    .precheck-report-doc-text {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    .precheck-submit-btn:disabled {
+      opacity: 0.55;
+      cursor: default;
+    }
+
     .new-case-modal-footer {
       flex-shrink: 0;
       display: flex;
@@ -1305,6 +1723,29 @@
     }
     .new-case-btn-back:hover { border-color: var(--navy); background: var(--navy-50); }
     .new-case-btn-back[hidden] { display: none !important; }
+    .new-case-footer-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-inline-start: auto;
+    }
+    .new-case-skip-link {
+      border: none;
+      background: none;
+      padding: 0;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .new-case-skip-link:hover {
+      color: var(--navy-dark);
+    }
+    .new-case-skip-link[hidden] { display: none !important; }
     .new-case-btn-next {
       border: none;
       background: var(--navy);
@@ -1315,9 +1756,27 @@
       font-size: 13px;
       font-weight: 700;
       cursor: pointer;
-      margin-inline-start: auto;
     }
     .new-case-btn-next:hover { background: var(--navy-dark); }
+    .new-case-btn-next:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+    }
+    .new-case-btn-next:disabled:hover { background: var(--navy); }
+
+    .new-case-modal.is-edit .new-case-modal-footer {
+      justify-content: center;
+    }
+    .new-case-modal.is-edit .new-case-footer-actions {
+      margin-inline-start: 0;
+      justify-content: center;
+      width: 100%;
+    }
+    .new-case-modal.is-edit .new-case-btn-next {
+      min-width: 168px;
+      padding: 10px 32px;
+      font-size: 14px;
+    }
 
   </style>
 </head>
@@ -1433,7 +1892,9 @@
                 <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
               </button>
               <div class="row-menu-dropdown" role="menu">
-                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleEditCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M9.1 2.2 11.8 4.9 4.6 12.1 1.9 12.5 2.3 9.8 9.1 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 3.3 10.7 6" stroke="currentColor" stroke-width="1.2"/></svg></span>עריכת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleArchiveCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 4.5h9v7.5h-9V4.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 2.5h4v2H5V2.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6.5v3M5.7 8.2 7 9.5l1.3-1.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>העברה לארכיון</button>
+                <button type="button" class="row-menu-option row-menu-option--danger" role="menuitem" onclick="handleDeleteCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 4.2h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5.3 4.2V3.1a.8.8 0 0 1 .8-.8h2a.8.8 0 0 1 .8.8v1.1" stroke="currentColor" stroke-width="1.2"/><path d="M4.4 4.2l.4 6.4a.8.8 0 0 0 .8.7h3.7a.8.8 0 0 0 .8-.7l.4-6.4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>מחיקת תיק</button>
               </div>
             </div>
             </div>
@@ -1479,7 +1940,9 @@
                 <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
               </button>
               <div class="row-menu-dropdown" role="menu">
-                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleEditCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M9.1 2.2 11.8 4.9 4.6 12.1 1.9 12.5 2.3 9.8 9.1 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 3.3 10.7 6" stroke="currentColor" stroke-width="1.2"/></svg></span>עריכת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleArchiveCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 4.5h9v7.5h-9V4.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 2.5h4v2H5V2.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6.5v3M5.7 8.2 7 9.5l1.3-1.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>העברה לארכיון</button>
+                <button type="button" class="row-menu-option row-menu-option--danger" role="menuitem" onclick="handleDeleteCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 4.2h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5.3 4.2V3.1a.8.8 0 0 1 .8-.8h2a.8.8 0 0 1 .8.8v1.1" stroke="currentColor" stroke-width="1.2"/><path d="M4.4 4.2l.4 6.4a.8.8 0 0 0 .8.7h3.7a.8.8 0 0 0 .8-.7l.4-6.4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>מחיקת תיק</button>
               </div>
             </div>
             </div>
@@ -1520,7 +1983,9 @@
                 <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
               </button>
               <div class="row-menu-dropdown" role="menu">
-                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleEditCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M9.1 2.2 11.8 4.9 4.6 12.1 1.9 12.5 2.3 9.8 9.1 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 3.3 10.7 6" stroke="currentColor" stroke-width="1.2"/></svg></span>עריכת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleArchiveCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 4.5h9v7.5h-9V4.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 2.5h4v2H5V2.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6.5v3M5.7 8.2 7 9.5l1.3-1.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>העברה לארכיון</button>
+                <button type="button" class="row-menu-option row-menu-option--danger" role="menuitem" onclick="handleDeleteCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 4.2h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5.3 4.2V3.1a.8.8 0 0 1 .8-.8h2a.8.8 0 0 1 .8.8v1.1" stroke="currentColor" stroke-width="1.2"/><path d="M4.4 4.2l.4 6.4a.8.8 0 0 0 .8.7h3.7a.8.8 0 0 0 .8-.7l.4-6.4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>מחיקת תיק</button>
               </div>
             </div>
             </div>
@@ -1561,7 +2026,9 @@
                 <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
               </button>
               <div class="row-menu-dropdown" role="menu">
-                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleEditCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M9.1 2.2 11.8 4.9 4.6 12.1 1.9 12.5 2.3 9.8 9.1 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 3.3 10.7 6" stroke="currentColor" stroke-width="1.2"/></svg></span>עריכת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleArchiveCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 4.5h9v7.5h-9V4.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 2.5h4v2H5V2.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6.5v3M5.7 8.2 7 9.5l1.3-1.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>העברה לארכיון</button>
+                <button type="button" class="row-menu-option row-menu-option--danger" role="menuitem" onclick="handleDeleteCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 4.2h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5.3 4.2V3.1a.8.8 0 0 1 .8-.8h2a.8.8 0 0 1 .8.8v1.1" stroke="currentColor" stroke-width="1.2"/><path d="M4.4 4.2l.4 6.4a.8.8 0 0 0 .8.7h3.7a.8.8 0 0 0 .8-.7l.4-6.4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>מחיקת תיק</button>
               </div>
             </div>
             </div>
@@ -1607,7 +2074,9 @@
                 <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
               </button>
               <div class="row-menu-dropdown" role="menu">
-                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleEditCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M9.1 2.2 11.8 4.9 4.6 12.1 1.9 12.5 2.3 9.8 9.1 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 3.3 10.7 6" stroke="currentColor" stroke-width="1.2"/></svg></span>עריכת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleArchiveCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 4.5h9v7.5h-9V4.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 2.5h4v2H5V2.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6.5v3M5.7 8.2 7 9.5l1.3-1.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>העברה לארכיון</button>
+                <button type="button" class="row-menu-option row-menu-option--danger" role="menuitem" onclick="handleDeleteCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 4.2h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5.3 4.2V3.1a.8.8 0 0 1 .8-.8h2a.8.8 0 0 1 .8.8v1.1" stroke="currentColor" stroke-width="1.2"/><path d="M4.4 4.2l.4 6.4a.8.8 0 0 0 .8.7h3.7a.8.8 0 0 0 .8-.7l.4-6.4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>מחיקת תיק</button>
               </div>
             </div>
             </div>
@@ -1648,7 +2117,9 @@
                 <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
               </button>
               <div class="row-menu-dropdown" role="menu">
-                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleEditCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M9.1 2.2 11.8 4.9 4.6 12.1 1.9 12.5 2.3 9.8 9.1 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 3.3 10.7 6" stroke="currentColor" stroke-width="1.2"/></svg></span>עריכת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleArchiveCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 4.5h9v7.5h-9V4.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 2.5h4v2H5V2.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6.5v3M5.7 8.2 7 9.5l1.3-1.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>העברה לארכיון</button>
+                <button type="button" class="row-menu-option row-menu-option--danger" role="menuitem" onclick="handleDeleteCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 4.2h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5.3 4.2V3.1a.8.8 0 0 1 .8-.8h2a.8.8 0 0 1 .8.8v1.1" stroke="currentColor" stroke-width="1.2"/><path d="M4.4 4.2l.4 6.4a.8.8 0 0 0 .8.7h3.7a.8.8 0 0 0 .8-.7l.4-6.4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>מחיקת תיק</button>
               </div>
             </div>
             </div>
@@ -1689,7 +2160,9 @@
                 <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
               </button>
               <div class="row-menu-dropdown" role="menu">
-                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleEditCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M9.1 2.2 11.8 4.9 4.6 12.1 1.9 12.5 2.3 9.8 9.1 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 3.3 10.7 6" stroke="currentColor" stroke-width="1.2"/></svg></span>עריכת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleArchiveCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 4.5h9v7.5h-9V4.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 2.5h4v2H5V2.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6.5v3M5.7 8.2 7 9.5l1.3-1.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>העברה לארכיון</button>
+                <button type="button" class="row-menu-option row-menu-option--danger" role="menuitem" onclick="handleDeleteCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 4.2h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5.3 4.2V3.1a.8.8 0 0 1 .8-.8h2a.8.8 0 0 1 .8.8v1.1" stroke="currentColor" stroke-width="1.2"/><path d="M4.4 4.2l.4 6.4a.8.8 0 0 0 .8.7h3.7a.8.8 0 0 0 .8-.7l.4-6.4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>מחיקת תיק</button>
               </div>
             </div>
             </div>
@@ -1730,7 +2203,9 @@
                 <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
               </button>
               <div class="row-menu-dropdown" role="menu">
-                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleEditCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M9.1 2.2 11.8 4.9 4.6 12.1 1.9 12.5 2.3 9.8 9.1 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 3.3 10.7 6" stroke="currentColor" stroke-width="1.2"/></svg></span>עריכת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleArchiveCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 4.5h9v7.5h-9V4.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 2.5h4v2H5V2.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6.5v3M5.7 8.2 7 9.5l1.3-1.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>העברה לארכיון</button>
+                <button type="button" class="row-menu-option row-menu-option--danger" role="menuitem" onclick="handleDeleteCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 4.2h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5.3 4.2V3.1a.8.8 0 0 1 .8-.8h2a.8.8 0 0 1 .8.8v1.1" stroke="currentColor" stroke-width="1.2"/><path d="M4.4 4.2l.4 6.4a.8.8 0 0 0 .8.7h3.7a.8.8 0 0 0 .8-.7l.4-6.4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>מחיקת תיק</button>
               </div>
             </div>
             </div>
@@ -1776,7 +2251,9 @@
                 <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
               </button>
               <div class="row-menu-dropdown" role="menu">
-                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleEditCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M9.1 2.2 11.8 4.9 4.6 12.1 1.9 12.5 2.3 9.8 9.1 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 3.3 10.7 6" stroke="currentColor" stroke-width="1.2"/></svg></span>עריכת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleArchiveCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 4.5h9v7.5h-9V4.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 2.5h4v2H5V2.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6.5v3M5.7 8.2 7 9.5l1.3-1.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>העברה לארכיון</button>
+                <button type="button" class="row-menu-option row-menu-option--danger" role="menuitem" onclick="handleDeleteCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 4.2h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5.3 4.2V3.1a.8.8 0 0 1 .8-.8h2a.8.8 0 0 1 .8.8v1.1" stroke="currentColor" stroke-width="1.2"/><path d="M4.4 4.2l.4 6.4a.8.8 0 0 0 .8.7h3.7a.8.8 0 0 0 .8-.7l.4-6.4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>מחיקת תיק</button>
               </div>
             </div>
             </div>
@@ -1817,7 +2294,9 @@
                 <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
               </button>
               <div class="row-menu-dropdown" role="menu">
-                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleEditCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M9.1 2.2 11.8 4.9 4.6 12.1 1.9 12.5 2.3 9.8 9.1 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 3.3 10.7 6" stroke="currentColor" stroke-width="1.2"/></svg></span>עריכת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleArchiveCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 4.5h9v7.5h-9V4.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 2.5h4v2H5V2.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6.5v3M5.7 8.2 7 9.5l1.3-1.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>העברה לארכיון</button>
+                <button type="button" class="row-menu-option row-menu-option--danger" role="menuitem" onclick="handleDeleteCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 4.2h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5.3 4.2V3.1a.8.8 0 0 1 .8-.8h2a.8.8 0 0 1 .8.8v1.1" stroke="currentColor" stroke-width="1.2"/><path d="M4.4 4.2l.4 6.4a.8.8 0 0 0 .8.7h3.7a.8.8 0 0 0 .8-.7l.4-6.4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>מחיקת תיק</button>
               </div>
             </div>
             </div>
@@ -1858,7 +2337,9 @@
                 <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
               </button>
               <div class="row-menu-dropdown" role="menu">
-                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleEditCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M9.1 2.2 11.8 4.9 4.6 12.1 1.9 12.5 2.3 9.8 9.1 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 3.3 10.7 6" stroke="currentColor" stroke-width="1.2"/></svg></span>עריכת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleArchiveCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 4.5h9v7.5h-9V4.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 2.5h4v2H5V2.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6.5v3M5.7 8.2 7 9.5l1.3-1.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>העברה לארכיון</button>
+                <button type="button" class="row-menu-option row-menu-option--danger" role="menuitem" onclick="handleDeleteCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 4.2h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5.3 4.2V3.1a.8.8 0 0 1 .8-.8h2a.8.8 0 0 1 .8.8v1.1" stroke="currentColor" stroke-width="1.2"/><path d="M4.4 4.2l.4 6.4a.8.8 0 0 0 .8.7h3.7a.8.8 0 0 0 .8-.7l.4-6.4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>מחיקת תיק</button>
               </div>
             </div>
             </div>
@@ -1899,7 +2380,9 @@
                 <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
               </button>
               <div class="row-menu-dropdown" role="menu">
-                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleEditCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M9.1 2.2 11.8 4.9 4.6 12.1 1.9 12.5 2.3 9.8 9.1 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 3.3 10.7 6" stroke="currentColor" stroke-width="1.2"/></svg></span>עריכת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleArchiveCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 4.5h9v7.5h-9V4.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 2.5h4v2H5V2.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6.5v3M5.7 8.2 7 9.5l1.3-1.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>העברה לארכיון</button>
+                <button type="button" class="row-menu-option row-menu-option--danger" role="menuitem" onclick="handleDeleteCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 4.2h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5.3 4.2V3.1a.8.8 0 0 1 .8-.8h2a.8.8 0 0 1 .8.8v1.1" stroke="currentColor" stroke-width="1.2"/><path d="M4.4 4.2l.4 6.4a.8.8 0 0 0 .8.7h3.7a.8.8 0 0 0 .8-.7l.4-6.4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>מחיקת תיק</button>
               </div>
             </div>
             </div>
@@ -1940,7 +2423,9 @@
                 <span class="row-menu-btn-dots" aria-hidden="true"><span></span><span></span><span></span></span>
               </button>
               <div class="row-menu-dropdown" role="menu">
-                <button type="button" class="row-menu-option" role="menuitem" onclick="handleDeleteCase(event)">מחיקת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleEditCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M9.1 2.2 11.8 4.9 4.6 12.1 1.9 12.5 2.3 9.8 9.1 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 3.3 10.7 6" stroke="currentColor" stroke-width="1.2"/></svg></span>עריכת תיק</button>
+                <button type="button" class="row-menu-option" role="menuitem" onclick="handleArchiveCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 4.5h9v7.5h-9V4.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 2.5h4v2H5V2.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6.5v3M5.7 8.2 7 9.5l1.3-1.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>העברה לארכיון</button>
+                <button type="button" class="row-menu-option row-menu-option--danger" role="menuitem" onclick="handleDeleteCase(event)"><span class="row-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 4.2h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5.3 4.2V3.1a.8.8 0 0 1 .8-.8h2a.8.8 0 0 1 .8.8v1.1" stroke="currentColor" stroke-width="1.2"/><path d="M4.4 4.2l.4 6.4a.8.8 0 0 0 .8.7h3.7a.8.8 0 0 0 .8-.7l.4-6.4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>מחיקת תיק</button>
               </div>
             </div>
             </div>
@@ -1971,15 +2456,24 @@
 
       <section class="filters-section">
         <h3 class="filters-section-title">תאריך פתיחה</h3>
-        <div class="filters-date-row">
-          <label class="filters-date-field">
-            <span>מתאריך</span>
-            <input type="date" id="filterDateFrom" onchange="applyDashboardFilters()">
-          </label>
-          <label class="filters-date-field">
-            <span>עד תאריך</span>
-            <input type="date" id="filterDateTo" onchange="applyDashboardFilters()">
-          </label>
+        <div class="filters-radio-list">
+          <label class="filters-check"><input type="radio" name="filterDatePreset" value="all" checked onchange="onFilterDatePresetChange()">כל הזמנים</label>
+          <label class="filters-check"><input type="radio" name="filterDatePreset" value="7" onchange="onFilterDatePresetChange()">7 ימים אחרונים</label>
+          <label class="filters-check"><input type="radio" name="filterDatePreset" value="30" onchange="onFilterDatePresetChange()">30 ימים אחרונים</label>
+          <label class="filters-check"><input type="radio" name="filterDatePreset" value="365" onchange="onFilterDatePresetChange()">365 ימים אחרונים</label>
+          <label class="filters-check"><input type="radio" name="filterDatePreset" value="custom" onchange="onFilterDatePresetChange()">טווח מותאם אישית</label>
+        </div>
+        <div class="filters-date-custom" id="filterDateCustomRange" hidden>
+          <div class="filters-date-row">
+            <label class="filters-date-field">
+              <span>מתאריך</span>
+              <input type="date" id="filterDateFrom" onchange="applyDashboardFilters()">
+            </label>
+            <label class="filters-date-field">
+              <span>עד תאריך</span>
+              <input type="date" id="filterDateTo" onchange="applyDashboardFilters()">
+            </label>
+          </div>
         </div>
       </section>
 
@@ -2125,13 +2619,57 @@
     return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map((el) => el.value);
   }
 
+  function getSelectedDatePreset() {
+    return document.querySelector('input[name="filterDatePreset"]:checked')?.value || '';
+  }
+
+  function getFilterDateBounds() {
+    const preset = getSelectedDatePreset();
+    if (!preset || preset === 'all') return { from: null, to: null };
+
+    if (preset === 'custom') {
+      return {
+        from: parseInputDate(document.getElementById('filterDateFrom')?.value),
+        to: parseInputDate(document.getElementById('filterDateTo')?.value)
+      };
+    }
+
+    const days = Number(preset);
+    if (!days) return { from: null, to: null };
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const from = new Date(today);
+    from.setDate(from.getDate() - (days - 1));
+    const toEnd = new Date(today);
+    toEnd.setHours(23, 59, 59, 999);
+    return { from, to: toEnd };
+  }
+
+  function onFilterDatePresetChange() {
+    const preset = getSelectedDatePreset();
+    const customEl = document.getElementById('filterDateCustomRange');
+    if (customEl) customEl.hidden = preset !== 'custom';
+    if (preset !== 'custom') {
+      const from = document.getElementById('filterDateFrom');
+      const to = document.getElementById('filterDateTo');
+      if (from) from.value = '';
+      if (to) to.value = '';
+    }
+    applyDashboardFilters();
+  }
+
   function getActiveFilterCount() {
     let count = 0;
     count += getCheckedValues('filterDeal').length;
     count += getCheckedValues('filterPrecheck').length;
     count += getCheckedValues('filterCity').length;
-    if (document.getElementById('filterDateFrom')?.value) count += 1;
-    if (document.getElementById('filterDateTo')?.value) count += 1;
+    const preset = getSelectedDatePreset();
+    if (preset && preset !== 'all' && preset !== 'custom') count += 1;
+    if (preset === 'custom') {
+      if (document.getElementById('filterDateFrom')?.value) count += 1;
+      if (document.getElementById('filterDateTo')?.value) count += 1;
+    }
     return count;
   }
 
@@ -2161,14 +2699,13 @@
     const cities = getCheckedValues('filterCity');
     if (cities.length && !cities.includes(row.dataset.city || '')) return false;
 
-    const from = parseInputDate(document.getElementById('filterDateFrom')?.value);
-    const to = parseInputDate(document.getElementById('filterDateTo')?.value);
+    const { from, to } = getFilterDateBounds();
     if (from || to) {
       const opened = parseHeDate(row.dataset.opened);
       if (!opened) return false;
       if (from && opened < from) return false;
       if (to) {
-        const toEnd = new Date(to.getFullYear(), to.getMonth(), to.getDate(), 23, 59, 59);
+        const toEnd = to.getHours() === 23 ? to : new Date(to.getFullYear(), to.getMonth(), to.getDate(), 23, 59, 59);
         if (opened > toEnd) return false;
       }
     }
@@ -2199,9 +2736,14 @@
     document.querySelectorAll('#casesFiltersDrawer input[type="checkbox"]').forEach((el) => {
       el.checked = false;
     });
+    document.querySelectorAll('input[name="filterDatePreset"]').forEach((el) => {
+      el.checked = el.value === 'all';
+    });
+    const customRange = document.getElementById('filterDateCustomRange');
     const from = document.getElementById('filterDateFrom');
     const to = document.getElementById('filterDateTo');
     const citySearch = document.getElementById('filterCitySearch');
+    if (customRange) customRange.hidden = true;
     if (from) from.value = '';
     if (to) to.value = '';
     if (citySearch) citySearch.value = '';
@@ -2269,10 +2811,84 @@
     closeAllRowMenus();
   }
 
+  function archiveCaseRow(row) {
+    if (!row || row.dataset.caseView === 'archive') return;
+    row.dataset.caseView = 'archive';
+    row.hidden = true;
+    applyDashboardFilters();
+  }
+
+  function handleArchiveCase(e) {
+    e.stopPropagation();
+    const row = e.currentTarget?.closest('tr');
+    closeAllRowMenus();
+    archiveCaseRow(row);
+  }
+
+  function applyPendingCaseArchive() {
+    try {
+      const caseId = sessionStorage.getItem('archiveCaseId');
+      if (!caseId) return;
+      sessionStorage.removeItem('archiveCaseId');
+      document.querySelectorAll('tr[data-case-view]').forEach((row) => {
+        const id = (row.querySelector('.case-id-num')?.textContent || '').replace('#', '').trim();
+        if (id === caseId) archiveCaseRow(row);
+      });
+    } catch (_) {}
+  }
+
+  function handleEditCase(e) {
+    e.stopPropagation();
+    const row = e.currentTarget?.closest('tr');
+    closeAllRowMenus();
+    if (!row) return;
+    openEditCaseModal(row);
+  }
+
+  function setNewCaseSelectValue(selectId, value) {
+    const select = document.getElementById(selectId);
+    if (!select || !value) return;
+    const match = Array.from(select.options).find((opt) => opt.text === value || opt.value === value);
+    if (match) select.value = match.value || match.text;
+    const wrap = select.previousElementSibling;
+    if (wrap?.classList?.contains('capsule-select')) {
+      syncFormCapsuleFromSelect(wrap, select);
+    }
+  }
+
+  function populateNewCaseFormFromRow(row) {
+    const name = row.querySelector('.client-name')?.textContent?.trim() || '';
+    const idRaw = row.querySelector('.client-id')?.textContent || '';
+    const clientId = idRaw.replace(/ת\.?\s*ז\.?\s*/g, '').trim();
+    const deal = row.querySelector('.col-deal')?.textContent?.trim() || '';
+    const nameEl = document.getElementById('newCaseClientName');
+    const idEl = document.getElementById('newCaseClientId');
+    if (nameEl) nameEl.value = name;
+    if (idEl) idEl.value = clientId;
+    setNewCaseSelectValue('newCaseDealType', deal);
+    setNewCaseSelectValue('newCaseCollateralType', 'משכנתא');
+  }
+
+  function populateNewCaseFormFromData(data = {}) {
+    const nameEl = document.getElementById('newCaseClientName');
+    const idEl = document.getElementById('newCaseClientId');
+    const phoneEl = document.getElementById('newCaseClientPhone');
+    const emailEl = document.getElementById('newCaseClientEmail');
+    const locationEl = document.getElementById('newCasePropertyLocation');
+    if (nameEl && data.name) nameEl.value = data.name;
+    if (idEl && data.clientId) idEl.value = data.clientId;
+    if (phoneEl && data.phone) phoneEl.value = data.phone;
+    if (emailEl && data.email) emailEl.value = data.email;
+    if (locationEl && data.location) locationEl.value = data.location;
+    if (data.deal) setNewCaseSelectValue('newCaseDealType', data.deal);
+    if (data.collateral) setNewCaseSelectValue('newCaseCollateralType', data.collateral);
+  }
+
   document.addEventListener('click', () => {
     closeAllRowMenus();
     closeCasesViewMenu();
     hideDashIconTooltip();
+    closeAllFormCapsuleMenus();
   });
 
   let dashIconTooltipEl = null;
@@ -2355,7 +2971,26 @@
 
   enrichCaseRows();
   buildCityFilterOptions();
+  applyPendingCaseArchive();
   syncCasesViewUi();
+
+  try {
+    const raw = sessionStorage.getItem('editCaseData');
+    if (raw) {
+      sessionStorage.removeItem('editCaseData');
+      const data = JSON.parse(raw);
+      newCaseMode = 'edit';
+      newCaseStep = 1;
+      newCaseMaxStep = 3;
+      populateNewCaseFormFromData(data);
+      const modal = document.getElementById('newCaseModal');
+      syncNewCaseStepUi();
+      if (modal) {
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+      }
+    }
+  } catch (_) {}
 </script>
 
 
@@ -2381,21 +3016,21 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">תעודת זהות <span class="required">*</span></label>
-                <input type="text" class="form-input" placeholder="000000000" maxlength="9">
+                <input type="text" class="form-input" id="newCaseClientId" placeholder="000000000" maxlength="9">
               </div>
               <div class="form-group">
                 <label class="form-label">שם מלא <span class="required">*</span></label>
-                <input type="text" class="form-input" placeholder="שם פרטי ושם משפחה" value="ישראל ישראלי">
+                <input type="text" class="form-input" id="newCaseClientName" placeholder="שם פרטי ושם משפחה" value="ישראל ישראלי">
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">טלפון <span class="required">*</span></label>
-                <input type="tel" class="form-input" placeholder="05X-XXXXXXX">
+                <input type="tel" class="form-input" id="newCaseClientPhone" placeholder="05X-XXXXXXX">
               </div>
               <div class="form-group">
                 <label class="form-label">דואר אלקטרוני <span class="required">*</span></label>
-                <input type="email" class="form-input" placeholder="name@email.com">
+                <input type="email" class="form-input" id="newCaseClientEmail" placeholder="name@email.com">
               </div>
             </div>
           </div>
@@ -2406,7 +3041,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">סוג עסקה <span class="required">*</span></label>
-                <select class="form-select">
+                <select class="form-select" id="newCaseDealType">
                   <option selected>רכישת דירה יד שניה</option>
                   <option>רכישה מקבלן</option>
                   <option>בניה עצמית</option>
@@ -2416,7 +3051,7 @@
               </div>
               <div class="form-group">
                 <label class="form-label">סוג בטוחה <span class="required">*</span></label>
-                <select class="form-select">
+                <select class="form-select" id="newCaseCollateralType">
                   <option selected>משכנתא</option>
                   <option>הערת אזהרה</option>
                   <option>התחייבות עורך דין</option>
@@ -2426,7 +3061,7 @@
             <div class="form-row single">
               <div class="form-group">
                 <label class="form-label">מקום רישום הנכס <span class="required">*</span></label>
-                <input type="text" class="form-input" placeholder="עיר / טאבו / רמ״י">
+                <input type="text" class="form-input" id="newCasePropertyLocation" placeholder="עיר / טאבו / רמ״י">
               </div>
             </div>
           </div>
@@ -2434,16 +3069,88 @@
       </div>
 
       <div class="new-case-pane" data-pane="2">
-        <div class="new-case-empty-state">
-          <p class="new-case-empty-title">השאלון יתווסף בקרוב</p>
-          <p class="new-case-empty-text">שלב זה נמצא בפיתוח ויהיה זמין בקרוב.</p>
+        <div class="question-card">
+          <div class="question-text">פרופיל תעסוקתי</div>
+          <div class="employment-capsule-group" role="radiogroup" aria-label="פרופיל תעסוקתי">
+            <button type="button" class="employment-capsule" data-value="employee" onclick="newCaseSelectEmploymentProfile(this)">שכיר</button>
+            <button type="button" class="employment-capsule" data-value="self-employed" onclick="newCaseSelectEmploymentProfile(this)">עצמאי</button>
+            <button type="button" class="employment-capsule" data-value="controlling" onclick="newCaseSelectEmploymentProfile(this)">בעל שליטה</button>
+            <button type="button" class="employment-capsule" data-value="other" onclick="newCaseSelectEmploymentProfile(this)">אחר</button>
+          </div>
+          <div class="employment-other-field" id="employmentOtherField" hidden>
+            <label class="form-label" for="employmentOtherInput">פירוט</label>
+            <input type="text" class="form-input" id="employmentOtherInput" placeholder="פרט את הפרופיל התעסוקתי">
+          </div>
         </div>
+        <p class="new-case-questionnaire-more">שאר השאלות יופיעו כאן בהמשך.</p>
       </div>
 
       <div class="new-case-pane" data-pane="3">
-        <div class="new-case-empty-state">
-          <p class="new-case-empty-title">בדיקת קדם תתווסף בקרוב</p>
-          <p class="new-case-empty-text">שלב זה נמצא בפיתוח ויהיה זמין בקרוב.</p>
+        <div class="precheck-step">
+          <aside class="precheck-step-docs" aria-label="מסמכים לבדיקת קדם">
+            <div class="precheck-step-docs-scroll">
+              <p class="precheck-step-docs-label">מסמכים נדרשים (6)</p>
+              <div class="precheck-doc-list">
+                <div class="precheck-doc-item is-selected" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
+                  <div class="precheck-doc-info">
+                    <div class="precheck-doc-name">תעודת זהות</div>
+                  </div>
+                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
+                </div>
+                <div class="precheck-doc-item" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
+                  <div class="precheck-doc-info">
+                    <div class="precheck-doc-name">אישור יתרות בנקאי</div>
+                  </div>
+                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
+                </div>
+                <div class="precheck-doc-item" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
+                  <div class="precheck-doc-info">
+                    <div class="precheck-doc-name">נסח טאבו</div>
+                  </div>
+                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
+                </div>
+                <div class="precheck-doc-item" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
+                  <div class="precheck-doc-info">
+                    <div class="precheck-doc-name">חוזה רכישה חתום</div>
+                  </div>
+                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
+                </div>
+                <div class="precheck-doc-item" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
+                  <div class="precheck-doc-info">
+                    <div class="precheck-doc-name">אישור משכורת</div>
+                  </div>
+                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
+                </div>
+                <div class="precheck-doc-item" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
+                  <div class="precheck-doc-info">
+                    <div class="precheck-doc-name">דוח ריכוז נתונים</div>
+                  </div>
+                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
+                </div>
+              </div>
+            </div>
+            <div class="precheck-step-docs-footer">
+              <button type="button" class="precheck-submit-btn" onclick="handlePrecheckSubmit(event)">הגשת בדיקת קדם</button>
+            </div>
+          </aside>
+          <section class="precheck-step-main" aria-label="תוכן בדיקת קדם">
+            <div class="precheck-step-main-idle" id="precheckMainIdle">
+              <p class="precheck-step-main-idle-text">לאחר ההגשה, כאן יופיע דו״ח AI לבדיקת קדם</p>
+            </div>
+            <div class="precheck-step-main-generating" id="precheckMainGenerating" hidden>
+              <div class="precheck-step-loader" id="precheckStepLottie" aria-hidden="true"></div>
+              <p class="precheck-step-generating-title">מייצר דו"ח AI...</p>
+              <p class="precheck-step-generating-subtitle" id="precheckGeneratingSubtitle" aria-live="polite"><span class="precheck-step-generating-prefix">בודק את </span><span class="precheck-step-generating-typed" id="precheckGeneratingTyped"></span></p>
+            </div>
+            <div class="precheck-step-main-report" id="precheckMainReport" hidden>
+              <div class="precheck-report-doc" aria-label="דוח AI לבדיקת קדם">
+                <div class="precheck-report-doc-inner">
+                  <svg class="precheck-report-doc-icon" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M14 8h14l10 10v22a4 4 0 01-4 4H14a4 4 0 01-4-4V12a4 4 0 014-4z" stroke="currentColor" stroke-width="2"/><path d="M28 8v10h10" stroke="currentColor" stroke-width="2"/></svg>
+                  <p class="precheck-report-doc-text">כאן יופיע דוח AI</p>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
 
@@ -2466,21 +3173,41 @@
     </div>
     <div class="new-case-modal-footer">
       <button type="button" class="new-case-btn-back" id="newCaseBackBtn" hidden onclick="newCasePrevStep()">חזרה</button>
-      <button type="button" class="new-case-btn-next" id="newCaseNextBtn" onclick="newCaseNextStep()">המשך לשאלון</button>
+      <div class="new-case-footer-actions" id="newCaseFooterActions">
+        <button type="button" class="new-case-skip-link" id="newCaseSkipBtn" hidden onclick="newCaseSkipAndOpen()">דילוג ופתיחת תיק</button>
+        <button type="button" class="new-case-btn-next" id="newCaseNextBtn" onclick="newCaseNextStep()">המשך לשאלון</button>
+      </div>
     </div>
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <script>
   let newCaseStep = 1;
   let newCaseMaxStep = 1;
+  let newCaseMode = 'create';
 
   function openNewCaseModal() {
     const modal = document.getElementById('newCaseModal');
     if (!modal) return;
+    newCaseMode = 'create';
     newCaseStep = 1;
     newCaseMaxStep = 1;
     syncNewCaseStepUi();
+    resetPrecheckSubmitState();
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
+  function openEditCaseModal(row) {
+    const modal = document.getElementById('newCaseModal');
+    if (!modal) return;
+    newCaseMode = 'edit';
+    newCaseStep = 1;
+    newCaseMaxStep = 3;
+    populateNewCaseFormFromRow(row);
+    syncNewCaseStepUi();
+    resetPrecheckSubmitState();
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
   }
@@ -2490,15 +3217,25 @@
     if (!modal) return;
     modal.classList.remove('open', 'is-success');
     modal.setAttribute('aria-hidden', 'true');
+    newCaseMode = 'create';
   }
 
   function syncNewCaseStepUi() {
     const modal = document.getElementById('newCaseModal');
     const isSuccess = newCaseStep === 4;
+    const isEdit = newCaseMode === 'edit';
     modal?.classList.toggle('is-success', isSuccess);
+    modal?.classList.toggle('is-edit', isEdit);
 
     const title = document.getElementById('newCaseModalTitle');
-    if (title) title.textContent = isSuccess ? 'תיק המשכנתא נפתח בהצלחה' : 'פתיחת תיק חדש';
+    if (title) {
+      if (isSuccess) title.textContent = 'תיק המשכנתא נפתח בהצלחה';
+      else if (isEdit) title.textContent = 'עריכת תיק';
+      else title.textContent = 'פתיחת תיק חדש';
+    }
+
+    const stepsEl = document.getElementById('newCaseSteps');
+    if (stepsEl) stepsEl.hidden = isSuccess;
 
     if (isSuccess) {
       const numEl = document.getElementById('newCaseSuccessNumber');
@@ -2526,6 +3263,15 @@
         item.disabled = true;
         return;
       }
+      if (isEdit) {
+        const isActive = step === newCaseStep;
+        item.classList.toggle('is-active', isActive);
+        item.classList.toggle('is-done', false);
+        item.classList.toggle('is-clickable', !isActive);
+        item.setAttribute('aria-current', isActive ? 'step' : 'false');
+        item.disabled = false;
+        return;
+      }
       const isActive = step === newCaseStep;
       const isReached = step <= newCaseMaxStep;
       item.classList.toggle('is-active', isActive);
@@ -2536,10 +3282,15 @@
     });
     const backBtn = document.getElementById('newCaseBackBtn');
     const nextBtn = document.getElementById('newCaseNextBtn');
+    const skipBtn = document.getElementById('newCaseSkipBtn');
+    const isPrecheckStep = newCaseStep === 3 && !isSuccess && !isEdit;
     if (backBtn) backBtn.hidden = newCaseStep === 1 || isSuccess;
+    if (skipBtn) skipBtn.hidden = !isPrecheckStep;
     if (nextBtn) {
       nextBtn.hidden = isSuccess;
-      if (newCaseStep === 1) nextBtn.textContent = 'המשך לשאלון';
+      nextBtn.disabled = isPrecheckStep;
+      if (isEdit) nextBtn.textContent = 'שמירה';
+      else if (newCaseStep === 1) nextBtn.textContent = 'המשך לשאלון';
       else if (newCaseStep === 2) nextBtn.textContent = 'המשך לבדיקת קדם';
       else nextBtn.textContent = 'סיום ופתיחת תיק';
     }
@@ -2557,13 +3308,213 @@
   function newCaseGoToStep(step) {
     if (newCaseStep === 4) return;
     if (step < 1 || step > 3) return;
-    if (step > newCaseMaxStep) return;
+    if (newCaseMode !== 'edit' && step > newCaseMaxStep) return;
     if (step === newCaseStep) return;
     newCaseStep = step;
     syncNewCaseStepUi();
   }
 
+  function selectPrecheckDocRow(row) {
+    if (!row) return;
+    const pane = row.closest('.new-case-pane[data-pane="3"]');
+    pane?.querySelectorAll('.precheck-doc-item.is-selected').forEach((el) => el.classList.remove('is-selected'));
+    row.classList.add('is-selected');
+  }
+
+  let precheckLottie = null;
+  let precheckTypeTimer = null;
+  let precheckSubtitleRunning = false;
+  let precheckReportTimer = null;
+  const PRECHECK_REPORT_DELAY_MS = 15000;
+
+  const PRECHECK_DOC_CHECKING_LABELS = {
+    'תעודת זהות': 'תעודת הזהות',
+    'אישור יתרות בנקאי': 'אישור יתרות בנקאי',
+    'נסח טאבו': 'נסח הטאבו',
+    'חוזה רכישה חתום': 'חוזה הרכישה החתום',
+    'אישור משכורת': 'אישור המשכורת',
+    'דוח ריכוז נתונים': 'דוח ריכוז הנתונים'
+  };
+  const PRECHECK_SUBTITLE_INTERVAL_MS = 6000;
+  const PRECHECK_SUBTITLE_TYPE_MS = 42;
+
+  function getPrecheckDocNames() {
+    return [...document.querySelectorAll('.precheck-doc-list .precheck-doc-name')]
+      .map((el) => el.textContent.trim())
+      .filter(Boolean);
+  }
+
+  function precheckDocLabel(docName) {
+    return PRECHECK_DOC_CHECKING_LABELS[docName] || docName;
+  }
+
+  function stopPrecheckTypewriter() {
+    if (precheckTypeTimer) {
+      clearTimeout(precheckTypeTimer);
+      precheckTypeTimer = null;
+    }
+  }
+
+  function stopPrecheckSubtitleCycle() {
+    precheckSubtitleRunning = false;
+    stopPrecheckTypewriter();
+  }
+
+  function typePrecheckLabelForward(label, typedEl, onDone) {
+    stopPrecheckTypewriter();
+    typedEl.textContent = '';
+    typedEl.classList.add('is-typing');
+
+    let index = 0;
+    const typeNext = () => {
+      if (!precheckSubtitleRunning) return;
+      index += 1;
+      typedEl.textContent = label.slice(0, index);
+      if (index < label.length) {
+        precheckTypeTimer = window.setTimeout(typeNext, PRECHECK_SUBTITLE_TYPE_MS);
+      } else {
+        typedEl.classList.remove('is-typing');
+        precheckTypeTimer = null;
+        onDone?.();
+      }
+    };
+
+    precheckTypeTimer = window.setTimeout(typeNext, PRECHECK_SUBTITLE_TYPE_MS);
+  }
+
+  function typePrecheckLabelBackward(label, typedEl, onDone) {
+    stopPrecheckTypewriter();
+    typedEl.classList.add('is-typing');
+
+    let index = label.length;
+    const deleteNext = () => {
+      if (!precheckSubtitleRunning) return;
+      index -= 1;
+      typedEl.textContent = label.slice(0, index);
+      if (index > 0) {
+        precheckTypeTimer = window.setTimeout(deleteNext, PRECHECK_SUBTITLE_TYPE_MS);
+      } else {
+        typedEl.textContent = '';
+        typedEl.classList.remove('is-typing');
+        precheckTypeTimer = null;
+        onDone?.();
+      }
+    };
+
+    precheckTypeTimer = window.setTimeout(deleteNext, PRECHECK_SUBTITLE_TYPE_MS);
+  }
+
+  function runPrecheckDocCycle(names, docIndex, typedEl) {
+    if (!precheckSubtitleRunning) return;
+    const label = precheckDocLabel(names[docIndex]);
+    const cycleStart = Date.now();
+
+    typePrecheckLabelForward(label, typedEl, () => {
+      if (!precheckSubtitleRunning) return;
+      const waitBeforeDelete = Math.max(0, PRECHECK_SUBTITLE_INTERVAL_MS - (Date.now() - cycleStart));
+      precheckTypeTimer = window.setTimeout(() => {
+        if (!precheckSubtitleRunning) return;
+        typePrecheckLabelBackward(label, typedEl, () => {
+          if (!precheckSubtitleRunning) return;
+          runPrecheckDocCycle(names, (docIndex + 1) % names.length, typedEl);
+        });
+      }, waitBeforeDelete);
+    });
+  }
+
+  function startPrecheckSubtitleCycle() {
+    stopPrecheckSubtitleCycle();
+    const typedEl = document.getElementById('precheckGeneratingTyped');
+    const names = getPrecheckDocNames();
+    if (!typedEl || !names.length) return;
+
+    precheckSubtitleRunning = true;
+    runPrecheckDocCycle(names, 0, typedEl);
+  }
+
+  function clearPrecheckReportTimer() {
+    if (precheckReportTimer) {
+      clearTimeout(precheckReportTimer);
+      precheckReportTimer = null;
+    }
+  }
+
+  function showPrecheckReportPlaceholder() {
+    const generating = document.getElementById('precheckMainGenerating');
+    const report = document.getElementById('precheckMainReport');
+    if (precheckLottie) precheckLottie.stop();
+    stopPrecheckSubtitleCycle();
+    if (generating) generating.hidden = true;
+    if (report) report.hidden = false;
+  }
+
+  function schedulePrecheckReportReveal() {
+    clearPrecheckReportTimer();
+    precheckReportTimer = window.setTimeout(showPrecheckReportPlaceholder, PRECHECK_REPORT_DELAY_MS);
+  }
+
+  function initPrecheckLottie() {
+    const container = document.getElementById('precheckStepLottie');
+    if (!container || typeof lottie === 'undefined') return null;
+    if (precheckLottie) return precheckLottie;
+    precheckLottie = lottie.loadAnimation({
+      container,
+      renderer: 'svg',
+      loop: true,
+      autoplay: false,
+      path: 'assets/fibi-loader.json'
+    });
+    return precheckLottie;
+  }
+
+  function resetPrecheckSubmitState() {
+    const idle = document.getElementById('precheckMainIdle');
+    const generating = document.getElementById('precheckMainGenerating');
+    const report = document.getElementById('precheckMainReport');
+    const submitBtn = document.querySelector('.precheck-submit-btn');
+    if (idle) idle.hidden = false;
+    if (generating) generating.hidden = true;
+    if (report) report.hidden = true;
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'הגשת בדיקת קדם';
+    }
+    if (precheckLottie) precheckLottie.stop();
+    stopPrecheckSubtitleCycle();
+    clearPrecheckReportTimer();
+    const typedEl = document.getElementById('precheckGeneratingTyped');
+    if (typedEl) {
+      typedEl.textContent = '';
+      typedEl.classList.remove('is-typing');
+    }
+  }
+
+  function handlePrecheckDocUpload(e) {
+    e?.stopPropagation?.();
+  }
+
+  function handlePrecheckSubmit(e) {
+    e?.stopPropagation?.();
+    const idle = document.getElementById('precheckMainIdle');
+    const generating = document.getElementById('precheckMainGenerating');
+    const submitBtn = document.querySelector('.precheck-submit-btn');
+    if (!idle || !generating || !generating.hidden) return;
+
+    idle.hidden = true;
+    generating.hidden = false;
+    if (submitBtn) submitBtn.disabled = true;
+
+    const anim = initPrecheckLottie();
+    anim?.goToAndPlay(0, true);
+    startPrecheckSubtitleCycle();
+    schedulePrecheckReportReveal();
+  }
+
   function newCaseNextStep() {
+    if (newCaseMode === 'edit') {
+      closeNewCaseModal();
+      return;
+    }
     if (newCaseStep < 3) {
       newCaseStep += 1;
       newCaseMaxStep = Math.max(newCaseMaxStep, newCaseStep);
@@ -2574,6 +3525,12 @@
       newCaseStep = 4;
       syncNewCaseStepUi();
     }
+  }
+
+  function newCaseSkipAndOpen() {
+    if (newCaseStep !== 3) return;
+    newCaseStep = 4;
+    syncNewCaseStepUi();
   }
 
   function newCasePrevStep() {
@@ -2614,13 +3571,97 @@
     btn.classList.add('selected');
   }
 
+  function newCaseSelectEmploymentProfile(btn) {
+    const group = btn.closest('.employment-capsule-group');
+    if (!group) return;
+    group.querySelectorAll('.employment-capsule').forEach((b) => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    const otherField = document.getElementById('employmentOtherField');
+    const otherInput = document.getElementById('employmentOtherInput');
+    const isOther = btn.dataset.value === 'other';
+    if (otherField) otherField.hidden = !isOther;
+    if (!isOther && otherInput) otherInput.value = '';
+    if (isOther && otherInput) otherInput.focus();
+  }
+
   function toggleNewCasePrecheck(item) {
     item.classList.toggle('is-checked');
   }
 
+  function closeAllFormCapsuleMenus() {
+    document.querySelectorAll('#newCaseModal .capsule-select.open').forEach((el) => {
+      el.classList.remove('open');
+    });
+  }
+
+  function toggleFormCapsuleMenu(wrap) {
+    const isOpen = wrap.classList.contains('open');
+    closeAllFormCapsuleMenus();
+    if (!isOpen) wrap.classList.add('open');
+  }
+
+  function syncFormCapsuleFromSelect(wrap, select) {
+    if (!wrap || !select) return;
+    const labelEl = wrap.querySelector('.capsule-select-label');
+    const selected = select.options[select.selectedIndex];
+    if (labelEl) labelEl.textContent = selected?.text || '';
+    wrap.querySelectorAll('.capsule-select-option').forEach((btn) => {
+      btn.classList.toggle('selected', btn.dataset.value === select.value);
+    });
+  }
+
+  function initFormCapsuleSelects(root = document) {
+    root.querySelectorAll('#newCaseModal select.form-select').forEach((select) => {
+      if (select.dataset.capsuleInit) return;
+      select.dataset.capsuleInit = '1';
+      select.classList.add('form-select-native');
+
+      const wrap = document.createElement('div');
+      wrap.className = 'capsule-select capsule-select--form';
+
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'capsule-select-trigger';
+      trigger.innerHTML = '<span class="capsule-select-label"></span><span class="capsule-select-chevron" aria-hidden="true"></span>';
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleFormCapsuleMenu(wrap);
+      });
+
+      const menu = document.createElement('div');
+      menu.className = 'capsule-select-menu';
+      menu.setAttribute('role', 'listbox');
+      Array.from(select.options).forEach((opt) => {
+        const value = opt.value || opt.text;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'capsule-select-option' + (opt.selected ? ' selected' : '');
+        btn.dataset.value = value;
+        btn.setAttribute('role', 'option');
+        btn.textContent = opt.text;
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          select.value = value;
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+          syncFormCapsuleFromSelect(wrap, select);
+          closeAllFormCapsuleMenus();
+        });
+        menu.appendChild(btn);
+      });
+
+      wrap.appendChild(trigger);
+      wrap.appendChild(menu);
+      select.parentNode.insertBefore(wrap, select);
+      syncFormCapsuleFromSelect(wrap, select);
+    });
+  }
+
+  initFormCapsuleSelects();
+
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     if (document.getElementById('newCaseModal')?.classList.contains('open')) {
+      closeAllFormCapsuleMenus();
       closeNewCaseModal();
     }
   });

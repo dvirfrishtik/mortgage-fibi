@@ -117,12 +117,1000 @@
       gap: 20px;
       margin-bottom: 8px;
     }
+    .hero-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
     .hero-track {
       font-size: 19px;
       font-weight: 700;
       white-space: nowrap;
       min-width: 0;
     }
+    .hero-case-menu-wrap {
+      position: relative;
+      display: inline-flex;
+      flex-shrink: 0;
+    }
+    .hero-case-menu-btn {
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 99px;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.78);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+    .hero-case-menu-btn:hover,
+    .hero-case-menu-wrap.open .hero-case-menu-btn {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+    .hero-case-menu-dots {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      align-items: center;
+    }
+    .hero-case-menu-dots span {
+      width: 3.5px;
+      height: 3.5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .hero-case-menu-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      inset-inline-end: 0;
+      z-index: 60;
+      min-width: 168px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 20px rgba(27, 42, 107, 0.14);
+      padding: 4px;
+    }
+    .hero-case-menu-wrap.open .hero-case-menu-dropdown {
+      display: block;
+    }
+    .hero-case-menu-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: right;
+      color: var(--navy);
+    }
+    .hero-case-menu-option-icon {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: currentColor;
+      opacity: 0.85;
+    }
+    .hero-case-menu-option-icon svg {
+      display: block;
+      width: 14px;
+      height: 14px;
+    }
+    .hero-case-menu-option:hover {
+      background: var(--navy-50);
+    }
+    .hero-case-menu-option--danger {
+      color: #E57373;
+    }
+    .hero-case-menu-option--danger:hover {
+      background: #FDECEC;
+      color: #D32F2F;
+    }
+
+    /* ── New case modal (same shell as upload analyze) ── */
+    .new-case-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .new-case-modal.open { display: flex; }
+    .new-case-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 16, 40, 0.72);
+      animation: dashModalFadeIn 0.2s ease-out;
+    }
+    .new-case-modal-card {
+      position: relative;
+      width: 80vw;
+      height: 90vh;
+      max-width: 80vw;
+      max-height: 90vh;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: dashModalPopIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @media (min-width: 1920px) {
+      .new-case-modal-card {
+        width: 60vw;
+        height: 90vh;
+        max-width: 60vw;
+        max-height: 90vh;
+      }
+    }
+    @keyframes dashModalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes dashModalPopIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .new-case-modal-close {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: auto;
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.14);
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .new-case-modal-close:hover {
+      background: rgba(255, 255, 255, 0.24);
+      color: #fff;
+    }
+    .new-case-modal-header {
+      flex-shrink: 0;
+      padding: 16px 24px 14px;
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .new-case-modal-title {
+      margin: 0;
+      padding-bottom: 12px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      width: 100%;
+      line-height: 1.3;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .new-case-steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .new-case-step-item {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 112px;
+      padding: 6px 10px;
+      border-radius: 99px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.2;
+      white-space: nowrap;
+      color: rgba(255, 255, 255, 0.58);
+      background: transparent;
+      border: 1px dashed rgba(255, 255, 255, 0.3);
+      cursor: not-allowed;
+      box-sizing: border-box;
+      opacity: 1;
+      transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+    }
+    .new-case-step-item.is-active {
+      color: var(--navy);
+      background: var(--yellow);
+      border: 1px solid var(--yellow);
+      font-weight: 700;
+      cursor: default;
+      opacity: 1;
+    }
+    .new-case-step-item.is-done {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      font-weight: 700;
+      opacity: 1;
+      cursor: default;
+    }
+    .new-case-step-item.is-clickable {
+      cursor: pointer;
+    }
+    .new-case-step-item.is-clickable:hover {
+      background: rgba(255, 255, 255, 0.32);
+      border-color: rgba(255, 255, 255, 0.8);
+      color: #fff;
+    }
+    .new-case-step-item:disabled {
+      opacity: 1;
+      cursor: not-allowed;
+      color: rgba(255, 255, 255, 0.58);
+      background: transparent;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .new-case-step-item.is-active:disabled,
+    .new-case-step-item.is-done:disabled {
+      opacity: 1;
+      cursor: default;
+    }
+    .new-case-step-arrow {
+      width: 16px;
+      height: 1.5px;
+      background: rgba(255, 255, 255, 0.22);
+      border-radius: 2px;
+      font-size: 0;
+      color: transparent;
+      line-height: 0;
+      flex-shrink: 0;
+    }
+    .new-case-step-item.is-active + .new-case-step-arrow,
+    .new-case-step-item.is-done + .new-case-step-arrow {
+      background: rgba(255, 255, 255, 0.45);
+    }
+    .new-case-modal-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 20px 28px 12px;
+      background: #fff;
+    }
+    .new-case-pane { display: none; }
+    .new-case-pane.is-active { display: block; }
+    .new-case-empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .new-case-empty-title {
+      margin: 0 0 8px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .new-case-empty-text {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .new-case-success {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100%;
+      flex: 1;
+      padding: 48px 24px;
+      text-align: center;
+    }
+    .new-case-pane[data-pane="4"].is-active {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+    }
+    .new-case-success-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--yellow);
+      color: var(--navy);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.35);
+      transform: scale(0.6);
+      opacity: 0;
+    }
+    .new-case-success-icon.is-animating {
+      animation:
+        newCaseSuccessPop 0.55s cubic-bezier(0.34, 1.45, 0.64, 1) 0.05s both,
+        newCaseSuccessGlow 0.9s ease-out 0.15s both;
+    }
+    .new-case-success-icon svg {
+      width: 32px;
+      height: 32px;
+      display: block;
+    }
+    .new-case-success-icon path {
+      stroke-dasharray: 28;
+      stroke-dashoffset: 28;
+    }
+    .new-case-success-icon.is-animating path {
+      animation: newCaseSuccessCheckDraw 0.4s ease 0.32s forwards;
+    }
+    @keyframes newCaseSuccessPop {
+      from { opacity: 0; transform: scale(0.55); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes newCaseSuccessGlow {
+      0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4); }
+      70% { box-shadow: 0 0 0 14px rgba(255, 193, 7, 0); }
+      100% { box-shadow: 0 0 0 8px rgba(255, 193, 7, 0.18); }
+    }
+    @keyframes newCaseSuccessCheckDraw {
+      to { stroke-dashoffset: 0; }
+    }
+    .new-case-success-title {
+      margin: 0 0 6px;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+    }
+    .new-case-success-case {
+      margin: 0 0 28px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .new-case-success-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      width: 100%;
+      max-width: 280px;
+    }
+    .new-case-success-actions .btn-add,
+    .new-case-success-actions .btn-cancel {
+      width: 100%;
+      justify-content: center;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .new-case-success-actions .btn-add {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .new-case-success-actions .btn-add-chevron {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .new-case-success-icon,
+      .new-case-success-icon.is-animating,
+      .new-case-success-icon.is-animating path {
+        animation: none;
+        opacity: 1;
+        transform: none;
+        box-shadow: 0 0 0 8px rgba(255, 193, 7, 0.18);
+      }
+      .new-case-success-icon path { stroke-dashoffset: 0; }
+    }
+    .new-case-modal.is-success .new-case-steps {
+      display: none;
+    }
+    .new-case-modal.is-success .new-case-modal-title {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .new-case-modal.is-success .new-case-modal-footer {
+      display: none;
+    }
+    .new-case-modal.is-success .new-case-modal-body {
+      display: flex;
+      flex-direction: column;
+    }
+    .new-case-modal .form-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: visible;
+      margin-bottom: 16px;
+    }
+    .new-case-modal .form-card-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--navy-50);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .new-case-modal .form-card-body { padding: 18px; }
+    .new-case-modal select.form-select-native { display: none; }
+    .new-case-modal .capsule-select--form {
+      position: relative;
+      width: 100%;
+    }
+    .new-case-modal .capsule-select--form .capsule-select-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      min-height: auto;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 400;
+      font-family: inherit;
+      line-height: 1.35;
+      cursor: pointer;
+      white-space: nowrap;
+      background: #fff;
+      color: var(--text-body);
+      box-shadow: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .new-case-modal .capsule-select--form .capsule-select-trigger:hover {
+      border-color: var(--navy-100);
+      box-shadow: none;
+    }
+    .new-case-modal .capsule-select--form.open .capsule-select-trigger {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px var(--navy-50);
+    }
+    .new-case-modal .capsule-select--form .capsule-select-label {
+      flex: 1;
+      min-width: 0;
+      display: block;
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .new-case-modal .capsule-select--form .capsule-select-chevron {
+      width: 11px;
+      height: 7px;
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236B7280' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      transition: transform 0.2s;
+    }
+    .new-case-modal .capsule-select--form.open .capsule-select-chevron {
+      transform: rotate(180deg);
+    }
+    .new-case-modal .capsule-select--form .capsule-select-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      inset-inline-end: 0;
+      inset-inline-start: 0;
+      z-index: 300;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      padding: 4px;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+    .new-case-modal .capsule-select--form.open .capsule-select-menu {
+      display: block;
+    }
+    .new-case-modal .capsule-select--form .capsule-select-option {
+      display: block;
+      width: 100%;
+      text-align: right;
+      border: none;
+      background: transparent;
+      padding: 9px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--text-body);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      transition: background 0.12s, color 0.12s;
+    }
+    .new-case-modal .capsule-select--form .capsule-select-option:hover {
+      background: var(--navy-50);
+      color: var(--navy);
+    }
+    .new-case-modal .capsule-select--form .capsule-select-option.selected {
+      background: var(--navy-50);
+      color: var(--navy);
+      font-weight: 700;
+    }
+    .new-case-modal .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .new-case-modal .form-row.single { grid-template-columns: 1fr; }
+    .new-case-modal .form-row:last-child { margin-bottom: 0; }
+    .new-case-modal .question-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 12px;
+    }
+    .new-case-modal .question-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-faint);
+      margin-bottom: 4px;
+    }
+    .new-case-modal .question-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-body);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    .new-case-modal .employment-capsule-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .new-case-modal .employment-capsule {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 88px;
+      padding: 8px 16px;
+      border-radius: 99px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-body);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .new-case-modal .employment-capsule:hover {
+      border-color: var(--navy-100);
+      background: var(--navy-50);
+    }
+    .new-case-modal .employment-capsule.selected {
+      border-color: var(--navy);
+      background: var(--navy-50);
+      color: var(--navy);
+      font-weight: 700;
+    }
+    .new-case-modal .employment-other-field {
+      margin-top: 12px;
+    }
+    .new-case-modal .employment-other-field[hidden] {
+      display: none;
+    }
+    .new-case-modal .new-case-questionnaire-more {
+      margin: 8px 0 0;
+      padding: 14px 16px;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--navy-50);
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+    .new-case-modal .intro-banner {
+      background: var(--navy-50);
+      border: 1px solid var(--navy-100);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: var(--navy);
+    }
+    .new-case-precheck-list {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .new-case-precheck-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .new-case-precheck-item:last-child { border-bottom: none; }
+    .new-case-precheck-item:hover { background: var(--navy-50); }
+    .new-case-precheck-check {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 1.5px solid #C8CDD8;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: transparent;
+      transition: background 0.12s, border-color 0.12s, color 0.12s;
+    }
+    .new-case-precheck-item.is-checked .new-case-precheck-check {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+    }
+    .new-case-precheck-check svg {
+      width: 12px;
+      height: 12px;
+      display: block;
+    }
+    .new-case-precheck-text {
+      flex: 1;
+      text-align: right;
+    }
+    .new-case-precheck-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 2px;
+    }
+    .new-case-precheck-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* ── Precheck step (step 3) layout ── */
+    .new-case-modal-body:has(.new-case-pane[data-pane="3"].is-active) {
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .new-case-pane[data-pane="3"].is-active {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+    .precheck-step {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+    }
+    .precheck-step-docs {
+      width: min(44%, 540px);
+      flex-shrink: 0;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      border-inline-end: 1px solid var(--border);
+    }
+    .precheck-step-docs-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--surface);
+    }
+    .precheck-step-docs-footer {
+      flex-shrink: 0;
+      padding: 14px 16px;
+      border-top: 1px solid var(--border-light);
+      background: var(--surface);
+    }
+    .precheck-submit-btn {
+      width: 100%;
+      height: 40px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--navy);
+      color: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .precheck-submit-btn:hover {
+      background: var(--navy-dark);
+    }
+    .precheck-step-docs-label {
+      margin: 0;
+      padding: 14px 16px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-faint);
+    }
+    .precheck-doc-list {
+      border-top: 1px solid var(--border-light);
+    }
+    .precheck-doc-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      border-bottom: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .precheck-doc-item:last-child {
+      border-bottom: none;
+    }
+    .precheck-doc-item:hover {
+      background: #F5F6F8;
+    }
+    .precheck-doc-item.is-selected {
+      background: #F7F8FA;
+      border-right: 3px solid var(--border);
+      padding-right: 13px;
+    }
+    .precheck-doc-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .precheck-doc-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-body);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .precheck-doc-upload-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 128px;
+      min-height: 28px;
+      padding: 5px 12px;
+      border-radius: 99px;
+      border: 1px dashed var(--navy-100);
+      background: var(--navy-50);
+      color: var(--navy);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.2;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .precheck-doc-upload-btn:hover {
+      background: #E4E8F6;
+      border-color: var(--navy);
+    }
+    .precheck-step-main {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+    .precheck-step-main-idle,
+    .precheck-step-main-generating,
+    .precheck-step-main-report {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 48px;
+      text-align: center;
+      min-height: 0;
+    }
+    .precheck-step-main-idle[hidden],
+    .precheck-step-main-generating[hidden],
+    .precheck-step-main-report[hidden] {
+      display: none;
+    }
+    .precheck-step-main-idle-text {
+      margin: 0;
+      max-width: 360px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-faint);
+    }
+    .precheck-step-loader {
+      width: min(200px, 32vw);
+      height: min(200px, 32vw);
+      margin-bottom: 20px;
+    }
+    .precheck-step-generating-title {
+      margin: 0 0 10px;
+      font-size: clamp(20px, 2vw, 26px);
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.35;
+    }
+    .precheck-step-generating-subtitle {
+      margin: 0;
+      min-height: 1.45em;
+      font-size: clamp(14px, 1.4vw, 17px);
+      font-weight: 500;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    .precheck-step-generating-typed.is-typing::after {
+      content: '';
+      display: inline-block;
+      width: 2px;
+      height: 0.95em;
+      margin-inline-start: 2px;
+      vertical-align: -0.08em;
+      background: var(--text-muted);
+      animation: precheckSubtitleCaret 0.85s step-end infinite;
+    }
+    @keyframes precheckSubtitleCaret {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .precheck-report-doc {
+      width: min(100%, 520px);
+      aspect-ratio: 1 / 1.35;
+      max-height: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: #FAFBFC;
+      box-shadow: 0 2px 14px rgba(27, 42, 107, 0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .precheck-report-doc-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 28px;
+      text-align: center;
+    }
+    .precheck-report-doc-icon {
+      width: 52px;
+      height: 52px;
+      color: var(--text-faint);
+      opacity: 0.55;
+    }
+    .precheck-report-doc-text {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    .precheck-submit-btn:disabled {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    .new-case-modal-footer {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      border-top: 1px solid var(--border-light);
+      background: var(--surface);
+    }
+    .new-case-btn-back {
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--navy);
+      border-radius: var(--radius-sm);
+      padding: 9px 16px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .new-case-btn-back:hover { border-color: var(--navy); background: var(--navy-50); }
+    .new-case-btn-back[hidden] { display: none !important; }
+    .new-case-footer-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-inline-start: auto;
+    }
+    .new-case-skip-link {
+      border: none;
+      background: none;
+      padding: 0;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .new-case-skip-link:hover {
+      color: var(--navy-dark);
+    }
+    .new-case-skip-link[hidden] { display: none !important; }
+    .new-case-btn-next {
+      border: none;
+      background: var(--navy);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      padding: 9px 18px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .new-case-btn-next:hover { background: var(--navy-dark); }
+    .new-case-btn-next:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+    }
+    .new-case-btn-next:disabled:hover { background: var(--navy); }
+
+    .new-case-modal.is-edit .new-case-modal-footer {
+      justify-content: center;
+    }
+    .new-case-modal.is-edit .new-case-footer-actions {
+      margin-inline-start: 0;
+      justify-content: center;
+      width: 100%;
+    }
+    .new-case-modal.is-edit .new-case-btn-next {
+      min-width: 168px;
+      padding: 10px 32px;
+      font-size: 14px;
+    }
+
     .hero-kpi-line {
       display: flex;
       flex-wrap: wrap;
@@ -1796,7 +2784,7 @@
       pointer-events: none;
     }
     /* Missing/unuploaded docs never reach HQ — only after upload + טופל */
-    body[data-persona="hq"] .inbox-row--missing {
+    body[data-persona="hq"]:not(.case-page-empty-docs) .inbox-row--missing {
       display: none !important;
     }
     .inbox-meta-divider {
@@ -3362,12 +4350,30 @@
 
 <!-- CASE DETAILS HERO — compact: title+progress share one row, and all
      the case metadata is a single small line underneath. -->
-<div class="hero-band">
+<div class="hero-band" id="heroCaseBand"
+  data-case-id="12345"
+  data-client-name="ישראל ישראל"
+  data-client-id="437829343"
+  data-deal-type="רכישת דירה יד שניה"
+  data-collateral-type="משכנתא"
+  data-property-location="">
   <a href="dashboard.html" class="hero-back-link">→ חזרה לרשימת התיקים</a>
   <div class="hero-main-row">
-    <div class="hero-track">תיק #12345 — ישראל ישראל | 437829343</div>
+    <div class="hero-title-wrap">
+      <div class="hero-track" id="heroCaseTitle">תיק #12345 — ישראל ישראל | 437829343</div>
+      <div class="hero-case-menu-wrap" id="heroCaseMenuWrap">
+        <button type="button" class="hero-case-menu-btn" aria-label="אפשרויות תיק" aria-haspopup="menu" aria-expanded="false" onclick="toggleHeroCaseMenu(event, this)">
+          <span class="hero-case-menu-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+        </button>
+        <div class="hero-case-menu-dropdown" role="menu">
+          <button type="button" class="hero-case-menu-option" role="menuitem" onclick="openEditCaseModalFromHero(event)"><span class="hero-case-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M9.1 2.2 11.8 4.9 4.6 12.1 1.9 12.5 2.3 9.8 9.1 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 3.3 10.7 6" stroke="currentColor" stroke-width="1.2"/></svg></span>עריכת תיק</button>
+          <button type="button" class="hero-case-menu-option" role="menuitem" onclick="handleArchiveCaseFromHero(event)"><span class="hero-case-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 4.5h9v7.5h-9V4.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 2.5h4v2H5V2.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 6.5v3M5.7 8.2 7 9.5l1.3-1.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>העברה לארכיון</button>
+          <button type="button" class="hero-case-menu-option hero-case-menu-option--danger" role="menuitem" onclick="handleDeleteCaseFromHero(event)"><span class="hero-case-menu-option-icon" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M3 4.2h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5.3 4.2V3.1a.8.8 0 0 1 .8-.8h2a.8.8 0 0 1 .8.8v1.1" stroke="currentColor" stroke-width="1.2"/><path d="M4.4 4.2l.4 6.4a.8.8 0 0 0 .8.7h3.7a.8.8 0 0 0 .8-.7l.4-6.4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>מחיקת תיק</button>
+        </div>
+      </div>
+    </div>
     <div class="hero-flow-actions">
-      <button type="button" class="hero-flow-btn is-done" aria-label="שאלון — הושלם">
+      <button type="button" class="hero-flow-btn is-done" id="heroFlowQuestionnaireBtn" aria-label="שאלון — הושלם" onclick="openCaseEditModal(2)">
         <span class="hero-flow-mark" aria-hidden="true">
           <svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2 4.8 8.5 9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
@@ -3376,7 +4382,7 @@
           <span class="hero-flow-note">הושלם</span>
         </span>
       </button>
-      <button type="button" class="hero-flow-btn is-pending" aria-label="בדיקת קדם — טרם הושלם">
+      <button type="button" class="hero-flow-btn is-pending" id="heroFlowPrecheckBtn" aria-label="בדיקת קדם — טרם הושלם" onclick="openCaseEditModal(3)">
         <span class="hero-flow-mark" aria-hidden="true">
           <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.4" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3.2l2.2 1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
@@ -3387,13 +4393,13 @@
       </button>
     </div>
   </div>
-  <div class="hero-kpi-line">
-    <span>רכישת דירה יד שניה</span>
+  <div class="hero-kpi-line" id="heroCaseKpiLine">
+    <span id="heroCaseDealType">רכישת דירה יד שניה</span>
     <span><b>סטטוס:</b> <span class="accent">בתהליך</span></span>
     <span><b>פקיד מטפל:</b> דנה לוי</span>
     <span><b>נוצר:</b> 05/06/2026</span>
     <span><b>עודכן:</b> 07/07/2026</span>
-    <span><b>סוג בטוחה:</b> משכנתא</span>
+    <span><b>סוג בטוחה:</b> <span id="heroCaseCollateralType">משכנתא</span></span>
   </div>
 </div>
 
@@ -4334,6 +5340,175 @@
   </div>
 </div>
 
+<div class="new-case-modal" id="newCaseModal" aria-hidden="true">
+  <div class="new-case-modal-backdrop" onclick="closeCaseEditModal()"></div>
+  <div class="new-case-modal-card" role="dialog" aria-modal="true" aria-labelledby="newCaseModalTitle">
+    <button type="button" class="new-case-modal-close" onclick="closeCaseEditModal()" aria-label="סגור">&times;</button>
+    <div class="new-case-modal-header">
+      <h2 class="new-case-modal-title" id="newCaseModalTitle">עריכת תיק</h2>
+      <div class="new-case-steps" id="newCaseSteps">
+        <button type="button" class="new-case-step-item" data-step="1" onclick="caseEditGoToStep(1)">פרטי תיק</button>
+        <span class="new-case-step-arrow" aria-hidden="true"></span>
+        <button type="button" class="new-case-step-item" data-step="2" onclick="caseEditGoToStep(2)">שאלון</button>
+        <span class="new-case-step-arrow" aria-hidden="true"></span>
+        <button type="button" class="new-case-step-item" data-step="3" onclick="caseEditGoToStep(3)">בדיקת קדם</button>
+      </div>
+    </div>
+    <div class="new-case-modal-body">
+      <div class="new-case-pane" data-pane="1">
+        <div class="form-card">
+          <div class="form-card-header">פרטי לקוח</div>
+          <div class="form-card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">תעודת זהות <span class="required">*</span></label>
+                <input type="text" class="form-input" id="newCaseClientId" placeholder="000000000" maxlength="9">
+              </div>
+              <div class="form-group">
+                <label class="form-label">שם מלא <span class="required">*</span></label>
+                <input type="text" class="form-input" id="newCaseClientName" placeholder="שם פרטי ושם משפחה">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">טלפון <span class="required">*</span></label>
+                <input type="tel" class="form-input" id="newCaseClientPhone" placeholder="05X-XXXXXXX">
+              </div>
+              <div class="form-group">
+                <label class="form-label">דואר אלקטרוני <span class="required">*</span></label>
+                <input type="email" class="form-input" id="newCaseClientEmail" placeholder="name@email.com">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-card">
+          <div class="form-card-header">פרטי העסקה</div>
+          <div class="form-card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">סוג עסקה <span class="required">*</span></label>
+                <select class="form-select" id="newCaseDealType">
+                  <option selected>רכישת דירה יד שניה</option>
+                  <option>רכישה מקבלן</option>
+                  <option>בניה עצמית</option>
+                  <option>שיפוצים</option>
+                  <option>כיסוי חובות</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">סוג בטוחה <span class="required">*</span></label>
+                <select class="form-select" id="newCaseCollateralType">
+                  <option selected>משכנתא</option>
+                  <option>הערת אזהרה</option>
+                  <option>התחייבות עורך דין</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label class="form-label">מקום רישום הנכס <span class="required">*</span></label>
+                <input type="text" class="form-input" id="newCasePropertyLocation" placeholder="עיר / טאבו / רמ״י">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="new-case-pane" data-pane="2">
+        <div class="question-card">
+          <div class="question-text">פרופיל תעסוקתי</div>
+          <div class="employment-capsule-group" role="radiogroup" aria-label="פרופיל תעסוקתי">
+            <button type="button" class="employment-capsule selected" data-value="employee" onclick="caseEditSelectEmploymentProfile(this)">שכיר</button>
+            <button type="button" class="employment-capsule" data-value="self-employed" onclick="caseEditSelectEmploymentProfile(this)">עצמאי</button>
+            <button type="button" class="employment-capsule" data-value="controlling" onclick="caseEditSelectEmploymentProfile(this)">בעל שליטה</button>
+            <button type="button" class="employment-capsule" data-value="other" onclick="caseEditSelectEmploymentProfile(this)">אחר</button>
+          </div>
+          <div class="employment-other-field" id="employmentOtherField" hidden>
+            <label class="form-label" for="employmentOtherInput">פירוט</label>
+            <input type="text" class="form-input" id="employmentOtherInput" placeholder="פרט את הפרופיל התעסוקתי">
+          </div>
+        </div>
+        <p class="new-case-questionnaire-more">שאר השאלות יופיעו כאן בהמשך.</p>
+      </div>
+
+      <div class="new-case-pane" data-pane="3">
+        <div class="precheck-step">
+          <aside class="precheck-step-docs" aria-label="מסמכים לבדיקת קדם">
+            <div class="precheck-step-docs-scroll">
+              <p class="precheck-step-docs-label">מסמכים נדרשים (6)</p>
+              <div class="precheck-doc-list">
+                <div class="precheck-doc-item is-selected" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
+                  <div class="precheck-doc-info">
+                    <div class="precheck-doc-name">תעודת זהות</div>
+                  </div>
+                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
+                </div>
+                <div class="precheck-doc-item" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
+                  <div class="precheck-doc-info">
+                    <div class="precheck-doc-name">אישור יתרות בנקאי</div>
+                  </div>
+                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
+                </div>
+                <div class="precheck-doc-item" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
+                  <div class="precheck-doc-info">
+                    <div class="precheck-doc-name">נסח טאבו</div>
+                  </div>
+                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
+                </div>
+                <div class="precheck-doc-item" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
+                  <div class="precheck-doc-info">
+                    <div class="precheck-doc-name">חוזה רכישה חתום</div>
+                  </div>
+                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
+                </div>
+                <div class="precheck-doc-item" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
+                  <div class="precheck-doc-info">
+                    <div class="precheck-doc-name">אישור משכורת</div>
+                  </div>
+                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
+                </div>
+                <div class="precheck-doc-item" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
+                  <div class="precheck-doc-info">
+                    <div class="precheck-doc-name">דוח ריכוז נתונים</div>
+                  </div>
+                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
+                </div>
+              </div>
+            </div>
+            <div class="precheck-step-docs-footer">
+              <button type="button" class="precheck-submit-btn" onclick="handlePrecheckSubmit(event)">הגשת בדיקת קדם</button>
+            </div>
+          </aside>
+          <section class="precheck-step-main" aria-label="תוכן בדיקת קדם">
+            <div class="precheck-step-main-idle" id="precheckMainIdle">
+              <p class="precheck-step-main-idle-text">לאחר ההגשה, כאן יופיע דו״ח AI לבדיקת קדם</p>
+            </div>
+            <div class="precheck-step-main-generating" id="precheckMainGenerating" hidden>
+              <div class="precheck-step-loader" id="precheckStepLottie" aria-hidden="true"></div>
+              <p class="precheck-step-generating-title">מייצר דו"ח AI...</p>
+              <p class="precheck-step-generating-subtitle" id="precheckGeneratingSubtitle" aria-live="polite"><span class="precheck-step-generating-prefix">בודק את </span><span class="precheck-step-generating-typed" id="precheckGeneratingTyped"></span></p>
+            </div>
+            <div class="precheck-step-main-report" id="precheckMainReport" hidden>
+              <div class="precheck-report-doc" aria-label="דוח AI לבדיקת קדם">
+                <div class="precheck-report-doc-inner">
+                  <svg class="precheck-report-doc-icon" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M14 8h14l10 10v22a4 4 0 01-4 4H14a4 4 0 01-4-4V12a4 4 0 014-4z" stroke="currentColor" stroke-width="2"/><path d="M28 8v10h10" stroke="currentColor" stroke-width="2"/></svg>
+                  <p class="precheck-report-doc-text">כאן יופיע דוח AI</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+    <div class="new-case-modal-footer">
+      <button type="button" class="new-case-btn-back" id="newCaseBackBtn" hidden>חזרה</button>
+      <div class="new-case-footer-actions" id="newCaseFooterActions">
+        <button type="button" class="new-case-btn-next" id="newCaseNextBtn" onclick="saveCaseEditModal()">שמירה</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <script>
   const NOTES_ICON_SVG = '<svg class="inbox-notes-icon" width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 2.5h7.2L14.5 5.6V14a1 1 0 01-1 1H4.5a1 1 0 01-1-1V3.5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.5 2.8V5.5H14.2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 8h6M6 10h4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>';
@@ -4751,12 +5926,18 @@
   }
 
   function clearStatusFilter(e) {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     document.querySelectorAll('#docStatusFilterMenu input[type="checkbox"]').forEach(input => {
       input.checked = false;
       input.disabled = false;
     });
     onStatusFilterChange();
+  }
+
+  function resetDocumentsFiltersForEmptyCase() {
+    const search = document.getElementById('docSearch');
+    if (search) search.value = '';
+    clearStatusFilter();
   }
 
   function closePreviewHqStatusMenu() {
@@ -6319,7 +7500,8 @@
         const rowStatus = persona === 'hq' ? rowHqStatus : rowBankerStatus;
         const matchesSearch = !query || name.includes(query) || code.includes(query);
         // Unuploaded docs are banker-only; HQ receives them only after טופל.
-        if (persona === 'hq' && missing) {
+        // New empty cases always show the full missing-doc list for upload.
+        if (persona === 'hq' && missing && !window.__CASE_PAGE_EMPTY__) {
           row.style.display = 'none';
           return;
         }
@@ -6532,19 +7714,24 @@
 
       const info = row.querySelector('.inbox-info');
       if (info) {
-        info.querySelectorAll('.inbox-code, .inbox-meta, .inbox-row-indicators').forEach(el => el.remove());
+        info.querySelectorAll('.inbox-meta, .inbox-row-indicators').forEach(el => el.remove());
       }
 
       row.querySelectorAll(
-        '.status-select, .capsule-select, .inbox-row-actions, .inbox-upload-btn, .inbox-banker-tag, .inbox-hq-status'
+        '.status-select, .capsule-select, .inbox-row-actions, .inbox-banker-tag, .inbox-hq-status'
       ).forEach(el => el.remove());
 
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'inbox-upload-btn';
-      btn.textContent = '+ הוספת המסמך';
-      btn.addEventListener('click', (event) => handleRowUploadDocument(event, docId));
-      row.appendChild(btn);
+      let uploadBtn = row.querySelector('.inbox-upload-btn');
+      if (!uploadBtn) {
+        uploadBtn = document.createElement('button');
+        uploadBtn.type = 'button';
+        uploadBtn.className = 'inbox-upload-btn';
+        uploadBtn.textContent = '+ הוספת המסמך';
+        uploadBtn.addEventListener('click', (event) => handleRowUploadDocument(event, docId));
+        row.appendChild(uploadBtn);
+      } else {
+        uploadBtn.onclick = (event) => handleRowUploadDocument(event, docId);
+      }
     });
 
     Object.keys(docNotesStore).forEach(key => { delete docNotesStore[key]; });
@@ -6895,11 +8082,17 @@
   }
 
   if (window.__CASE_PAGE_EMPTY__) {
+    document.body.classList.add('case-page-empty-docs');
     applyNewCaseEmptyDocumentsState();
+    try { localStorage.setItem('demoPersona', 'banker'); } catch (_) {}
   }
   initCapsuleSelects();
   initInboxRowIndicators();
   syncStatusMultiFilterUi();
+  setPersona(localStorage.getItem('demoPersona') || 'banker');
+  if (window.__CASE_PAGE_EMPTY__) {
+    resetDocumentsFiltersForEmptyCase();
+  }
   if (!window.__CASE_PAGE_EMPTY__) {
     seedDemoHqStatusesForBanker();
   }
@@ -6950,8 +8143,488 @@
     filterDocuments();
   }
 
-  // Initialize persona (default: banker)
-  setPersona(localStorage.getItem('demoPersona') || 'banker');
+  if (!window.__CASE_PAGE_EMPTY__) {
+    setPersona(localStorage.getItem('demoPersona') || 'banker');
+  }
+
+  function closeAllHeroCaseMenus() {
+    document.querySelectorAll('.hero-case-menu-wrap.open').forEach((wrap) => {
+      wrap.classList.remove('open');
+      const btn = wrap.querySelector('.hero-case-menu-btn');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  function toggleHeroCaseMenu(e, btn) {
+    e.stopPropagation();
+    const wrap = btn.closest('.hero-case-menu-wrap');
+    if (!wrap) return;
+    const willOpen = !wrap.classList.contains('open');
+    closeAllHeroCaseMenus();
+    if (!willOpen) return;
+    wrap.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  }
+
+  function openEditCaseModalFromHero(e) {
+    e.stopPropagation();
+    closeAllHeroCaseMenus();
+    openCaseEditModal(1);
+  }
+
+  function handleDeleteCaseFromHero(e) {
+    e.stopPropagation();
+    closeAllHeroCaseMenus();
+    window.location.href = 'dashboard.html';
+  }
+
+  function handleArchiveCaseFromHero(e) {
+    e.stopPropagation();
+    closeAllHeroCaseMenus();
+    const caseId = document.getElementById('heroCaseBand')?.dataset?.caseId;
+    try {
+      if (caseId) sessionStorage.setItem('archiveCaseId', caseId);
+    } catch (_) {}
+    window.location.href = 'dashboard.html';
+  }
+
+  let caseEditStep = 1;
+
+  function setCaseEditSelectValue(selectId, value) {
+    const select = document.getElementById(selectId);
+    if (!select || !value) return;
+    const match = Array.from(select.options).find((opt) => opt.text === value || opt.value === value);
+    if (match) select.value = match.value || match.text;
+    const wrap = select.previousElementSibling;
+    if (wrap?.classList?.contains('capsule-select')) {
+      syncCaseEditCapsuleFromSelect(wrap, select);
+    }
+  }
+
+  function populateCaseEditFormFromHero() {
+    const band = document.getElementById('heroCaseBand');
+    if (!band) return;
+    const nameEl = document.getElementById('newCaseClientName');
+    const idEl = document.getElementById('newCaseClientId');
+    const phoneEl = document.getElementById('newCaseClientPhone');
+    const emailEl = document.getElementById('newCaseClientEmail');
+    const locationEl = document.getElementById('newCasePropertyLocation');
+    if (nameEl) nameEl.value = band.dataset.clientName || '';
+    if (idEl) idEl.value = band.dataset.clientId || '';
+    if (phoneEl) phoneEl.value = band.dataset.clientPhone || '';
+    if (emailEl) emailEl.value = band.dataset.clientEmail || '';
+    if (locationEl) locationEl.value = band.dataset.propertyLocation || '';
+    setCaseEditSelectValue('newCaseDealType', band.dataset.dealType || '');
+    setCaseEditSelectValue('newCaseCollateralType', band.dataset.collateralType || 'משכנתא');
+  }
+
+  function syncCaseEditStepUi() {
+    const modal = document.getElementById('newCaseModal');
+    modal?.classList.add('is-edit');
+
+    document.querySelectorAll('.new-case-pane').forEach((pane) => {
+      pane.classList.toggle('is-active', Number(pane.dataset.pane) === caseEditStep);
+    });
+
+    const title = document.getElementById('newCaseModalTitle');
+    if (title) title.textContent = 'עריכת תיק';
+
+    const stepsEl = document.getElementById('newCaseSteps');
+    if (stepsEl) stepsEl.hidden = false;
+
+    document.querySelectorAll('.new-case-step-item').forEach((item) => {
+      const step = Number(item.dataset.step);
+      const isActive = step === caseEditStep;
+      item.classList.toggle('is-active', isActive);
+      item.classList.toggle('is-done', false);
+      item.classList.toggle('is-clickable', !isActive);
+      item.setAttribute('aria-current', isActive ? 'step' : 'false');
+      item.disabled = false;
+    });
+
+    const backBtn = document.getElementById('newCaseBackBtn');
+    const skipBtn = document.getElementById('newCaseSkipBtn');
+    const nextBtn = document.getElementById('newCaseNextBtn');
+    if (backBtn) backBtn.hidden = true;
+    if (skipBtn) skipBtn.hidden = true;
+    if (nextBtn) {
+      nextBtn.hidden = false;
+      nextBtn.disabled = false;
+      nextBtn.textContent = 'שמירה';
+    }
+
+    document.querySelector('.new-case-modal-body')?.scrollTo({ top: 0 });
+  }
+
+  function caseEditGoToStep(step) {
+    if (step < 1 || step > 3 || step === caseEditStep) return;
+    caseEditStep = step;
+    syncCaseEditStepUi();
+  }
+
+  function selectPrecheckDocRow(row) {
+    if (!row) return;
+    const pane = row.closest('.new-case-pane[data-pane="3"]');
+    pane?.querySelectorAll('.precheck-doc-item.is-selected').forEach((el) => el.classList.remove('is-selected'));
+    row.classList.add('is-selected');
+  }
+
+  let precheckLottie = null;
+  let precheckTypeTimer = null;
+  let precheckSubtitleRunning = false;
+  let precheckReportTimer = null;
+  const PRECHECK_REPORT_DELAY_MS = 15000;
+
+  const PRECHECK_DOC_CHECKING_LABELS = {
+    'תעודת זהות': 'תעודת הזהות',
+    'אישור יתרות בנקאי': 'אישור יתרות בנקאי',
+    'נסח טאבו': 'נסח הטאבו',
+    'חוזה רכישה חתום': 'חוזה הרכישה החתום',
+    'אישור משכורת': 'אישור המשכורת',
+    'דוח ריכוז נתונים': 'דוח ריכוז הנתונים'
+  };
+  const PRECHECK_SUBTITLE_INTERVAL_MS = 6000;
+  const PRECHECK_SUBTITLE_TYPE_MS = 42;
+
+  function getPrecheckDocNames() {
+    return [...document.querySelectorAll('.precheck-doc-list .precheck-doc-name')]
+      .map((el) => el.textContent.trim())
+      .filter(Boolean);
+  }
+
+  function precheckDocLabel(docName) {
+    return PRECHECK_DOC_CHECKING_LABELS[docName] || docName;
+  }
+
+  function stopPrecheckTypewriter() {
+    if (precheckTypeTimer) {
+      clearTimeout(precheckTypeTimer);
+      precheckTypeTimer = null;
+    }
+  }
+
+  function stopPrecheckSubtitleCycle() {
+    precheckSubtitleRunning = false;
+    stopPrecheckTypewriter();
+  }
+
+  function typePrecheckLabelForward(label, typedEl, onDone) {
+    stopPrecheckTypewriter();
+    typedEl.textContent = '';
+    typedEl.classList.add('is-typing');
+
+    let index = 0;
+    const typeNext = () => {
+      if (!precheckSubtitleRunning) return;
+      index += 1;
+      typedEl.textContent = label.slice(0, index);
+      if (index < label.length) {
+        precheckTypeTimer = window.setTimeout(typeNext, PRECHECK_SUBTITLE_TYPE_MS);
+      } else {
+        typedEl.classList.remove('is-typing');
+        precheckTypeTimer = null;
+        onDone?.();
+      }
+    };
+
+    precheckTypeTimer = window.setTimeout(typeNext, PRECHECK_SUBTITLE_TYPE_MS);
+  }
+
+  function typePrecheckLabelBackward(label, typedEl, onDone) {
+    stopPrecheckTypewriter();
+    typedEl.classList.add('is-typing');
+
+    let index = label.length;
+    const deleteNext = () => {
+      if (!precheckSubtitleRunning) return;
+      index -= 1;
+      typedEl.textContent = label.slice(0, index);
+      if (index > 0) {
+        precheckTypeTimer = window.setTimeout(deleteNext, PRECHECK_SUBTITLE_TYPE_MS);
+      } else {
+        typedEl.textContent = '';
+        typedEl.classList.remove('is-typing');
+        precheckTypeTimer = null;
+        onDone?.();
+      }
+    };
+
+    precheckTypeTimer = window.setTimeout(deleteNext, PRECHECK_SUBTITLE_TYPE_MS);
+  }
+
+  function runPrecheckDocCycle(names, docIndex, typedEl) {
+    if (!precheckSubtitleRunning) return;
+    const label = precheckDocLabel(names[docIndex]);
+    const cycleStart = Date.now();
+
+    typePrecheckLabelForward(label, typedEl, () => {
+      if (!precheckSubtitleRunning) return;
+      const waitBeforeDelete = Math.max(0, PRECHECK_SUBTITLE_INTERVAL_MS - (Date.now() - cycleStart));
+      precheckTypeTimer = window.setTimeout(() => {
+        if (!precheckSubtitleRunning) return;
+        typePrecheckLabelBackward(label, typedEl, () => {
+          if (!precheckSubtitleRunning) return;
+          runPrecheckDocCycle(names, (docIndex + 1) % names.length, typedEl);
+        });
+      }, waitBeforeDelete);
+    });
+  }
+
+  function startPrecheckSubtitleCycle() {
+    stopPrecheckSubtitleCycle();
+    const typedEl = document.getElementById('precheckGeneratingTyped');
+    const names = getPrecheckDocNames();
+    if (!typedEl || !names.length) return;
+
+    precheckSubtitleRunning = true;
+    runPrecheckDocCycle(names, 0, typedEl);
+  }
+
+  function clearPrecheckReportTimer() {
+    if (precheckReportTimer) {
+      clearTimeout(precheckReportTimer);
+      precheckReportTimer = null;
+    }
+  }
+
+  function showPrecheckReportPlaceholder() {
+    const generating = document.getElementById('precheckMainGenerating');
+    const report = document.getElementById('precheckMainReport');
+    if (precheckLottie) precheckLottie.stop();
+    stopPrecheckSubtitleCycle();
+    if (generating) generating.hidden = true;
+    if (report) report.hidden = false;
+  }
+
+  function schedulePrecheckReportReveal() {
+    clearPrecheckReportTimer();
+    precheckReportTimer = window.setTimeout(showPrecheckReportPlaceholder, PRECHECK_REPORT_DELAY_MS);
+  }
+
+  function initPrecheckLottie() {
+    const container = document.getElementById('precheckStepLottie');
+    if (!container || typeof lottie === 'undefined') return null;
+    if (precheckLottie) return precheckLottie;
+    precheckLottie = lottie.loadAnimation({
+      container,
+      renderer: 'svg',
+      loop: true,
+      autoplay: false,
+      path: 'assets/fibi-loader.json'
+    });
+    return precheckLottie;
+  }
+
+  function resetPrecheckSubmitState() {
+    const idle = document.getElementById('precheckMainIdle');
+    const generating = document.getElementById('precheckMainGenerating');
+    const report = document.getElementById('precheckMainReport');
+    const submitBtn = document.querySelector('.precheck-submit-btn');
+    if (idle) idle.hidden = false;
+    if (generating) generating.hidden = true;
+    if (report) report.hidden = true;
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'הגשת בדיקת קדם';
+    }
+    if (precheckLottie) precheckLottie.stop();
+    stopPrecheckSubtitleCycle();
+    clearPrecheckReportTimer();
+    const typedEl = document.getElementById('precheckGeneratingTyped');
+    if (typedEl) {
+      typedEl.textContent = '';
+      typedEl.classList.remove('is-typing');
+    }
+  }
+
+  function handlePrecheckDocUpload(e) {
+    e?.stopPropagation?.();
+    handleUploadDocuments();
+  }
+
+  function handlePrecheckSubmit(e) {
+    e?.stopPropagation?.();
+    const idle = document.getElementById('precheckMainIdle');
+    const generating = document.getElementById('precheckMainGenerating');
+    const submitBtn = document.querySelector('.precheck-submit-btn');
+    if (!idle || !generating || !generating.hidden) return;
+
+    idle.hidden = true;
+    generating.hidden = false;
+    if (submitBtn) submitBtn.disabled = true;
+
+    const anim = initPrecheckLottie();
+    anim?.goToAndPlay(0, true);
+    startPrecheckSubtitleCycle();
+    schedulePrecheckReportReveal();
+  }
+
+  function openCaseEditModal(step) {
+    const modal = document.getElementById('newCaseModal');
+    if (!modal) return;
+    caseEditStep = step;
+    populateCaseEditFormFromHero();
+    syncCaseEditStepUi();
+    resetPrecheckSubmitState();
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeCaseEditModal() {
+    const modal = document.getElementById('newCaseModal');
+    if (!modal) return;
+    modal.classList.remove('open', 'is-edit');
+    modal.setAttribute('aria-hidden', 'true');
+    closeAllCaseEditCapsuleMenus();
+  }
+
+  function markHeroPrecheckDone() {
+    const btn = document.getElementById('heroFlowPrecheckBtn');
+    if (!btn) return;
+    btn.classList.remove('is-pending');
+    btn.classList.add('is-done');
+    btn.setAttribute('aria-label', 'בדיקת קדם — הושלם');
+    const mark = btn.querySelector('.hero-flow-mark');
+    if (mark) {
+      mark.innerHTML = '<svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2 4.8 8.5 9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    }
+    const note = btn.querySelector('.hero-flow-note');
+    if (note) note.textContent = 'הושלם';
+  }
+
+  function saveCaseEditModal() {
+    if (caseEditStep === 1) {
+      const band = document.getElementById('heroCaseBand');
+      const caseId = band?.dataset.caseId || '12345';
+      const name = document.getElementById('newCaseClientName')?.value?.trim() || '';
+      const clientId = document.getElementById('newCaseClientId')?.value?.trim() || '';
+      const phone = document.getElementById('newCaseClientPhone')?.value?.trim() || '';
+      const email = document.getElementById('newCaseClientEmail')?.value?.trim() || '';
+      const location = document.getElementById('newCasePropertyLocation')?.value?.trim() || '';
+      const dealSelect = document.getElementById('newCaseDealType');
+      const collateralSelect = document.getElementById('newCaseCollateralType');
+      const deal = dealSelect?.options[dealSelect.selectedIndex]?.text || '';
+      const collateral = collateralSelect?.options[collateralSelect.selectedIndex]?.text || '';
+
+      if (band) {
+        band.dataset.clientName = name;
+        band.dataset.clientId = clientId;
+        band.dataset.clientPhone = phone;
+        band.dataset.clientEmail = email;
+        band.dataset.propertyLocation = location;
+        band.dataset.dealType = deal;
+        band.dataset.collateralType = collateral;
+      }
+
+      const titleEl = document.getElementById('heroCaseTitle');
+      if (titleEl) titleEl.textContent = `תיק #${caseId} — ${name} | ${clientId}`;
+
+      const dealEl = document.getElementById('heroCaseDealType');
+      if (dealEl) dealEl.textContent = deal;
+
+      const collateralEl = document.getElementById('heroCaseCollateralType');
+      if (collateralEl) collateralEl.textContent = collateral;
+    } else if (caseEditStep === 3) {
+      markHeroPrecheckDone();
+    }
+
+    closeCaseEditModal();
+  }
+
+  function caseEditSelectEmploymentProfile(btn) {
+    const group = btn.closest('.employment-capsule-group');
+    if (!group) return;
+    group.querySelectorAll('.employment-capsule').forEach((b) => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    const otherField = document.getElementById('employmentOtherField');
+    const otherInput = document.getElementById('employmentOtherInput');
+    const isOther = btn.dataset.value === 'other';
+    if (otherField) otherField.hidden = !isOther;
+    if (!isOther && otherInput) otherInput.value = '';
+    if (isOther && otherInput) otherInput.focus();
+  }
+
+  function closeAllCaseEditCapsuleMenus() {
+    document.querySelectorAll('#newCaseModal .capsule-select.open').forEach((el) => {
+      el.classList.remove('open');
+    });
+  }
+
+  function toggleCaseEditCapsuleMenu(wrap) {
+    const isOpen = wrap.classList.contains('open');
+    closeAllCaseEditCapsuleMenus();
+    if (!isOpen) wrap.classList.add('open');
+  }
+
+  function syncCaseEditCapsuleFromSelect(wrap, select) {
+    if (!wrap || !select) return;
+    const labelEl = wrap.querySelector('.capsule-select-label');
+    const selected = select.options[select.selectedIndex];
+    if (labelEl) labelEl.textContent = selected?.text || '';
+    wrap.querySelectorAll('.capsule-select-option').forEach((btn) => {
+      btn.classList.toggle('selected', btn.dataset.value === select.value);
+    });
+  }
+
+  function initCaseEditCapsuleSelects() {
+    document.querySelectorAll('#newCaseModal select.form-select').forEach((select) => {
+      if (select.dataset.capsuleInit) return;
+      select.dataset.capsuleInit = '1';
+      select.classList.add('form-select-native');
+
+      const wrap = document.createElement('div');
+      wrap.className = 'capsule-select capsule-select--form';
+
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'capsule-select-trigger';
+      trigger.innerHTML = '<span class="capsule-select-label"></span><span class="capsule-select-chevron" aria-hidden="true"></span>';
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleCaseEditCapsuleMenu(wrap);
+      });
+
+      const menu = document.createElement('div');
+      menu.className = 'capsule-select-menu';
+      menu.setAttribute('role', 'listbox');
+      Array.from(select.options).forEach((opt) => {
+        const value = opt.value || opt.text;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'capsule-select-option' + (opt.selected ? ' selected' : '');
+        btn.dataset.value = value;
+        btn.setAttribute('role', 'option');
+        btn.textContent = opt.text;
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          select.value = value;
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+          syncCaseEditCapsuleFromSelect(wrap, select);
+          closeAllCaseEditCapsuleMenus();
+        });
+        menu.appendChild(btn);
+      });
+
+      wrap.appendChild(trigger);
+      wrap.appendChild(menu);
+      select.parentNode.insertBefore(wrap, select);
+      syncCaseEditCapsuleFromSelect(wrap, select);
+    });
+  }
+
+  document.addEventListener('click', () => {
+    closeAllHeroCaseMenus();
+    closeAllCaseEditCapsuleMenus();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (document.getElementById('newCaseModal')?.classList.contains('open')) {
+      closeCaseEditModal();
+    }
+  });
+
+  initCaseEditCapsuleSelects();
 
   (function bootCasePageLoader() {
     const root = document.documentElement;
