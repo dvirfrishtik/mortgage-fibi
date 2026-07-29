@@ -71,6 +71,20 @@
       transform: translateY(0);
       box-shadow: var(--shadow-sm);
     }
+    .stats-row .stat-card.is-selected {
+      border-color: var(--navy);
+      background: var(--navy-50);
+      box-shadow: 0 0 0 2px rgba(27, 42, 107, 0.14);
+      transform: none;
+    }
+    .stats-row .stat-card.is-selected:hover {
+      border-color: var(--navy);
+      background: var(--navy-50);
+      transform: none;
+    }
+    .stats-row[hidden] {
+      display: none !important;
+    }
 
     .filters {
       padding: 0 32px 16px;
@@ -1785,12 +1799,19 @@
 <header class="header">
   <div class="header-logo"><img src="logo-habeinleumi.svg" alt="הבינלאומי — משקיעים בך" class="header-logo-img"></div>
   <div class="header-user">
+    <div class="persona-toggle" id="personaToggle" aria-label="בחירת פרסונה">
+      <span class="persona-toggle-label">פרסונה:</span>
+      <span class="persona-toggle-seg" role="group" aria-label="פרסונה">
+        <button type="button" class="persona-toggle-btn" id="personaBankerBtn" aria-pressed="true" onclick="setPersona('banker')">בנקאי</button>
+        <button type="button" class="persona-toggle-btn" id="personaHqBtn" aria-pressed="false" onclick="setPersona('hq')">מטה</button>
+      </span>
+    </div>
     <span>שלום, דנה לוי</span>
     <div class="avatar">ד</div>
   </div>
 </header>
 
-<div class="stats-row">
+<div class="stats-row" id="statsRowBanker" data-persona-stats="banker">
   <div class="stat-card">
     <div class="stat-label">מסמכים ממתינים לבדיקה מעל 3 ימים</div>
     <div class="stat-value">8</div>
@@ -1805,6 +1826,25 @@
   </div>
   <div class="stat-card">
     <div class="stat-label">פעיל מעל חודש</div>
+    <div class="stat-value">2</div>
+  </div>
+</div>
+
+<div class="stats-row" id="statsRowHq" data-persona-stats="hq" hidden>
+  <div class="stat-card is-selected" data-overview="hq-pending" role="button" tabindex="0" aria-pressed="true" onclick="selectOverviewCard(this)" onkeydown="onOverviewCardKeydown(event, this)">
+    <div class="stat-label">ממתינים לבדיקת מטה</div>
+    <div class="stat-value">3</div>
+  </div>
+  <div class="stat-card" data-overview="hq-returned" role="button" tabindex="0" aria-pressed="false" onclick="selectOverviewCard(this)" onkeydown="onOverviewCardKeydown(event, this)">
+    <div class="stat-label">הועברו חזרה לטיפול</div>
+    <div class="stat-value">2</div>
+  </div>
+  <div class="stat-card" data-overview="hq-tasks" role="button" tabindex="0" aria-pressed="false" onclick="selectOverviewCard(this)" onkeydown="onOverviewCardKeydown(event, this)">
+    <div class="stat-label">משימות פתוחות</div>
+    <div class="stat-value">12</div>
+  </div>
+  <div class="stat-card" data-overview="hq-over-month" role="button" tabindex="0" aria-pressed="false" onclick="selectOverviewCard(this)" onkeydown="onOverviewCardKeydown(event, this)">
+    <div class="stat-label">פעילים מעל חודש</div>
     <div class="stat-value">2</div>
   </div>
 </div>
@@ -1948,7 +1988,7 @@
             </div>
           </td>
         </tr>
-        <tr data-case-view="active" onclick="openMortgageCase(event)">
+        <tr data-case-view="active" data-overview="hq-pending" onclick="openMortgageCase(event)">
           <td class="col-client">
             <div class="client-name">שרה אברהם</div>
             <div class="client-id">ת.ז 056789012</div>
@@ -1959,9 +1999,9 @@
           <td class="col-progress">
             <div class="progress-mini">
               <div class="progress-mini-track">
-                <div class="progress-mini-fill warn" style="width:20%"></div>
+                <div class="progress-mini-fill done" style="width:100%"></div>
               </div>
-              <span class="progress-mini-text">3/16</span>
+              <span class="progress-mini-text">16/16</span>
             </div>
           </td>
           <td class="precheck-cell">
@@ -1970,8 +2010,8 @@
             </span>
           </td>
           <td class="col-doc-status">
-            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;pending&quot;, &quot;label&quot;: &quot;ממתין לבדיקה&quot;, &quot;count&quot;: 2}, {&quot;key&quot;: &quot;returned&quot;, &quot;label&quot;: &quot;חזר לטיפול&quot;, &quot;count&quot;: 1}]" aria-label="ממתין לבדיקה: 2 · חזר לטיפול: 1">
-              <div class="doc-status-dist-bar"><span class="seg pending" style="flex:2"></span><span class="seg returned" style="flex:1"></span></div>
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 16}]" aria-label="טופל: 16">
+              <div class="doc-status-dist-bar"><span class="seg done" style="flex:16"></span></div>
             </div>
           </td>
           <td class="col-spacer" aria-hidden="true"></td>
@@ -2168,7 +2208,7 @@
             </div>
           </td>
         </tr>
-        <tr data-case-view="active" onclick="openMortgageCase(event)">
+        <tr data-case-view="active" data-overview="hq-pending" onclick="openMortgageCase(event)">
           <td class="col-client">
             <div class="client-name">משה לוי</div>
             <div class="client-id">ת.ז 045678901</div>
@@ -2179,9 +2219,9 @@
           <td class="col-progress">
             <div class="progress-mini">
               <div class="progress-mini-track">
-                <div class="progress-mini-fill" style="width:60%"></div>
+                <div class="progress-mini-fill done" style="width:100%"></div>
               </div>
-              <span class="progress-mini-text">13/22</span>
+              <span class="progress-mini-text">22/22</span>
             </div>
           </td>
           <td class="precheck-cell">
@@ -2190,8 +2230,8 @@
             </span>
           </td>
           <td class="col-doc-status">
-            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;pending&quot;, &quot;label&quot;: &quot;ממתין לבדיקה&quot;, &quot;count&quot;: 5}, {&quot;key&quot;: &quot;returned&quot;, &quot;label&quot;: &quot;חזר לטיפול&quot;, &quot;count&quot;: 1}, {&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 7}]" aria-label="ממתין לבדיקה: 5 · חזר לטיפול: 1 · טופל: 7">
-              <div class="doc-status-dist-bar"><span class="seg pending" style="flex:5"></span><span class="seg returned" style="flex:1"></span><span class="seg done" style="flex:7"></span></div>
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 22}]" aria-label="טופל: 22">
+              <div class="doc-status-dist-bar"><span class="seg done" style="flex:22"></span></div>
             </div>
           </td>
           <td class="col-spacer" aria-hidden="true"></td>
@@ -2259,7 +2299,7 @@
             </div>
           </td>
         </tr>
-        <tr data-case-view="active" onclick="openMortgageCase(event)">
+        <tr data-case-view="active" data-overview="hq-pending" onclick="openMortgageCase(event)">
           <td class="col-client">
             <div class="client-name">הילה אזולאי</div>
             <div class="client-id">ת.ז 134567891</div>
@@ -2270,9 +2310,9 @@
           <td class="col-progress">
             <div class="progress-mini">
               <div class="progress-mini-track">
-                <div class="progress-mini-fill" style="width:80%"></div>
+                <div class="progress-mini-fill done" style="width:100%"></div>
               </div>
-              <span class="progress-mini-text">16/20</span>
+              <span class="progress-mini-text">20/20</span>
             </div>
           </td>
           <td class="precheck-cell">
@@ -2281,8 +2321,8 @@
             </span>
           </td>
           <td class="col-doc-status">
-            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;pending&quot;, &quot;label&quot;: &quot;ממתין לבדיקה&quot;, &quot;count&quot;: 3}, {&quot;key&quot;: &quot;returned&quot;, &quot;label&quot;: &quot;חזר לטיפול&quot;, &quot;count&quot;: 1}, {&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 12}]" aria-label="ממתין לבדיקה: 3 · חזר לטיפול: 1 · טופל: 12">
-              <div class="doc-status-dist-bar"><span class="seg pending" style="flex:3"></span><span class="seg returned" style="flex:1"></span><span class="seg done" style="flex:12"></span></div>
+            <div class="doc-status-dist" data-tooltip-title="סטטוס מסמכים" data-status-legend="[{&quot;key&quot;: &quot;done&quot;, &quot;label&quot;: &quot;טופל&quot;, &quot;count&quot;: 20}]" aria-label="טופל: 20">
+              <div class="doc-status-dist-bar"><span class="seg done" style="flex:20"></span></div>
             </div>
           </td>
           <td class="col-spacer" aria-hidden="true"></td>
@@ -2534,6 +2574,63 @@
   }
 
   let currentCasesView = 'active';
+  let selectedOverview = null;
+
+  function getCurrentPersona() {
+    return document.body.dataset.persona === 'hq' ? 'hq' : 'banker';
+  }
+
+  function syncDashboardOverviewUi() {
+    const isHq = getCurrentPersona() === 'hq';
+    const bankerStats = document.getElementById('statsRowBanker');
+    const hqStats = document.getElementById('statsRowHq');
+    if (bankerStats) bankerStats.hidden = isHq;
+    if (hqStats) hqStats.hidden = !isHq;
+
+    if (!isHq) {
+      selectedOverview = null;
+      return;
+    }
+
+    const selectedCard = hqStats?.querySelector('.stat-card.is-selected')
+      || hqStats?.querySelector('.stat-card[data-overview="hq-pending"]');
+    if (selectedCard) {
+      selectOverviewCard(selectedCard, { skipFilter: true });
+    } else {
+      selectedOverview = 'hq-pending';
+    }
+  }
+
+  function selectOverviewCard(card, opts = {}) {
+    if (!card || getCurrentPersona() !== 'hq') return;
+    const overview = card.dataset.overview || null;
+    const row = card.closest('.stats-row');
+    row?.querySelectorAll('.stat-card').forEach((el) => {
+      const selected = el === card;
+      el.classList.toggle('is-selected', selected);
+      el.setAttribute('aria-pressed', String(selected));
+    });
+    selectedOverview = overview;
+    if (!opts.skipFilter) applyDashboardFilters();
+  }
+
+  function onOverviewCardKeydown(e, card) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    selectOverviewCard(card);
+  }
+
+  function setPersona(persona) {
+    const p = persona === 'hq' ? 'hq' : 'banker';
+    try { localStorage.setItem('demoPersona', p); } catch (_) {}
+    document.body.dataset.persona = p;
+    const bankerBtn = document.getElementById('personaBankerBtn');
+    const hqBtn = document.getElementById('personaHqBtn');
+    if (bankerBtn) bankerBtn.setAttribute('aria-pressed', String(p === 'banker'));
+    if (hqBtn) hqBtn.setAttribute('aria-pressed', String(p === 'hq'));
+    syncDashboardOverviewUi();
+    applyDashboardFilters();
+  }
 
   const CASE_CITY_BY_ID = {
     '12335': 'תל אביב',
@@ -2682,6 +2779,8 @@
   }
 
   function rowMatchesDashboardFilters(row) {
+    if (selectedOverview && row.dataset.overview !== selectedOverview) return false;
+
     const query = (document.getElementById('casesSearchInput')?.value || '').trim().toLowerCase();
     if (query) {
       const name = (row.querySelector('.client-name')?.textContent || '').toLowerCase();
@@ -2972,6 +3071,7 @@
   enrichCaseRows();
   buildCityFilterOptions();
   applyPendingCaseArchive();
+  setPersona(localStorage.getItem('demoPersona') || 'banker');
   syncCasesViewUi();
 
   try {
