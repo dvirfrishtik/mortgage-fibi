@@ -1461,10 +1461,20 @@
       flex: 1;
     }
     .center-col > .card > .card-header .card-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
       font-size: 16px;
       font-weight: 700;
       color: var(--navy);
       line-height: 1.3;
+    }
+    .preview-title-single {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .preview-version-tabs {
       display: none;
@@ -1474,11 +1484,96 @@
       max-width: 100%;
       overflow-x: auto;
     }
-    .preview-title-block.has-versions .preview-title-single {
+    .preview-version-select {
       display: none;
+      position: relative;
+      flex-shrink: 0;
     }
-    .preview-title-block.has-versions .preview-version-tabs {
-      display: flex;
+    .preview-version-select-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--navy);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .preview-version-select-btn:hover {
+      background: var(--navy-50);
+      border-color: var(--navy-100);
+    }
+    .preview-version-select-btn .capsule-select-chevron {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231B2A6B' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+    .preview-version-select.open .preview-version-select-btn .capsule-select-chevron {
+      transform: rotate(180deg);
+    }
+    .preview-version-select-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 200px;
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      box-shadow: 0 8px 24px rgba(27, 42, 107, 0.12);
+      z-index: 40;
+    }
+    .preview-version-select.open .preview-version-select-menu {
+      display: block;
+    }
+    .preview-version-option {
+      display: block;
+      width: 100%;
+      padding: 9px 12px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-body);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: right;
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+    }
+    .preview-version-option:hover {
+      background: var(--navy-50);
+      color: var(--navy);
+    }
+    .preview-version-option.is-active {
+      background: var(--navy-50);
+      color: var(--navy);
+      font-weight: 700;
+    }
+    @media (max-width: 1439px) {
+      .preview-title-block.has-versions .preview-title-single {
+        display: inline;
+      }
+      .preview-title-block.has-versions .preview-version-tabs {
+        display: none;
+      }
+      .preview-title-block.has-versions .preview-version-select {
+        display: inline-flex;
+      }
+    }
+    @media (min-width: 1440px) {
+      .preview-title-block.has-versions .preview-title-single {
+        display: none;
+      }
+      .preview-title-block.has-versions .preview-version-tabs {
+        display: flex;
+      }
+      .preview-title-block.has-versions .preview-version-select {
+        display: none;
+      }
     }
     .preview-version-tab {
       appearance: none;
@@ -2404,7 +2499,7 @@
        detail pane on its left. The region frame provides the outer chrome. */
     .docs-sidebar {
       order: 1;
-      width: 480px;
+      width: 460px;
       flex-shrink: 0;
       min-height: 0;
       overflow: hidden;
@@ -2413,12 +2508,409 @@
       display: flex;
       flex-direction: column;
     }
+    @media (min-width: 1440px) {
+      .docs-sidebar {
+        width: 560px;
+      }
+    }
     .docs-sidebar .card-header {
       flex-shrink: 0;
+      position: relative;
       background: var(--navy);
       border-bottom: 1px solid rgba(255,255,255,0.15);
+      gap: 10px;
+      align-items: stretch;
     }
     .docs-sidebar .card-title { color: white; font-size: 15px; }
+    .docs-sidebar-tabs {
+      display: flex;
+      align-items: stretch;
+      gap: 4px;
+      flex: 1;
+      min-width: 0;
+      margin: -14px 0 -15px;
+    }
+    .docs-sidebar-tab {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 16px 18px;
+      border: none;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.62);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.15s, font-weight 0.15s;
+    }
+    .docs-sidebar-tab:hover {
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .docs-sidebar-tab.is-active {
+      color: #fff;
+      font-weight: 700;
+    }
+    .docs-sidebar-tab.is-active::after {
+      content: '';
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      bottom: 0;
+      height: 3px;
+      background: var(--yellow);
+      border-radius: 2px 2px 0 0;
+    }
+    .docs-sidebar-tab-count {
+      font-weight: 700;
+    }
+    .inbox-list[hidden],
+    .docs-panel[hidden],
+    .docs-precheck-panel[hidden] {
+      display: none !important;
+    }
+    #docsPrecheckCat > .category-header {
+      display: none;
+    }
+    #docsListPrecheck .inbox-hq-status,
+    .docs-precheck-panel .inbox-hq-status {
+      display: none !important;
+    }
+    .docs-precheck-panel .inbox-row--precheck-file .capsule-select:not(.capsule-select--filter),
+    .docs-precheck-panel .inbox-row--precheck-file .status-select {
+      display: none !important;
+    }
+    .inbox-uploaded-file {
+      display: none;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      direction: ltr;
+      text-align: left;
+      max-width: 132px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex-shrink: 0;
+      line-height: 1.3;
+      padding: 2px 0;
+    }
+    .docs-precheck-panel .inbox-row--precheck-file .inbox-uploaded-file {
+      display: inline-block;
+    }
+    .docs-precheck-panel {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .docs-precheck-panel .inbox-list {
+      flex: 1;
+      min-height: 0;
+    }
+    .docs-precheck-footer {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      background: #F7F8FA;
+      border-top: 1px solid var(--border-light);
+      box-shadow: 0 -6px 16px rgba(27, 42, 107, 0.06);
+    }
+    .docs-precheck-footer-btn {
+      flex: 1;
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--navy);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+    }
+    .docs-precheck-footer-btn svg {
+      width: 15px;
+      height: 15px;
+      display: block;
+      flex-shrink: 0;
+    }
+    .docs-precheck-footer-btn:hover:not(:disabled) {
+      background: var(--navy-50);
+      border-color: var(--navy-100);
+    }
+    .docs-precheck-footer-btn--primary {
+      border-color: var(--navy);
+      background: var(--navy);
+      color: #fff;
+    }
+    .docs-precheck-footer-btn--primary:hover:not(:disabled) {
+      background: var(--navy-dark);
+      border-color: var(--navy-dark);
+    }
+    .docs-precheck-footer-btn:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+    .docs-precheck-update-wrap {
+      flex: 1;
+      display: flex;
+      min-width: 0;
+    }
+    .docs-precheck-update-wrap .docs-precheck-footer-btn {
+      flex: 1;
+      width: 100%;
+    }
+    .docs-precheck-footer-create,
+    .docs-precheck-footer-view {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .docs-precheck-footer.is-create-mode .docs-precheck-footer-view {
+      display: none;
+    }
+    .docs-precheck-footer:not(.is-create-mode) .docs-precheck-footer-create {
+      display: none;
+    }
+    .docs-precheck-panel.is-questionnaire-locked .inbox-list,
+    .docs-precheck-panel.is-questionnaire-locked .docs-precheck-footer {
+      display: none !important;
+    }
+    .docs-precheck-questionnaire-gate {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 28px;
+      padding: 72px 28px 40px;
+      text-align: center;
+      min-height: 0;
+      background: #FAFBFC;
+    }
+    .docs-precheck-panel.is-questionnaire-locked .docs-precheck-questionnaire-gate {
+      display: flex;
+    }
+    .docs-precheck-questionnaire-gate-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .docs-precheck-questionnaire-gate-icon {
+      width: 88px;
+      height: 88px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border-radius: 0;
+      color: inherit;
+    }
+    .docs-precheck-questionnaire-gate-icon img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+    .docs-precheck-questionnaire-gate-title {
+      margin: 0;
+      max-width: 320px;
+      font-size: 18px;
+      font-weight: 200;
+      color: var(--navy);
+      line-height: 1.45;
+    }
+    .docs-precheck-questionnaire-gate-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 38px;
+      padding: 0 18px;
+      border: none;
+      border-radius: 10px;
+      background: var(--navy);
+      color: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .docs-precheck-questionnaire-gate-btn:hover {
+      background: var(--navy-dark);
+    }
+    #precheckQuestionnaireModal .new-case-modal-header {
+      padding-bottom: 18px;
+    }
+    #precheckQuestionnaireModal .new-case-modal-title {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    #precheckQuestionnaireModal .question-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 12px;
+    }
+    #precheckQuestionnaireModal .question-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-body);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    #precheckQuestionnaireModal .employment-capsule-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    #precheckQuestionnaireModal .employment-capsule {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 88px;
+      padding: 8px 16px;
+      border-radius: 99px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    #precheckQuestionnaireModal .employment-capsule:hover {
+      background: var(--navy-50);
+      border-color: var(--navy-100);
+    }
+    #precheckQuestionnaireModal .employment-capsule.selected {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+    }
+    #precheckQuestionnaireModal .new-case-questionnaire-more {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--text-faint);
+    }
+    #precheckQuestionnaireModal.is-success .new-case-modal-header {
+      display: none;
+    }
+    #precheckQuestionnaireModal.is-success .new-case-modal-footer,
+    #precheckQuestionnaireModal.is-success .new-case-modal-close {
+      display: none;
+    }
+    #precheckQuestionnaireModal.is-success .new-case-modal-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 360px;
+    }
+    #precheckQuestionnaireModal .precheck-questionnaire-success {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 360px;
+      padding: 48px 24px;
+      text-align: center;
+    }
+    #precheckQuestionnaireModal.is-success .precheck-questionnaire-form {
+      display: none;
+    }
+    #precheckQuestionnaireModal.is-success .precheck-questionnaire-success {
+      display: flex;
+    }
+    #precheckQuestionnaireModal .precheck-questionnaire-success .new-case-success-title {
+      margin: 0;
+    }
+    .docs-precheck-panel.is-docs-loading .docs-precheck-questionnaire-gate,
+    .docs-precheck-panel.is-docs-loading .inbox-list,
+    .docs-precheck-panel.is-docs-loading .docs-precheck-footer {
+      display: none !important;
+    }
+    .docs-precheck-loading {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 0;
+      padding: 40px 24px;
+      text-align: center;
+      background: #FAFBFC;
+    }
+    .docs-precheck-panel.is-docs-loading .docs-precheck-loading {
+      display: flex;
+    }
+    .docs-precheck-loading-lottie {
+      width: min(160px, 42vw);
+      height: min(160px, 42vw);
+    }
+    .docs-precheck-loading-text {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.4;
+    }
+    .create-precheck-report-body {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 0 !important;
+    }
+    .create-precheck-report-generating,
+    .create-precheck-report-empty {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 48px 28px;
+      background: #FAFBFC;
+    }
+    .create-precheck-report-generating[hidden],
+    .create-precheck-report-empty[hidden] {
+      display: none !important;
+    }
+    .create-precheck-report-empty-title {
+      margin: 0 0 8px;
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--navy);
+      line-height: 1.4;
+    }
+    .create-precheck-report-empty-text {
+      margin: 0;
+      max-width: 320px;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
     .add-doc-btn {
       height: 28px;
       border-radius: 99px;
@@ -2447,6 +2939,17 @@
       flex-shrink: 0;
       object-fit: contain;
     }
+    .add-doc-btn-label-full {
+      display: none;
+    }
+    @media (min-width: 1440px) {
+      .add-doc-btn-label-short {
+        display: none;
+      }
+      .add-doc-btn-label-full {
+        display: inline;
+      }
+    }
 
     .inbox-filters {
       flex-shrink: 0;
@@ -2464,10 +2967,18 @@
       min-width: 0;
       display: flex;
       align-items: center;
+      gap: 8px;
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 99px;
       padding: 8px 14px;
+    }
+    .inbox-search-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      display: block;
+      object-fit: contain;
     }
     .inbox-search input {
       border: none;
@@ -2944,6 +3455,31 @@
     .center-col.is-preview-missing .preview-action-bar {
       opacity: 0.45;
       pointer-events: none;
+    }
+    .center-col.is-preview-doc-empty > .card > .card-header,
+    .center-col.is-preview-doc-empty .doc-preview-layout {
+      display: none !important;
+    }
+    .doc-preview-empty-state {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+      padding: 48px 24px;
+      text-align: center;
+      background: #FAFBFC;
+    }
+    .center-col.is-preview-doc-empty .doc-preview-empty-state {
+      display: flex;
+    }
+    .doc-preview-empty-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--navy);
+      line-height: 1.45;
     }
     /* Missing/unuploaded docs never reach HQ — only after upload + טופל */
     body[data-persona="hq"]:not(.case-page-empty-docs) .inbox-row--missing {
@@ -3704,10 +4240,9 @@
       transform: translateY(-50%);
       width: 14px;
       height: 14px;
-      opacity: 0.45;
+      opacity: 0.7;
       pointer-events: none;
-      background: no-repeat center / contain
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Ccircle cx='6.2' cy='6.2' r='4.4' stroke='%236B7280' stroke-width='1.5'/%3E%3Cpath d='M9.5 9.5 12.2 12.2' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+      background: no-repeat center / contain url("assets/icon-search.png");
     }
     .upload-analyze-catalog-options {
       max-height: 220px;
@@ -4535,22 +5070,22 @@
       </div>
     </div>
     <div class="hero-flow-actions">
-      <button type="button" class="hero-flow-btn is-done" id="heroFlowQuestionnaireBtn" aria-label="שאלון — הושלם" onclick="openCaseEditModal(2)">
+      <button type="button" class="hero-flow-btn is-done" id="heroFlowQuestionnaireBtn" aria-label="שאלון לביצוע — הושלם" onclick="openCaseEditModal(2)">
         <span class="hero-flow-mark" aria-hidden="true">
           <svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2 4.8 8.5 9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
         <span class="hero-flow-copy">
-          <span class="hero-flow-title">שאלון</span>
+          <span class="hero-flow-title">שאלון לביצוע</span>
           <span class="hero-flow-note">הושלם</span>
         </span>
       </button>
-      <button type="button" class="hero-flow-btn is-done" id="heroFlowPrecheckBtn" aria-label="בדיקת קדם — תקין" onclick="openCaseEditModal(3)">
+      <button type="button" class="hero-flow-btn is-done" id="heroFlowPrecheckBtn" aria-label="דו״ח בדיקת קדם — לצפייה" onclick="openCaseEditModal(3)">
         <span class="hero-flow-mark" aria-hidden="true">
           <svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2 4.8 8.5 9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
         <span class="hero-flow-copy">
-          <span class="hero-flow-title">בדיקת קדם</span>
-          <span class="hero-flow-note">תקין</span>
+          <span class="hero-flow-title">דו״ח בדיקת קדם</span>
+          <span class="hero-flow-note">לצפייה</span>
         </span>
       </button>
     </div>
@@ -4905,6 +5440,12 @@
           <div class="preview-title-block" id="previewTitleBlock">
             <div class="card-title">
               <span class="preview-title-single" id="previewTitle">ייפוי כוח מתמשך</span>
+              <div class="preview-version-select" id="previewVersionSelect">
+                <button type="button" class="preview-version-select-btn" id="previewVersionSelectBtn" aria-label="בחירת גרסת מסמך" aria-haspopup="listbox" aria-expanded="false" onclick="togglePreviewVersionMenu(event)">
+                  <span class="capsule-select-chevron" aria-hidden="true"></span>
+                </button>
+                <div class="preview-version-select-menu" id="previewVersionSelectMenu" role="listbox" aria-label="גרסאות מסמך"></div>
+              </div>
               <div class="preview-version-tabs" id="previewVersionTabs" role="tablist" aria-label="גרסאות מסמך"></div>
             </div>
           </div>
@@ -4978,6 +5519,9 @@
           </div>
         </div>
         <div class="doc-preview-body">
+          <div class="doc-preview-empty-state" id="docPreviewEmptyState" aria-hidden="true">
+            <p class="doc-preview-empty-title">כאן תופיע תצוגת המסמך</p>
+          </div>
           <div class="doc-preview-layout" id="docPreviewLayout">
             <div class="doc-preview-main">
               <div class="preview-upload-date" id="previewUploadDate">הועלה בתאריך 05/07/2026</div>
@@ -5052,14 +5596,23 @@
     <!-- Master pane: documents inbox, flush to the right wall -->
     <div class="docs-sidebar">
   <div class="card-header">
-    <div class="card-title">כל המסמכים (19)</div>
+    <div class="docs-sidebar-tabs" role="tablist" aria-label="סוגי מסמכים">
+      <button type="button" class="docs-sidebar-tab is-active" id="docsTabExecution" role="tab" aria-selected="true" data-docs-tab="execution" onclick="switchDocsSidebarTab('execution')">
+        מסמכים לביצוע <span class="docs-sidebar-tab-count" id="docsTabExecCount">(19)</span>
+      </button>
+      <button type="button" class="docs-sidebar-tab" id="docsTabPrecheck" role="tab" aria-selected="false" data-docs-tab="precheck" onclick="switchDocsSidebarTab('precheck')">
+        בדיקת קדם <span class="docs-sidebar-tab-count" id="docsTabPrecheckCount">(7)</span>
+      </button>
+    </div>
     <button class="add-doc-btn" type="button" title="העלאת מסמכים" onclick="handleUploadDocuments()">
       <img class="add-doc-icon" src="assets/attachment-icon.png" alt="" width="14" height="14" aria-hidden="true">
-      <span>העלאת מסמכים</span>
+      <span class="add-doc-btn-label-short">העלאה</span>
+      <span class="add-doc-btn-label-full">העלאת מסמכים</span>
     </button>
   </div>
   <div class="inbox-filters">
     <div class="inbox-search">
+      <img class="inbox-search-icon" src="assets/icon-search.png" alt="" width="16" height="16" aria-hidden="true">
       <input type="text" id="docSearch" placeholder="חיפוש מסמך" oninput="filterDocuments()">
     </div>
     <div class="status-multi-filter" id="docStatusFilter">
@@ -5109,7 +5662,7 @@
       </div>
     </div>
   </div>
-  <div class="inbox-list">
+  <div class="inbox-list" id="docsListExecution" data-docs-panel="execution" role="tabpanel" aria-labelledby="docsTabExecution">
     <div class="category" id="docsDeliveryCat">
       <div class="category-header" onclick="toggleCat('docsDeliveryCat')">
         <div class="category-name">מיועדים למסירה ללקוח <span class="category-badge">9</span></div>
@@ -5368,7 +5921,137 @@
             </div>
       </div>
     </div>
+  </div><!-- /#docsListExecution -->
+  <div class="docs-precheck-panel" id="docsPrecheckPanel" data-docs-panel="precheck" role="tabpanel" aria-labelledby="docsTabPrecheck" hidden>
+  <div class="docs-precheck-questionnaire-gate" id="precheckQuestionnaireGate">
+    <div class="docs-precheck-questionnaire-gate-content">
+      <div class="docs-precheck-questionnaire-gate-icon" aria-hidden="true">
+        <img src="assets/icon-sig-form.png" alt="">
+      </div>
+      <p class="docs-precheck-questionnaire-gate-title">כדי לטפל במסמכים לבדיקות קדם,<br>יש למלא שאלון קדם</p>
+    </div>
+    <button type="button" class="docs-precheck-questionnaire-gate-btn" onclick="openPrecheckQuestionnaireModal()">למילוי שאלון קדם</button>
   </div>
+  <div class="docs-precheck-loading" id="docsPrecheckLoading" aria-hidden="true">
+    <div class="docs-precheck-loading-lottie" id="docsPrecheckLoadingLottie" role="status" aria-label="טוען מסמכים לטיפול"></div>
+    <p class="docs-precheck-loading-text">טוען מסמכים לטיפול</p>
+  </div>
+  <div class="inbox-list" id="docsListPrecheck">
+    <div class="category" id="docsPrecheckCat">
+      <div class="category-header">
+        <div class="category-name">מסמכים לבדיקת קדם <span class="category-badge">7</span></div>
+      </div>
+      <div class="category-body">
+        <div class="inbox-row" data-doc="pcId" onclick="selectDocument('pcId')">
+          <div class="inbox-info">
+            <div class="inbox-name">תעודת זהות</div>
+            <div class="inbox-code">משכ 701</div>
+          </div>
+          <select class="status-select complete" data-doc="pcId" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+            <option value="pending">ממתין לבדיקה</option>
+            <option value="returned">חזר לטיפול</option>
+            <option value="done" selected>טופל</option>
+            <option value="notrelevant">לא רלוונטי</option>
+          </select>
+        </div>
+        <div class="inbox-row" data-doc="pcBank" onclick="selectDocument('pcBank')">
+          <div class="inbox-info">
+            <div class="inbox-name">אישור יתרות בנקאי</div>
+            <div class="inbox-code">משכ 702</div>
+          </div>
+          <select class="status-select complete" data-doc="pcBank" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+            <option value="pending">ממתין לבדיקה</option>
+            <option value="returned">חזר לטיפול</option>
+            <option value="done" selected>טופל</option>
+            <option value="notrelevant">לא רלוונטי</option>
+          </select>
+        </div>
+        <div class="inbox-row" data-doc="pcTabu" onclick="selectDocument('pcTabu')">
+          <div class="inbox-info">
+            <div class="inbox-name">נסח טאבו</div>
+            <div class="inbox-code">משכ 703</div>
+          </div>
+          <select class="status-select complete" data-doc="pcTabu" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+            <option value="pending">ממתין לבדיקה</option>
+            <option value="returned">חזר לטיפול</option>
+            <option value="done" selected>טופל</option>
+            <option value="notrelevant">לא רלוונטי</option>
+          </select>
+        </div>
+        <div class="inbox-row" data-doc="pcContract" onclick="selectDocument('pcContract')">
+          <div class="inbox-info">
+            <div class="inbox-name">חוזה רכישה חתום</div>
+            <div class="inbox-code">משכ 704</div>
+          </div>
+          <select class="status-select complete" data-doc="pcContract" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+            <option value="pending">ממתין לבדיקה</option>
+            <option value="returned">חזר לטיפול</option>
+            <option value="done" selected>טופל</option>
+            <option value="notrelevant">לא רלוונטי</option>
+          </select>
+        </div>
+        <div class="inbox-row" data-doc="pcSalary" onclick="selectDocument('pcSalary')">
+          <div class="inbox-info">
+            <div class="inbox-name">אישור משכורת</div>
+            <div class="inbox-code">משכ 705</div>
+          </div>
+          <select class="status-select complete" data-doc="pcSalary" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+            <option value="pending">ממתין לבדיקה</option>
+            <option value="returned">חזר לטיפול</option>
+            <option value="done" selected>טופל</option>
+            <option value="notrelevant">לא רלוונטי</option>
+          </select>
+        </div>
+        <div class="inbox-row" data-doc="pcCredit" onclick="selectDocument('pcCredit')">
+          <div class="inbox-info">
+            <div class="inbox-name">דוח ריכוז נתונים</div>
+            <div class="inbox-code">משכ 706</div>
+          </div>
+          <select class="status-select complete" data-doc="pcCredit" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+            <option value="pending">ממתין לבדיקה</option>
+            <option value="returned">חזר לטיפול</option>
+            <option value="done" selected>טופל</option>
+            <option value="notrelevant">לא רלוונטי</option>
+          </select>
+        </div>
+        <div class="inbox-row" data-doc="pcPurchaseTax" onclick="selectDocument('pcPurchaseTax')">
+          <div class="inbox-info">
+            <div class="inbox-name">אישור מס רכישה</div>
+            <div class="inbox-code">משכ 707</div>
+          </div>
+          <select class="status-select complete" data-doc="pcPurchaseTax" onclick="event.stopPropagation()" onchange="updateStatus(this)">
+            <option value="pending">ממתין לבדיקה</option>
+            <option value="returned">חזר לטיפול</option>
+            <option value="done" selected>טופל</option>
+            <option value="notrelevant">לא רלוונטי</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div><!-- /#docsListPrecheck -->
+  <div class="docs-precheck-footer" aria-label="פעולות דוח בדיקת קדם">
+    <div class="docs-precheck-footer-create">
+      <span class="docs-precheck-update-wrap" id="precheckCreateReportWrap" data-tooltip="יש להעלות את כל המסמכים ולוודא שהם תקינים כדי ליצור את הדו״ח">
+        <button type="button" class="docs-precheck-footer-btn docs-precheck-footer-btn--primary" id="precheckCreateReportBtn" disabled onclick="createPrecheckReport()">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.2 2.5h5.1L12.5 5.7V13a.8.8 0 0 1-.8.8H4.2a.8.8 0 0 1-.8-.8V3.3a.8.8 0 0 1 .8-.8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9.2 2.7V5.6h2.9" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M5.5 8.2h5M5.5 10.5h3.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span>יצירת דו״ח בדיקת קדם</span>
+        </button>
+      </span>
+    </div>
+    <div class="docs-precheck-footer-view">
+      <span class="docs-precheck-update-wrap" id="precheckUpdateReportWrap" data-tooltip="יש לעדכן לפחות מסמך אחד כדי לעדכן את הדו״ח">
+        <button type="button" class="docs-precheck-footer-btn" id="precheckUpdateReportBtn" disabled onclick="updatePrecheckReport()">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13.2 8A5.2 5.2 0 1 1 8 2.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M11.2 2.4 13.5 2.8 13.1 5.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>עדכון דו״ח</span>
+        </button>
+      </span>
+      <button type="button" class="docs-precheck-footer-btn docs-precheck-footer-btn--primary" onclick="viewPrecheckReport()">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.2 2.5h5.1L12.5 5.7V13a.8.8 0 0 1-.8.8H4.2a.8.8 0 0 1-.8-.8V3.3a.8.8 0 0 1 .8-.8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9.2 2.7V5.6h2.9" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M5.5 8.2h5M5.5 10.5h3.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <span>צפייה בדו״ח</span>
+      </button>
+    </div>
+  </div>
+  </div><!-- /#docsPrecheckPanel -->
   </div><!-- /.docs-sidebar -->
 </div><!-- /.doc-region -->
 </div><!-- /.app-shell -->
@@ -5683,6 +6366,87 @@
   </div>
 </div>
 
+<div class="new-case-modal" id="precheckQuestionnaireModal" aria-hidden="true">
+  <div class="new-case-modal-backdrop" onclick="closePrecheckQuestionnaireModal()"></div>
+  <div class="new-case-modal-card" role="dialog" aria-modal="true" aria-labelledby="precheckQuestionnaireModalTitle">
+    <button type="button" class="new-case-modal-close" onclick="closePrecheckQuestionnaireModal()" aria-label="סגור">&times;</button>
+    <div class="new-case-modal-header">
+      <h2 class="new-case-modal-title" id="precheckQuestionnaireModalTitle">שאלון קדם</h2>
+    </div>
+    <div class="new-case-modal-body">
+      <div class="precheck-questionnaire-form" id="precheckQuestionnaireForm">
+        <div class="question-card">
+          <div class="question-text">האם מדובר בדירת מגורים יחידה של הלווה?</div>
+          <div class="employment-capsule-group" role="radiogroup" aria-label="דירת מגורים יחידה">
+            <button type="button" class="employment-capsule selected" data-value="yes" onclick="selectPrecheckQuestionnaireCapsule(this)">כן</button>
+            <button type="button" class="employment-capsule" data-value="no" onclick="selectPrecheckQuestionnaireCapsule(this)">לא</button>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-text">האם קיים שעבוד / משכון קיים על הנכס?</div>
+          <div class="employment-capsule-group" role="radiogroup" aria-label="שעבוד קיים">
+            <button type="button" class="employment-capsule" data-value="yes" onclick="selectPrecheckQuestionnaireCapsule(this)">כן</button>
+            <button type="button" class="employment-capsule selected" data-value="no" onclick="selectPrecheckQuestionnaireCapsule(this)">לא</button>
+            <button type="button" class="employment-capsule" data-value="unknown" onclick="selectPrecheckQuestionnaireCapsule(this)">לא ידוע</button>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-text">מהו מקור ההון העצמי לעסקה?</div>
+          <div class="employment-capsule-group" role="radiogroup" aria-label="מקור הון עצמי">
+            <button type="button" class="employment-capsule selected" data-value="savings" onclick="selectPrecheckQuestionnaireCapsule(this)">חסכונות</button>
+            <button type="button" class="employment-capsule" data-value="gift" onclick="selectPrecheckQuestionnaireCapsule(this)">מתנה / סיוע משפחה</button>
+            <button type="button" class="employment-capsule" data-value="sale" onclick="selectPrecheckQuestionnaireCapsule(this)">מכירת נכס</button>
+            <button type="button" class="employment-capsule" data-value="other" onclick="selectPrecheckQuestionnaireCapsule(this)">אחר</button>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-text">האם יש ערבים לעסקה?</div>
+          <div class="employment-capsule-group" role="radiogroup" aria-label="ערבים לעסקה">
+            <button type="button" class="employment-capsule" data-value="yes" onclick="selectPrecheckQuestionnaireCapsule(this)">כן</button>
+            <button type="button" class="employment-capsule selected" data-value="no" onclick="selectPrecheckQuestionnaireCapsule(this)">לא</button>
+          </div>
+        </div>
+        <p class="new-case-questionnaire-more">שאר השאלות יופיעו כאן בהמשך.</p>
+      </div>
+      <div class="precheck-questionnaire-success" id="precheckQuestionnaireSuccess" aria-live="polite">
+        <div class="new-case-success-icon" id="precheckQuestionnaireSuccessIcon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5 9.5 17 19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="new-case-success-title">השאלון מולא בהצלחה</h3>
+      </div>
+    </div>
+    <div class="new-case-modal-footer" id="precheckQuestionnaireFooter">
+      <div class="new-case-footer-actions">
+        <button type="button" class="new-case-btn-next" onclick="savePrecheckQuestionnaire()">שמירה</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="new-case-modal" id="createPrecheckReportModal" aria-hidden="true">
+  <div class="new-case-modal-backdrop" onclick="closeCreatePrecheckReportModal()"></div>
+  <div class="new-case-modal-card" role="dialog" aria-modal="true" aria-labelledby="createPrecheckReportModalTitle">
+    <button type="button" class="new-case-modal-close" onclick="closeCreatePrecheckReportModal()" aria-label="סגור">&times;</button>
+    <div class="new-case-modal-header">
+      <h2 class="new-case-modal-title" id="createPrecheckReportModalTitle">יצירת דו״ח בדיקת קדם</h2>
+    </div>
+    <div class="new-case-modal-body create-precheck-report-body">
+      <div class="create-precheck-report-generating" id="createPrecheckReportGenerating">
+        <div class="precheck-step-loader" id="createPrecheckReportLottie" aria-hidden="true"></div>
+        <p class="precheck-step-generating-title">מייצר דו"ח AI...</p>
+        <p class="precheck-step-generating-subtitle" aria-live="polite">
+          <span class="precheck-step-generating-prefix">בודק את </span>
+          <span class="precheck-step-generating-typed" id="createPrecheckReportTyped"></span>
+        </p>
+      </div>
+      <div class="create-precheck-report-empty" id="createPrecheckReportEmpty" hidden>
+        <p class="create-precheck-report-empty-title">כאן יופיע דו״ח בדיקת קדם</p>
+        <p class="create-precheck-report-empty-text">הדו״ח יוצג כאן לאחר השלמת היצירה</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <script>
   const NOTES_ICON_SVG = '<svg class="inbox-notes-icon" width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 2.5h7.2L14.5 5.6V14a1 1 0 01-1 1H4.5a1 1 0 01-1-1V3.5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.5 2.8V5.5H14.2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 8h6M6 10h4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>';
@@ -5964,6 +6728,7 @@
     closeStatusMultiFilter();
     closePreviewMenu();
     closePreviewHqStatusMenu();
+    closePreviewVersionMenu();
   }
 
   const BANKER_FILTER_OPTIONS = [
@@ -6375,11 +7140,565 @@
     uploadAnalyzeAnimating = false;
   }
 
+  function getActiveDocsPanel() {
+    return document.querySelector('[data-docs-panel]:not([hidden])')
+      || document.getElementById('docsListExecution');
+  }
+
+  function getActiveDocsTab() {
+    return document.querySelector('.docs-sidebar-tab.is-active')?.dataset?.docsTab || 'execution';
+  }
+
+  let precheckDocsBaseline = '';
+  let precheckReportCreated = !window.__CASE_PAGE_EMPTY__;
+  let precheckQuestionnaireDone = !window.__CASE_PAGE_EMPTY__;
+
+  function syncPrecheckQuestionnaireGate() {
+    const panel = document.getElementById('docsPrecheckPanel');
+    if (!panel) return;
+    const locked = window.__CASE_PAGE_EMPTY__ && !precheckQuestionnaireDone;
+    const loading = panel.classList.contains('is-docs-loading');
+    const onPrecheckTab = getActiveDocsTab() === 'precheck';
+    const showPreviewEmpty = onPrecheckTab && (locked || loading);
+    panel.classList.toggle('is-questionnaire-locked', locked);
+    const centerCol = document.querySelector('.center-col');
+    if (centerCol) centerCol.classList.toggle('is-preview-doc-empty', showPreviewEmpty);
+    const emptyState = document.getElementById('docPreviewEmptyState');
+    if (emptyState) emptyState.setAttribute('aria-hidden', showPreviewEmpty ? 'false' : 'true');
+    if (showPreviewEmpty) {
+      document.querySelectorAll('.inbox-row').forEach((r) => r.classList.remove('active'));
+      const titleEl = document.getElementById('previewTitle');
+      if (titleEl) titleEl.textContent = '';
+      document.querySelectorAll('.legal-doc').forEach((p) => { p.style.display = 'none'; });
+      renderPreviewUploadDate(null);
+    }
+    updateDocsSidebarTotalCount();
+  }
+
+  function selectPrecheckQuestionnaireCapsule(btn) {
+    const group = btn?.closest?.('.employment-capsule-group');
+    if (!group) return;
+    group.querySelectorAll('.employment-capsule').forEach((el) => el.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  let precheckQuestionnaireTransitionTimer = null;
+  let docsPrecheckLoadingTimer = null;
+  let docsPrecheckLoadingLottie = null;
+  const PRECHECK_QUESTIONNAIRE_SUCCESS_MS = 1800;
+  const DOCS_PRECHECK_LOADING_MS = 3000;
+
+  function resetPrecheckQuestionnaireModalUi() {
+    const modal = document.getElementById('precheckQuestionnaireModal');
+    if (!modal) return;
+    modal.classList.remove('is-success');
+    const icon = document.getElementById('precheckQuestionnaireSuccessIcon');
+    if (icon) icon.classList.remove('is-animating');
+  }
+
+  function openPrecheckQuestionnaireModal() {
+    const modal = document.getElementById('precheckQuestionnaireModal');
+    if (!modal) return;
+    if (precheckQuestionnaireDone) return;
+    resetPrecheckQuestionnaireModalUi();
+    closeAllCapsuleMenus();
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
+  function closePrecheckQuestionnaireModal() {
+    const modal = document.getElementById('precheckQuestionnaireModal');
+    if (!modal) return;
+    if (modal.classList.contains('is-success')) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    resetPrecheckQuestionnaireModalUi();
+  }
+
+  function forceClosePrecheckQuestionnaireModal() {
+    const modal = document.getElementById('precheckQuestionnaireModal');
+    if (!modal) return;
+    modal.classList.remove('open', 'is-success');
+    modal.setAttribute('aria-hidden', 'true');
+    const icon = document.getElementById('precheckQuestionnaireSuccessIcon');
+    if (icon) icon.classList.remove('is-animating');
+  }
+
+  function showPrecheckQuestionnaireSuccess() {
+    const modal = document.getElementById('precheckQuestionnaireModal');
+    if (!modal) return;
+    modal.classList.add('is-success');
+    const icon = document.getElementById('precheckQuestionnaireSuccessIcon');
+    if (icon) {
+      icon.classList.remove('is-animating');
+      void icon.offsetWidth;
+      icon.classList.add('is-animating');
+    }
+  }
+
+  function initDocsPrecheckLoadingLottie() {
+    const container = document.getElementById('docsPrecheckLoadingLottie');
+    if (!container || typeof lottie === 'undefined') return null;
+    if (docsPrecheckLoadingLottie) return docsPrecheckLoadingLottie;
+    docsPrecheckLoadingLottie = lottie.loadAnimation({
+      container,
+      renderer: 'svg',
+      loop: true,
+      autoplay: false,
+      path: 'assets/fibi-loader.json'
+    });
+    return docsPrecheckLoadingLottie;
+  }
+
+  function startDocsPrecheckLoading() {
+    const panel = document.getElementById('docsPrecheckPanel');
+    const loadingEl = document.getElementById('docsPrecheckLoading');
+    if (!panel) return;
+    panel.classList.add('is-docs-loading');
+    if (loadingEl) loadingEl.setAttribute('aria-hidden', 'false');
+    syncPrecheckQuestionnaireGate();
+    const anim = initDocsPrecheckLoadingLottie();
+    if (anim) {
+      try { anim.goToAndPlay(0, true); } catch (_) { anim.play(); }
+    }
+    clearTimeout(docsPrecheckLoadingTimer);
+    docsPrecheckLoadingTimer = window.setTimeout(() => {
+      finishDocsPrecheckLoading();
+    }, DOCS_PRECHECK_LOADING_MS);
+  }
+
+  function finishDocsPrecheckLoading() {
+    const panel = document.getElementById('docsPrecheckPanel');
+    const loadingEl = document.getElementById('docsPrecheckLoading');
+    if (panel) panel.classList.remove('is-docs-loading');
+    if (loadingEl) loadingEl.setAttribute('aria-hidden', 'true');
+    if (docsPrecheckLoadingLottie) {
+      try { docsPrecheckLoadingLottie.pause(); } catch (_) {}
+    }
+    syncPrecheckQuestionnaireGate();
+    syncPrecheckFooterMode();
+    const firstDoc = document.querySelector('#docsListPrecheck .inbox-row[data-doc]')?.dataset?.doc;
+    if (firstDoc) selectDocument(firstDoc);
+  }
+
+  function finishPrecheckQuestionnaireAndLoadDocs() {
+    precheckQuestionnaireDone = true;
+    forceClosePrecheckQuestionnaireModal();
+    syncPrecheckQuestionnaireGate();
+    startDocsPrecheckLoading();
+  }
+
+  function savePrecheckQuestionnaire() {
+    const modal = document.getElementById('precheckQuestionnaireModal');
+    if (!modal || modal.classList.contains('is-success')) return;
+    showPrecheckQuestionnaireSuccess();
+    clearTimeout(precheckQuestionnaireTransitionTimer);
+    precheckQuestionnaireTransitionTimer = window.setTimeout(() => {
+      finishPrecheckQuestionnaireAndLoadDocs();
+    }, PRECHECK_QUESTIONNAIRE_SUCCESS_MS);
+  }
+
+  function isPrecheckCreateMode() {
+    return !!(window.__CASE_PAGE_EMPTY__ && !precheckReportCreated);
+  }
+
+  function getPrecheckDocsFingerprint() {
+    return [...document.querySelectorAll('#docsListPrecheck .inbox-row')].map((row) => {
+      const docId = row.dataset.doc || '';
+      const uploaded = isMissingDocRow(row) ? '0' : '1';
+      const status = row.querySelector('.status-select')?.value || (uploaded === '1' ? 'uploaded' : '');
+      const touched = row.dataset.precheckChanged || '0';
+      const file = row.querySelector('.inbox-uploaded-file')?.textContent?.trim() || '';
+      return `${docId}:${uploaded}:${status}:${touched}:${file}`;
+    }).join('|');
+  }
+
+  function areAllPrecheckDocsReady() {
+    const rows = [...document.querySelectorAll('#docsListPrecheck .inbox-row')];
+    if (!rows.length) return false;
+    return rows.every((row) => !isMissingDocRow(row));
+  }
+
+  function syncPrecheckUpdateReportBtn() {
+    const btn = document.getElementById('precheckUpdateReportBtn');
+    if (!btn) return;
+    const dirty = !!precheckDocsBaseline && getPrecheckDocsFingerprint() !== precheckDocsBaseline;
+    btn.disabled = !dirty;
+  }
+
+  function syncPrecheckCreateReportBtn() {
+    const btn = document.getElementById('precheckCreateReportBtn');
+    if (!btn) return;
+    btn.disabled = !areAllPrecheckDocsReady();
+  }
+
+  function syncPrecheckFooterMode() {
+    const footer = document.querySelector('.docs-precheck-footer');
+    if (!footer) return;
+    const createMode = isPrecheckCreateMode();
+    footer.classList.toggle('is-create-mode', createMode);
+    if (createMode) syncPrecheckCreateReportBtn();
+    else syncPrecheckUpdateReportBtn();
+  }
+
+  function capturePrecheckDocsBaseline() {
+    document.querySelectorAll('#docsListPrecheck .inbox-row').forEach((row) => {
+      delete row.dataset.precheckChanged;
+    });
+    precheckDocsBaseline = getPrecheckDocsFingerprint();
+    syncPrecheckFooterMode();
+  }
+
+  function markPrecheckDocsChanged(row) {
+    if (!row?.closest?.('#docsListPrecheck')) return;
+    row.dataset.precheckChanged = '1';
+    syncPrecheckFooterMode();
+  }
+
+  function viewPrecheckReport() {
+    openCaseEditModal(3);
+  }
+
+  function updatePrecheckReport() {
+    const btn = document.getElementById('precheckUpdateReportBtn');
+    if (btn?.disabled) return;
+    capturePrecheckDocsBaseline();
+    markHeroPrecheckDone();
+    openCaseEditModal(3);
+  }
+
+  function createPrecheckReport() {
+    if (!areAllPrecheckDocsReady()) return;
+    openCreatePrecheckReportModal();
+  }
+
+  let precheckInboxFillAnimating = false;
+  const PRECHECK_INBOX_FILL_GAP_MS = 220;
+  let createPrecheckReportLottie = null;
+  let createPrecheckReportTimer = null;
+  let createPrecheckReportSubtitleRunning = false;
+  let createPrecheckReportTypeTimer = null;
+  const CREATE_PRECHECK_REPORT_MS = 10000;
+  const CREATE_REPORT_SUBTITLE_INTERVAL_MS = 1350;
+  const CREATE_REPORT_TYPE_MS = 28;
+
+  function getCreatePrecheckReportDocNames() {
+    return [...document.querySelectorAll('#docsListPrecheck .inbox-row .inbox-name')]
+      .map((el) => el.textContent.trim())
+      .filter(Boolean);
+  }
+
+  function stopCreatePrecheckReportTypewriter() {
+    if (createPrecheckReportTypeTimer) {
+      clearTimeout(createPrecheckReportTypeTimer);
+      createPrecheckReportTypeTimer = null;
+    }
+  }
+
+  function stopCreatePrecheckReportSubtitleCycle() {
+    createPrecheckReportSubtitleRunning = false;
+    stopCreatePrecheckReportTypewriter();
+  }
+
+  function clearCreatePrecheckReportTimer() {
+    if (createPrecheckReportTimer) {
+      clearTimeout(createPrecheckReportTimer);
+      createPrecheckReportTimer = null;
+    }
+  }
+
+  function initCreatePrecheckReportLottie() {
+    const container = document.getElementById('createPrecheckReportLottie');
+    if (!container || typeof lottie === 'undefined') return null;
+    if (createPrecheckReportLottie) return createPrecheckReportLottie;
+    createPrecheckReportLottie = lottie.loadAnimation({
+      container,
+      renderer: 'svg',
+      loop: true,
+      autoplay: false,
+      path: 'assets/fibi-loader.json'
+    });
+    return createPrecheckReportLottie;
+  }
+
+  function typeCreateReportLabelForward(label, typedEl, onDone) {
+    stopCreatePrecheckReportTypewriter();
+    typedEl.textContent = '';
+    typedEl.classList.add('is-typing');
+    let index = 0;
+    const typeNext = () => {
+      if (!createPrecheckReportSubtitleRunning) return;
+      index += 1;
+      typedEl.textContent = label.slice(0, index);
+      if (index < label.length) {
+        createPrecheckReportTypeTimer = window.setTimeout(typeNext, CREATE_REPORT_TYPE_MS);
+      } else {
+        typedEl.classList.remove('is-typing');
+        createPrecheckReportTypeTimer = null;
+        onDone?.();
+      }
+    };
+    createPrecheckReportTypeTimer = window.setTimeout(typeNext, CREATE_REPORT_TYPE_MS);
+  }
+
+  function typeCreateReportLabelBackward(label, typedEl, onDone) {
+    stopCreatePrecheckReportTypewriter();
+    typedEl.classList.add('is-typing');
+    let index = label.length;
+    const deleteNext = () => {
+      if (!createPrecheckReportSubtitleRunning) return;
+      index -= 1;
+      typedEl.textContent = label.slice(0, index);
+      if (index > 0) {
+        createPrecheckReportTypeTimer = window.setTimeout(deleteNext, CREATE_REPORT_TYPE_MS);
+      } else {
+        typedEl.textContent = '';
+        typedEl.classList.remove('is-typing');
+        createPrecheckReportTypeTimer = null;
+        onDone?.();
+      }
+    };
+    createPrecheckReportTypeTimer = window.setTimeout(deleteNext, CREATE_REPORT_TYPE_MS);
+  }
+
+  function runCreatePrecheckReportDocCycle(names, docIndex, typedEl) {
+    if (!createPrecheckReportSubtitleRunning || !names.length) return;
+    const label = precheckDocLabel(names[docIndex % names.length]);
+    const cycleStart = Date.now();
+    typeCreateReportLabelForward(label, typedEl, () => {
+      if (!createPrecheckReportSubtitleRunning) return;
+      const waitBeforeDelete = Math.max(0, CREATE_REPORT_SUBTITLE_INTERVAL_MS - (Date.now() - cycleStart));
+      createPrecheckReportTypeTimer = window.setTimeout(() => {
+        if (!createPrecheckReportSubtitleRunning) return;
+        typeCreateReportLabelBackward(label, typedEl, () => {
+          if (!createPrecheckReportSubtitleRunning) return;
+          runCreatePrecheckReportDocCycle(names, docIndex + 1, typedEl);
+        });
+      }, waitBeforeDelete);
+    });
+  }
+
+  function startCreatePrecheckReportSubtitleCycle() {
+    stopCreatePrecheckReportSubtitleCycle();
+    const typedEl = document.getElementById('createPrecheckReportTyped');
+    const names = getCreatePrecheckReportDocNames();
+    if (!typedEl || !names.length) return;
+    createPrecheckReportSubtitleRunning = true;
+    runCreatePrecheckReportDocCycle(names, 0, typedEl);
+  }
+
+  function showCreatePrecheckReportEmptyState() {
+    const generating = document.getElementById('createPrecheckReportGenerating');
+    const empty = document.getElementById('createPrecheckReportEmpty');
+    const title = document.getElementById('createPrecheckReportModalTitle');
+    stopCreatePrecheckReportSubtitleCycle();
+    clearCreatePrecheckReportTimer();
+    if (createPrecheckReportLottie) {
+      try { createPrecheckReportLottie.pause(); } catch (_) {}
+    }
+    if (generating) generating.hidden = true;
+    if (empty) empty.hidden = false;
+    if (title) title.textContent = 'דו״ח בדיקת קדם';
+    precheckReportCreated = true;
+    capturePrecheckDocsBaseline();
+    markHeroPrecheckDone();
+    syncPrecheckFooterMode();
+  }
+
+  function openCreatePrecheckReportModal() {
+    const modal = document.getElementById('createPrecheckReportModal');
+    if (!modal) return;
+    const generating = document.getElementById('createPrecheckReportGenerating');
+    const empty = document.getElementById('createPrecheckReportEmpty');
+    const title = document.getElementById('createPrecheckReportModalTitle');
+    const typedEl = document.getElementById('createPrecheckReportTyped');
+    if (generating) generating.hidden = false;
+    if (empty) empty.hidden = true;
+    if (title) title.textContent = 'יצירת דו״ח בדיקת קדם';
+    if (typedEl) {
+      typedEl.textContent = '';
+      typedEl.classList.remove('is-typing');
+    }
+    closeAllCapsuleMenus();
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+
+    const anim = initCreatePrecheckReportLottie();
+    if (anim) {
+      try { anim.goToAndPlay(0, true); } catch (_) { anim.play(); }
+    }
+    startCreatePrecheckReportSubtitleCycle();
+    clearCreatePrecheckReportTimer();
+    createPrecheckReportTimer = window.setTimeout(showCreatePrecheckReportEmptyState, CREATE_PRECHECK_REPORT_MS);
+  }
+
+  function closeCreatePrecheckReportModal() {
+    const modal = document.getElementById('createPrecheckReportModal');
+    if (!modal) return;
+    stopCreatePrecheckReportSubtitleCycle();
+    clearCreatePrecheckReportTimer();
+    if (createPrecheckReportLottie) {
+      try { createPrecheckReportLottie.pause(); } catch (_) {}
+    }
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  function fillAllMissingPrecheckInboxDocs() {
+    if (precheckInboxFillAnimating) return;
+    const pending = [...document.querySelectorAll('#docsListPrecheck .inbox-row[data-doc]')]
+      .filter((row) => isMissingDocRow(row));
+    if (!pending.length) return;
+
+    precheckInboxFillAnimating = true;
+    let index = 0;
+    const step = () => {
+      if (index < pending.length) {
+        const row = pending[index];
+        const docId = row.dataset.doc;
+        promoteMissingPrecheckDoc(row, docId);
+        if (docId) selectDocument(docId);
+        index += 1;
+        window.setTimeout(step, PRECHECK_INBOX_FILL_GAP_MS);
+        return;
+      }
+      precheckInboxFillAnimating = false;
+      syncPrecheckFooterMode();
+      updateDocsSidebarTotalCount();
+    };
+    step();
+  }
+
+  function promoteMissingPrecheckDoc(row, docId) {
+    if (!row || !docId || !isMissingDocRow(row)) return;
+    row.classList.remove('inbox-row--missing');
+    row.classList.add('inbox-row--precheck-file');
+    delete row.dataset.uploaded;
+    row.querySelector('.inbox-row-actions')?.remove();
+    row.querySelector('.inbox-upload-btn')?.remove();
+    row.querySelector('.status-select')?.remove();
+    row.querySelector('.capsule-select')?.remove();
+
+    const docName = docs[docId]?.name || row.querySelector('.inbox-name')?.textContent?.trim() || '';
+    const filename = precheckFilenameForName(docName);
+    if (!row.querySelector('.inbox-uploaded-file')) {
+      const fileEl = document.createElement('span');
+      fileEl.className = 'inbox-uploaded-file';
+      fileEl.textContent = filename;
+      fileEl.title = filename;
+      fileEl.setAttribute('aria-label', `קובץ שהועלה ${filename}`);
+      row.appendChild(fileEl);
+    }
+
+    delete row.dataset.indicatorsInit;
+    if (docs[docId]) {
+      docs[docId].uploadedAt = docs[docId].uploadedAt || '15/07/2026';
+      if (!docs[docId].code) docs[docId].code = `משכ ${docId}`;
+    }
+    const info = row.querySelector('.inbox-info');
+    if (info && docs[docId]?.code && !info.querySelector('.inbox-code')) {
+      const code = document.createElement('div');
+      code.className = 'inbox-code';
+      code.textContent = docs[docId].code;
+      info.appendChild(code);
+    }
+
+    seedPrecheckDocAiNotes(docId);
+    initInboxRowIndicators();
+    updateInboxRowIndicators();
+    markPrecheckDocsChanged(row);
+    syncPrecheckFooterMode();
+  }
+
+  const PRECHECK_AI_NOTE_EXAMPLES = {
+    pcId: 'פרטי תעודת הזהות תואמים לנתוני הלווה בתיק. לא זוהו חריגות בקריאות הסריקה.',
+    pcBank: 'יתרות החשבון תואמות את ההצהרה בשאלון. מומלץ לוודא שהאישור בתוקף ל־30 הימים האחרונים.',
+    pcTabu: 'זוהו הערות אזהרה בנסח — יש לוודא התאמה לפרטי העסקה לפני המשך הטיפול.',
+    pcContract: 'סכום העסקה ותאריך המסירה תואמים לנתוני התיק. החתימות זוהו בשני הצדדים.',
+    pcSalary: 'גובה ההכנסה החודשית עקבי על פני התקופה שנסרקה. לא נמצאו פערי סכומים חריגים.',
+    pcCredit: 'דוח ריכוז הנתונים תקין. לא זוהו הגבלות או חיווי שליליים הרלוונטיים לתיק.',
+    pcPurchaseTax: 'אישור מס הרכישה תואם לפרטי הנכס בעסקה. הסכום המדווח עקבי עם חוזה הרכישה.'
+  };
+
+  function seedPrecheckDocAiNotes(docId) {
+    if (!docId) return;
+    const text = PRECHECK_AI_NOTE_EXAMPLES[docId]
+      || 'המסמך נסרק בהצלחה. לא נמצאו חריגות משמעותיות בניתוח הראשוני.';
+    docAiNotesStore[docId] = [
+      { date: '15/07/2026 11:20', text }
+    ];
+  }
+
+  function markHeroPrecheckPending() {
+    const btn = document.getElementById('heroFlowPrecheckBtn');
+    if (!btn) return;
+    btn.classList.remove('is-done');
+    btn.classList.add('is-pending');
+    btn.setAttribute('aria-label', 'דו״ח בדיקת קדם — טרם הושלם');
+    const mark = btn.querySelector('.hero-flow-mark');
+    if (mark) {
+      mark.innerHTML = '<svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.4" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3.2l2.2 1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    }
+    const title = btn.querySelector('.hero-flow-title');
+    if (title) title.textContent = 'דו״ח בדיקת קדם';
+    const note = btn.querySelector('.hero-flow-note');
+    if (note) note.textContent = 'טרם הושלם';
+  }
+
+  function applyNewCasePrecheckFirstLayout() {
+    const tabs = document.querySelector('.docs-sidebar-tabs');
+    const precheckTab = document.getElementById('docsTabPrecheck');
+    const execTab = document.getElementById('docsTabExecution');
+    if (tabs && precheckTab && execTab) {
+      tabs.insertBefore(precheckTab, execTab);
+    }
+    markHeroPrecheckPending();
+    syncPrecheckQuestionnaireGate();
+    syncPrecheckFooterMode();
+    switchDocsSidebarTab('precheck');
+  }
+
   function updateDocsSidebarTotalCount() {
-    const title = document.querySelector('.docs-sidebar .card-title');
-    if (!title) return;
-    const total = document.querySelectorAll('.docs-sidebar .inbox-row').length;
-    title.textContent = `כל המסמכים (${total})`;
+    const execCount = document.querySelectorAll('#docsListExecution .inbox-row').length;
+    const precheckLocked = window.__CASE_PAGE_EMPTY__ && !precheckQuestionnaireDone;
+    const precheckCount = precheckLocked
+      ? 0
+      : document.querySelectorAll('#docsListPrecheck .inbox-row').length;
+    const execEl = document.getElementById('docsTabExecCount');
+    const precheckEl = document.getElementById('docsTabPrecheckCount');
+    if (execEl) execEl.textContent = `(${execCount})`;
+    if (precheckEl) precheckEl.textContent = `(${precheckCount})`;
+  }
+
+  function switchDocsSidebarTab(tab) {
+    const next = tab === 'precheck' ? 'precheck' : 'execution';
+    document.querySelectorAll('.docs-sidebar-tab').forEach((btn) => {
+      const active = btn.dataset.docsTab === next;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    document.querySelectorAll('[data-docs-panel]').forEach((panel) => {
+      panel.hidden = panel.dataset.docsPanel !== next;
+    });
+
+    const panel = getActiveDocsPanel();
+    const precheckGateActive = next === 'precheck'
+      && window.__CASE_PAGE_EMPTY__
+      && (!precheckQuestionnaireDone || panel?.classList.contains('is-docs-loading'));
+
+    if (precheckGateActive) {
+      syncPrecheckQuestionnaireGate();
+      filterDocuments();
+      return;
+    }
+
+    syncPrecheckQuestionnaireGate();
+    const activeInPanel = panel?.querySelector('.inbox-row.active');
+    const firstVisible = [...(panel?.querySelectorAll('.inbox-row') || [])]
+      .find((row) => row.style.display !== 'none');
+    const targetId = activeInPanel?.dataset?.doc || firstVisible?.dataset?.doc;
+    if (targetId) selectDocument(targetId);
+    filterDocuments();
   }
 
   function refreshDocsCategoryBadge(catId) {
@@ -7046,8 +8365,13 @@
 
   function handleRowUploadDocument(e, docId) {
     e.stopPropagation();
-    // Demo placeholder for uploading a single missing document.
+    const row = document.querySelector(`.inbox-row[data-doc="${docId}"]`);
+    if (row?.closest('#docsListPrecheck') && isMissingDocRow(row)) {
+      fillAllMissingPrecheckInboxDocs();
+      return;
+    }
     if (docId) selectDocument(docId);
+    markPrecheckDocsChanged(row);
   }
 
   function isMissingDocRow(row) {
@@ -7213,9 +8537,11 @@
     btn.setAttribute('aria-haspopup', editable ? 'menu' : 'false');
     if (editable) {
       iconSlot.removeAttribute('data-tooltip');
+      iconSlot.removeAttribute('data-tooltip-title');
       iconSlot.removeAttribute('title');
     } else {
       iconSlot.setAttribute('data-tooltip', statusLabel);
+      iconSlot.setAttribute('data-tooltip-title', 'סטטוס מטה');
       iconSlot.removeAttribute('title');
     }
 
@@ -7237,15 +8563,20 @@
     const tip = getHqStatusTooltipEl();
     tip.classList.remove('is-visible');
     tip.innerHTML = '';
+    tip.style.whiteSpace = '';
+    tip.style.maxWidth = '';
   }
 
   function showHqStatusTooltip(anchor) {
     const text = anchor?.getAttribute('data-tooltip');
     if (!text) return;
     const tip = getHqStatusTooltipEl();
-    tip.innerHTML =
-      `<span class="inbox-hq-status-tooltip-title">סטטוס מטה</span>` +
-      `<span class="inbox-hq-status-tooltip-text">${text}</span>`;
+    const title = anchor?.getAttribute('data-tooltip-title');
+    tip.innerHTML = title
+      ? `<span class="inbox-hq-status-tooltip-title">${title}</span><span class="inbox-hq-status-tooltip-text">${text}</span>`
+      : `<span class="inbox-hq-status-tooltip-text">${text}</span>`;
+    tip.style.whiteSpace = title ? 'nowrap' : 'normal';
+    tip.style.maxWidth = title ? 'none' : '240px';
     const rect = anchor.getBoundingClientRect();
     tip.style.left = `${Math.round(rect.left + rect.width / 2)}px`;
     tip.style.top = `${Math.round(rect.top - 8)}px`;
@@ -7254,19 +8585,49 @@
 
   document.addEventListener('mouseover', e => {
     const icon = e.target.closest?.('.inbox-hq-status.is-readonly .inbox-hq-status-icon[data-tooltip]');
-    if (!icon) return;
-    showHqStatusTooltip(icon);
+    if (icon) {
+      showHqStatusTooltip(icon);
+      return;
+    }
+    const updateWrap = e.target.closest?.('#precheckUpdateReportWrap[data-tooltip]');
+    if (updateWrap) {
+      const btn = document.getElementById('precheckUpdateReportBtn');
+      if (btn?.disabled) showHqStatusTooltip(updateWrap);
+      return;
+    }
+    const createWrap = e.target.closest?.('#precheckCreateReportWrap[data-tooltip]');
+    if (createWrap) {
+      const btn = document.getElementById('precheckCreateReportBtn');
+      if (btn?.disabled) showHqStatusTooltip(createWrap);
+    }
   });
 
   document.addEventListener('mouseout', e => {
     const icon = e.target.closest?.('.inbox-hq-status.is-readonly .inbox-hq-status-icon[data-tooltip]');
-    if (!icon) return;
-    const next = e.relatedTarget;
-    if (next && icon.contains(next)) return;
-    hideHqStatusTooltip();
+    if (icon) {
+      const next = e.relatedTarget;
+      if (next && icon.contains(next)) return;
+      hideHqStatusTooltip();
+      return;
+    }
+    const updateWrap = e.target.closest?.('#precheckUpdateReportWrap[data-tooltip]');
+    if (updateWrap) {
+      const next = e.relatedTarget;
+      if (next && updateWrap.contains(next)) return;
+      hideHqStatusTooltip();
+      return;
+    }
+    const createWrap = e.target.closest?.('#precheckCreateReportWrap[data-tooltip]');
+    if (createWrap) {
+      const next = e.relatedTarget;
+      if (next && createWrap.contains(next)) return;
+      hideHqStatusTooltip();
+    }
   });
 
-  document.querySelector('.inbox-list')?.addEventListener('scroll', hideHqStatusTooltip, { passive: true });
+  document.querySelectorAll('.inbox-list').forEach((list) => {
+    list.addEventListener('scroll', hideHqStatusTooltip, { passive: true });
+  });
   window.addEventListener('scroll', hideHqStatusTooltip, { passive: true });
 
   function renderAllRowHqStatuses() {
@@ -7654,6 +9015,8 @@
     if (row?.dataset?.doc === previewCurrentDocId) {
       renderPreviewHqStatus();
     }
+    markPrecheckDocsChanged(row);
+    syncPrecheckFooterMode();
   }
 
   function filterDocuments() {
@@ -7661,8 +9024,10 @@
     const { statusValues, uploadValues } = getSelectedFilterGroups();
     const filtering = query.length > 0 || statusValues.length > 0 || uploadValues.length > 0;
     const persona = getCurrentPersona();
+    const panel = getActiveDocsPanel();
+    if (!panel) return;
 
-    document.querySelectorAll('.docs-sidebar .category').forEach(cat => {
+    panel.querySelectorAll('.category').forEach(cat => {
       let visible = 0;
       cat.querySelectorAll('.inbox-row').forEach(row => {
         const name = (row.querySelector('.inbox-name')?.textContent || '').toLowerCase();
@@ -7726,7 +9091,14 @@
     id332:    { name: 'סיכום תנאים',                  code: 'משכ 332', previewId: 'preview-generic', pages: 1, uploadedAt: '04/07/2026' },
     id338:    { name: 'דף מידע על ביטוח',              code: 'משכ 338', previewId: 'preview-generic', pages: 1, uploadedAt: '12/07/2026' },
     id341:    { name: 'הסבר זכויות לווה',              previewId: 'preview-generic', pages: 1 },
-    id345:    { name: 'פירוט עלויות נלוות',            code: 'משכ 345', previewId: 'preview-generic', pages: 1, uploadedAt: '13/07/2026' }
+    id345:    { name: 'פירוט עלויות נלוות',            code: 'משכ 345', previewId: 'preview-generic', pages: 1, uploadedAt: '13/07/2026' },
+    pcId:     { name: 'תעודת זהות',                  code: 'משכ 701', previewId: 'preview-generic', pages: 1, uploadedAt: '20/06/2026' },
+    pcBank:   { name: 'אישור יתרות בנקאי',            code: 'משכ 702', previewId: 'preview-generic', pages: 1, uploadedAt: '20/06/2026' },
+    pcTabu:   { name: 'נסח טאבו',                     code: 'משכ 703', previewId: 'preview-tabu', pages: 1, uploadedAt: '21/06/2026' },
+    pcContract: { name: 'חוזה רכישה חתום',            code: 'משכ 704', previewId: 'preview-contract', pages: 1, uploadedAt: '21/06/2026' },
+    pcSalary: { name: 'אישור משכורת',                 code: 'משכ 705', previewId: 'preview-generic', pages: 1, uploadedAt: '22/06/2026' },
+    pcCredit: { name: 'דוח ריכוז נתונים',             code: 'משכ 706', previewId: 'preview-generic', pages: 1, uploadedAt: '22/06/2026' },
+    pcPurchaseTax: { name: 'אישור מס רכישה',          code: 'משכ 707', previewId: 'preview-generic', pages: 1, uploadedAt: '23/06/2026' }
   };
 
   let previewCurrentDocId = 'poa';
@@ -7768,9 +9140,31 @@
     el.classList.remove('is-empty');
   }
 
+  function closePreviewVersionMenu() {
+    const wrap = document.getElementById('previewVersionSelect');
+    const btn = document.getElementById('previewVersionSelectBtn');
+    if (!wrap || !btn) return;
+    wrap.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function togglePreviewVersionMenu(e) {
+    e?.stopPropagation?.();
+    const wrap = document.getElementById('previewVersionSelect');
+    const btn = document.getElementById('previewVersionSelectBtn');
+    if (!wrap || !btn) return;
+    const isOpen = wrap.classList.contains('open');
+    closeAllCapsuleMenus();
+    if (!isOpen) {
+      wrap.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  }
+
   function renderPreviewVersionTabs(docId) {
     const block = document.getElementById('previewTitleBlock');
     const tabsEl = document.getElementById('previewVersionTabs');
+    const menuEl = document.getElementById('previewVersionSelectMenu');
     const titleEl = document.getElementById('previewTitle');
     const row = document.querySelector(`.inbox-row[data-doc="${docId}"]`);
     const versions = isMissingDocRow(row) ? [] : getDocVersions(docId);
@@ -7779,6 +9173,8 @@
     if (versions.length < 2) {
       block.classList.remove('has-versions');
       tabsEl.innerHTML = '';
+      if (menuEl) menuEl.innerHTML = '';
+      closePreviewVersionMenu();
       return;
     }
 
@@ -7789,12 +9185,21 @@
       const selected = index === previewCurrentVersionIndex ? 'true' : 'false';
       return `<button type="button" class="preview-version-tab${active}" role="tab" aria-selected="${selected}" data-version-index="${index}" onclick="selectDocumentVersion(${index})">${version.name}</button>`;
     }).join('');
+
+    if (menuEl) {
+      menuEl.innerHTML = versions.map((version, index) => {
+        const active = index === previewCurrentVersionIndex ? ' is-active' : '';
+        const selected = index === previewCurrentVersionIndex ? 'true' : 'false';
+        return `<button type="button" class="preview-version-option${active}" role="option" aria-selected="${selected}" onclick="selectDocumentVersion(${index})">${version.name}</button>`;
+      }).join('');
+    }
   }
 
   function selectDocumentVersion(index) {
     const versions = getDocVersions(previewCurrentDocId);
     if (!versions.length) return;
     const next = Math.min(Math.max(0, index), versions.length - 1);
+    closePreviewVersionMenu();
     if (next === previewCurrentVersionIndex) return;
     previewCurrentVersionIndex = next;
     previewCurrentPage = 1;
@@ -7877,11 +9282,12 @@
   };
 
   function applyNewCaseEmptyDocumentsState() {
-    document.querySelectorAll('.inbox-row[data-doc]').forEach(row => {
+    document.querySelectorAll('#docsListPrecheck .inbox-row[data-doc]').forEach(row => {
       const docId = row.dataset.doc;
       if (!docId) return;
 
       row.classList.add('inbox-row--missing');
+      row.classList.remove('inbox-row--precheck-file');
       row.dataset.uploaded = 'false';
       row.classList.remove('active', 'is-done-with-hq', 'inbox-row--hq-valid');
       delete row.dataset.indicatorsInit;
@@ -7892,7 +9298,7 @@
       }
 
       row.querySelectorAll(
-        '.status-select, .capsule-select, .inbox-row-actions, .inbox-banker-tag, .inbox-hq-status'
+        '.status-select, .capsule-select, .inbox-row-actions, .inbox-banker-tag, .inbox-hq-status, .inbox-uploaded-file'
       ).forEach(el => el.remove());
 
       let uploadBtn = row.querySelector('.inbox-upload-btn');
@@ -7906,11 +9312,12 @@
       } else {
         uploadBtn.onclick = (event) => handleRowUploadDocument(event, docId);
       }
+
+      delete docNotesStore[docId];
+      delete docAiNotesStore[docId];
+      delete docHqStatusStore[docId];
     });
 
-    Object.keys(docNotesStore).forEach(key => { delete docNotesStore[key]; });
-    Object.keys(docAiNotesStore).forEach(key => { delete docAiNotesStore[key]; });
-    Object.keys(docHqStatusStore).forEach(key => { delete docHqStatusStore[key]; });
     try { persistHqStatuses(); } catch (_) {}
   }
 
@@ -8201,33 +9608,37 @@
       const select = row.querySelector('select.status-select');
       if (!capsule || !select) return;
 
+      const isPrecheckDoc = !!row.closest('#docsListPrecheck');
+
       const bankerTag = document.createElement('span');
       bankerTag.className = 'inbox-banker-tag';
       bankerTag.setAttribute('aria-label', 'סטטוס בנקאי');
-
-      const hqStatus = document.createElement('div');
-      hqStatus.className = 'inbox-hq-status';
-      hqStatus.innerHTML =
-        `<button type="button" class="preview-hq-status-pill inbox-hq-status-btn" aria-haspopup="menu" aria-expanded="false" aria-label="ממתין לבדיקה" title="ממתין לבדיקה" onclick="toggleRowHqStatusMenu(event, this)">` +
-        `<span class="inbox-hq-status-icon">${hqStatusIconHtml('pending')}</span>` +
-        `<span class="inbox-hq-status-label">ממתין לבדיקה</span>` +
-        `<span class="preview-hq-status-caret" aria-hidden="true"></span>` +
-        `</button>` +
-        `<div class="preview-hq-status-menu" role="menu">` +
-        `<button type="button" class="preview-hq-status-option" role="menuitem" onclick="setRowHqStatus(event, 'pending', this)">${hqStatusOptionHtml('pending')}</button>` +
-        `<button type="button" class="preview-hq-status-option" role="menuitem" onclick="setRowHqStatus(event, 'valid', this)">${hqStatusOptionHtml('valid')}</button>` +
-        `<button type="button" class="preview-hq-status-option" role="menuitem" onclick="setRowHqStatus(event, 'invalid', this)">${hqStatusOptionHtml('invalid')}</button>` +
-        `</div>`;
 
       const actions = document.createElement('div');
       actions.className = 'inbox-row-actions';
       capsule.parentNode.insertBefore(actions, capsule);
       actions.appendChild(bankerTag);
-      actions.appendChild(hqStatus);
-      actions.appendChild(capsule);
 
+      if (!isPrecheckDoc) {
+        const hqStatus = document.createElement('div');
+        hqStatus.className = 'inbox-hq-status';
+        hqStatus.innerHTML =
+          `<button type="button" class="preview-hq-status-pill inbox-hq-status-btn" aria-haspopup="menu" aria-expanded="false" aria-label="ממתין לבדיקה" title="ממתין לבדיקה" onclick="toggleRowHqStatusMenu(event, this)">` +
+          `<span class="inbox-hq-status-icon">${hqStatusIconHtml('pending')}</span>` +
+          `<span class="inbox-hq-status-label">ממתין לבדיקה</span>` +
+          `<span class="preview-hq-status-caret" aria-hidden="true"></span>` +
+          `</button>` +
+          `<div class="preview-hq-status-menu" role="menu">` +
+          `<button type="button" class="preview-hq-status-option" role="menuitem" onclick="setRowHqStatus(event, 'pending', this)">${hqStatusOptionHtml('pending')}</button>` +
+          `<button type="button" class="preview-hq-status-option" role="menuitem" onclick="setRowHqStatus(event, 'valid', this)">${hqStatusOptionHtml('valid')}</button>` +
+          `<button type="button" class="preview-hq-status-option" role="menuitem" onclick="setRowHqStatus(event, 'invalid', this)">${hqStatusOptionHtml('invalid')}</button>` +
+          `</div>`;
+        actions.appendChild(hqStatus);
+        if (row.dataset.doc) syncRowHqStatus(row, row.dataset.doc);
+      }
+
+      actions.appendChild(capsule);
       syncBankerTag(row, select.value);
-      if (row.dataset.doc) syncRowHqStatus(row, row.dataset.doc);
     });
     updateInboxRowIndicators();
   }
@@ -8266,15 +9677,20 @@
   setPersona(localStorage.getItem('demoPersona') || 'banker');
   if (window.__CASE_PAGE_EMPTY__) {
     resetDocumentsFiltersForEmptyCase();
+    applyNewCasePrecheckFirstLayout();
   }
-  if (!window.__CASE_PAGE_EMPTY__) {
-    seedDemoHqStatusesForBanker();
-  }
+  seedDemoHqStatusesForBanker();
   const initialDocId = window.__CASE_PAGE_EMPTY__
-    ? (document.querySelector('.inbox-row[data-doc]')?.dataset?.doc || previewCurrentDocId)
+    ? (document.querySelector('#docsListPrecheck .inbox-row[data-doc]')?.dataset?.doc
+      || document.querySelector('#docsListExecution .inbox-row[data-doc]')?.dataset?.doc
+      || previewCurrentDocId)
     : previewCurrentDocId;
   selectDocument(initialDocId);
+  updateDocsSidebarTotalCount();
   filterDocuments();
+  capturePrecheckDocsBaseline();
+  syncPrecheckFooterMode();
+  syncPrecheckQuestionnaireGate();
 
   (function bindSummaryPanelWheel() {
     const panel = document.getElementById('docNotesPanel');
@@ -8291,7 +9707,9 @@
     }, { passive: false });
   })();
 
-  document.querySelector('.inbox-list')?.addEventListener('scroll', closePreviewHqStatusMenu, { passive: true });
+  document.querySelectorAll('.inbox-list').forEach((list) => {
+    list.addEventListener('scroll', closePreviewHqStatusMenu, { passive: true });
+  });
   window.addEventListener('resize', closePreviewHqStatusMenu);
 
   function setPersona(persona) {
@@ -8459,7 +9877,8 @@
     'נסח טאבו': 'property_deed.pdf',
     'חוזה רכישה חתום': 'purchase_contract.pdf',
     'אישור משכורת': 'salary.pdf',
-    'דוח ריכוז נתונים': 'credit_report.pdf'
+    'דוח ריכוז נתונים': 'credit_report.pdf',
+    'אישור מס רכישה': 'purchase_tax.pdf'
   };
 
   const PRECHECK_DOC_CHECKING_LABELS = {
@@ -8468,7 +9887,8 @@
     'נסח טאבו': 'נסח הטאבו',
     'חוזה רכישה חתום': 'חוזה הרכישה החתום',
     'אישור משכורת': 'אישור המשכורת',
-    'דוח ריכוז נתונים': 'דוח ריכוז הנתונים'
+    'דוח ריכוז נתונים': 'דוח ריכוז הנתונים',
+    'אישור מס רכישה': 'אישור מס הרכישה'
   };
   const PRECHECK_SUBTITLE_INTERVAL_MS = 6000;
   const PRECHECK_SUBTITLE_TYPE_MS = 42;
@@ -8862,13 +10282,15 @@
     if (!btn) return;
     btn.classList.remove('is-pending');
     btn.classList.add('is-done');
-    btn.setAttribute('aria-label', 'בדיקת קדם — תקין');
+    btn.setAttribute('aria-label', 'דו״ח בדיקת קדם — לצפייה');
     const mark = btn.querySelector('.hero-flow-mark');
     if (mark) {
       mark.innerHTML = '<svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2 4.8 8.5 9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     }
+    const title = btn.querySelector('.hero-flow-title');
+    if (title) title.textContent = 'דו״ח בדיקת קדם';
     const note = btn.querySelector('.hero-flow-note');
-    if (note) note.textContent = 'תקין';
+    if (note) note.textContent = 'לצפייה';
   }
 
   function saveCaseEditModal() {
@@ -8998,6 +10420,14 @@
 
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
+    if (document.getElementById('createPrecheckReportModal')?.classList.contains('open')) {
+      closeCreatePrecheckReportModal();
+      return;
+    }
+    if (document.getElementById('precheckQuestionnaireModal')?.classList.contains('open')) {
+      closePrecheckQuestionnaireModal();
+      return;
+    }
     if (document.getElementById('newCaseModal')?.classList.contains('open')) {
       closeCaseEditModal();
     }

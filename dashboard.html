@@ -191,6 +191,13 @@
       max-width: 100%;
       flex: 0 0 auto;
     }
+    .search-box-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      display: block;
+      object-fit: contain;
+    }
     .search-box input {
       border: none;
       outline: none;
@@ -1012,8 +1019,9 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 112px;
-      padding: 6px 10px;
+      min-width: 112px;
+      width: auto;
+      padding: 6px 14px;
       border-radius: 99px;
       font-family: inherit;
       font-size: 12px;
@@ -2036,7 +2044,7 @@
       <span class="btn-filters-count" id="casesFiltersCount">0</span>
     </button>
     <div class="search-box">
-      🔍
+      <img class="search-box-icon" src="assets/icon-search.png" alt="" width="16" height="16" aria-hidden="true">
       <input type="text" id="casesSearchInput" placeholder="חיפוש לפי שם לקוח או ת.ז..." oninput="applyDashboardFilters()">
     </div>
     <button type="button" class="btn-new" onclick="openNewCaseModal()">
@@ -2694,7 +2702,7 @@
       <section class="filters-section">
         <h3 class="filters-section-title">מיקום עסקה</h3>
         <div class="filters-city-search">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="6.2" cy="6.2" r="4.2" stroke="currentColor" stroke-width="1.4"/><path d="m9.3 9.3 2.4 2.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <img src="assets/icon-search.png" alt="" width="14" height="14" aria-hidden="true">
           <input type="search" id="filterCitySearch" placeholder="חיפוש עיר..." oninput="filterCityOptions()">
         </div>
         <div class="filters-city-list" id="filterCityList">
@@ -3365,9 +3373,7 @@
       <div class="new-case-steps" id="newCaseSteps">
         <button type="button" class="new-case-step-item is-active" data-step="1" onclick="newCaseGoToStep(1)">פרטי תיק</button>
         <span class="new-case-step-arrow" aria-hidden="true"></span>
-        <button type="button" class="new-case-step-item" data-step="2" onclick="newCaseGoToStep(2)">שאלון</button>
-        <span class="new-case-step-arrow" aria-hidden="true"></span>
-        <button type="button" class="new-case-step-item" data-step="3" onclick="newCaseGoToStep(3)">בדיקת קדם</button>
+        <button type="button" class="new-case-step-item" data-step="2" onclick="newCaseGoToStep(2)">שאלון לביצוע</button>
       </div>
     </div>
     <div class="new-case-modal-body">
@@ -3548,7 +3554,6 @@
     <div class="new-case-modal-footer">
       <button type="button" class="new-case-btn-back" id="newCaseBackBtn" hidden onclick="newCasePrevStep()">חזרה</button>
       <div class="new-case-footer-actions" id="newCaseFooterActions">
-        <button type="button" class="new-case-skip-link" id="newCaseSkipBtn" hidden onclick="newCaseSkipAndOpen()">דילוג ופתיחת תיק</button>
         <button type="button" class="new-case-btn-next" id="newCaseNextBtn" onclick="newCaseNextStep()">המשך לשאלון</button>
       </div>
     </div>
@@ -3578,7 +3583,7 @@
     if (!modal) return;
     newCaseMode = 'edit';
     newCaseStep = 1;
-    newCaseMaxStep = 3;
+    newCaseMaxStep = 2;
     populateNewCaseFormFromRow(row);
     syncNewCaseStepUi();
     resetPrecheckSubmitState();
@@ -3656,16 +3661,12 @@
     });
     const backBtn = document.getElementById('newCaseBackBtn');
     const nextBtn = document.getElementById('newCaseNextBtn');
-    const skipBtn = document.getElementById('newCaseSkipBtn');
-    const isPrecheckStep = newCaseStep === 3 && !isSuccess && !isEdit;
     if (backBtn) backBtn.hidden = newCaseStep === 1 || isSuccess;
-    if (skipBtn) skipBtn.hidden = !isPrecheckStep;
     if (nextBtn) {
       nextBtn.hidden = isSuccess;
-      nextBtn.disabled = isPrecheckStep && !precheckReportReady;
+      nextBtn.disabled = false;
       if (isEdit) nextBtn.textContent = 'שמירה';
       else if (newCaseStep === 1) nextBtn.textContent = 'המשך לשאלון';
-      else if (newCaseStep === 2) nextBtn.textContent = 'המשך לבדיקת קדם';
       else nextBtn.textContent = 'סיום ופתיחת תיק';
     }
     document.querySelector('.new-case-modal-body')?.scrollTo({ top: 0 });
@@ -3681,7 +3682,7 @@
 
   function newCaseGoToStep(step) {
     if (newCaseStep === 4) return;
-    if (step < 1 || step > 3) return;
+    if (step < 1 || step > 2) return;
     if (newCaseMode !== 'edit' && step > newCaseMaxStep) return;
     if (step === newCaseStep) return;
     newCaseStep = step;
@@ -4101,20 +4102,20 @@
       closeNewCaseModal();
       return;
     }
-    if (newCaseStep < 3) {
-      newCaseStep += 1;
+    if (newCaseStep === 1) {
+      newCaseStep = 2;
       newCaseMaxStep = Math.max(newCaseMaxStep, newCaseStep);
       syncNewCaseStepUi();
       return;
     }
-    if (newCaseStep === 3) {
+    if (newCaseStep === 2) {
       newCaseStep = 4;
       syncNewCaseStepUi();
     }
   }
 
   function newCaseSkipAndOpen() {
-    if (newCaseStep !== 3) return;
+    if (newCaseStep !== 2) return;
     newCaseStep = 4;
     syncNewCaseStepUi();
   }
