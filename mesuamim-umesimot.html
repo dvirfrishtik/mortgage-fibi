@@ -227,7 +227,7 @@
       display: none;
       position: fixed;
       inset: 0;
-      z-index: 1200;
+      z-index: 2000;
       align-items: center;
       justify-content: center;
       padding: 24px;
@@ -236,16 +236,17 @@
     .new-case-modal-backdrop {
       position: absolute;
       inset: 0;
-      background: rgba(10, 16, 40, 0.72);
+      background: rgba(10, 16, 40, 0.82);
       animation: dashModalFadeIn 0.2s ease-out;
     }
     .new-case-modal-card {
       position: relative;
+      z-index: 1;
       width: 80vw;
       height: 90vh;
       max-width: 80vw;
       max-height: 90vh;
-      background: var(--surface);
+      background: #fff;
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-lg);
       border: 1px solid var(--border);
@@ -296,24 +297,25 @@
     }
     .new-case-modal-header {
       flex-shrink: 0;
-      padding: 16px 24px 14px;
+      padding: 18px 56px 16px;
       background: var(--navy);
       color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      min-height: 56px;
+      box-sizing: border-box;
     }
     .new-case-modal-title {
       margin: 0;
-      padding-bottom: 12px;
+      padding-bottom: 0;
       font-size: 20px;
       font-weight: 700;
       color: #fff;
       text-align: center;
       width: 100%;
       line-height: 1.3;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
     }
     .new-case-steps {
       display: flex;
@@ -2756,11 +2758,7 @@
       background: var(--navy-dark);
     }
     #precheckQuestionnaireModal .new-case-modal-header {
-      padding-bottom: 18px;
-    }
-    #precheckQuestionnaireModal .new-case-modal-title {
-      border-bottom: none;
-      padding-bottom: 0;
+      padding-bottom: 16px;
     }
     #precheckQuestionnaireModal .question-card {
       background: white;
@@ -2874,15 +2872,27 @@
       color: var(--navy);
       line-height: 1.4;
     }
+    #createPrecheckReportModal .new-case-modal-card {
+      width: 90vw;
+      height: 90vh;
+      max-width: 90vw;
+      max-height: 90vh;
+      background: #fff;
+      isolation: isolate;
+      z-index: 1;
+    }
     .create-precheck-report-body {
       flex: 1;
       min-height: 0;
       display: flex;
       flex-direction: column;
       padding: 0 !important;
+      overflow: hidden !important;
+      background: #fff;
+      position: relative;
+      z-index: 1;
     }
-    .create-precheck-report-generating,
-    .create-precheck-report-empty {
+    .create-precheck-report-generating {
       flex: 1;
       min-height: 0;
       display: flex;
@@ -2891,25 +2901,539 @@
       justify-content: center;
       text-align: center;
       padding: 48px 28px;
-      background: #FAFBFC;
+      background: #fff;
     }
     .create-precheck-report-generating[hidden],
-    .create-precheck-report-empty[hidden] {
+    .create-precheck-report-overview[hidden] {
       display: none !important;
     }
-    .create-precheck-report-empty-title {
-      margin: 0 0 8px;
-      font-size: 20px;
-      font-weight: 500;
+    .create-precheck-report-overview {
+      flex: 1 1 auto;
+      min-height: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      position: relative;
+      z-index: 2;
+    }
+    .pcr-overview-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 16px 24px 20px;
+      background: #fff;
+    }
+    .pcr-overview-scroll > * {
+      flex-shrink: 0;
+    }
+    .pcr-overview-scroll::-webkit-scrollbar { width: 6px; }
+    .pcr-overview-scroll::-webkit-scrollbar-thumb {
+      background: #C5CAD6;
+      border-radius: 99px;
+    }
+
+    .pcr-block {
+      margin-bottom: 28px;
+    }
+    .pcr-block:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Meta — compact inline details */
+    .pcr-meta {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: #fff;
+      overflow: hidden;
+    }
+    .pcr-meta-title {
+      margin: 0;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
       color: var(--navy);
+      background: var(--navy-50);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .pcr-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 0;
+    }
+    .pcr-meta-item {
+      min-width: 0;
+      padding: 8px 10px;
+      border-inline-start: 1px solid var(--border-light);
+    }
+    .pcr-meta-item:first-child { border-inline-start: none; }
+    @media (max-width: 900px) {
+      .pcr-meta-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .pcr-meta-item:nth-child(3n+1) { border-inline-start: none; }
+      .pcr-meta-item:nth-child(-n+3) { border-bottom: 1px solid var(--border-light); }
+    }
+    .pcr-meta-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-faint);
+      line-height: 1.25;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .pcr-meta-value {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-body);
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Verdict */
+    .pcr-verdict {
+      border: 1px solid #f0d2a8;
+      border-radius: var(--radius-lg);
+      background: var(--orange-bg);
+      overflow: hidden;
+    }
+    .pcr-verdict-main {
+      padding: 14px 16px 12px;
+      background: var(--orange-bg);
+      border-bottom: 1px solid #f0d2a8;
+    }
+    .pcr-verdict-eyebrow {
+      margin: 0 0 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--orange);
+    }
+    .pcr-verdict-title {
+      margin: 0 0 6px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.3;
+    }
+    .pcr-verdict-text {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-body);
+      line-height: 1.45;
+    }
+    .pcr-verdict-chips {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      background: #fff;
+    }
+    @media (max-width: 800px) {
+      .pcr-verdict-chips { grid-template-columns: 1fr; }
+    }
+    .pcr-verdict-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      padding: 10px 14px;
+      border: none;
+      border-inline-start: 1px solid var(--border-light);
+      background: #fff;
+      cursor: pointer;
+      text-align: right;
+      font-family: inherit;
+    }
+    .pcr-verdict-chip:first-child { border-inline-start: none; }
+    .pcr-verdict-chip:hover { background: var(--navy-50); }
+    .pcr-verdict-chip-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.3;
+    }
+    .pcr-verdict-chip-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+    .pcr-verdict-chip.is-ok .pcr-verdict-chip-value { color: var(--green); }
+    .pcr-verdict-chip.is-warn .pcr-verdict-chip-value { color: var(--orange); }
+
+    /* Section shell — title outside content card */
+    .pcr-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: transparent;
+      border: none;
+      overflow: visible;
+    }
+    .pcr-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      min-height: 34px;
+    }
+    .pcr-section-heading {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      min-width: 0;
+    }
+    .pcr-section-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.3;
+    }
+    .pcr-section-summary {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .pcr-section-expand {
+      flex-shrink: 0;
+      margin-inline-start: auto;
+      padding: 6px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      color: var(--text-body);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+    }
+    .pcr-section-expand:hover {
+      border-color: var(--navy);
+      color: var(--navy);
+      background: var(--navy-50);
+    }
+    .pcr-section-body {
+      padding: 12px 14px 14px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+    .pcr-section-body:has(.pcr-kpi-grid) {
+      padding: 0;
+      overflow: hidden;
+    }
+    .pcr-section-body:has(.pcr-reliability-list) {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    /* KPIs — single row with dividers, not nested cards */
+    .pcr-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0;
+      background: #fff;
+    }
+    @media (max-width: 1100px) {
+      .pcr-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .pcr-kpi {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 14px 14px 12px;
+      border-inline-start: 1px solid var(--border-light);
+      background: #fff;
+      text-align: right;
+      min-width: 0;
+    }
+    .pcr-kpi:first-child { border-inline-start: none; }
+    .pcr-kpi.is-emphasis {
+      background: var(--navy-50);
+    }
+    .pcr-kpi-label {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.3;
+    }
+    .pcr-kpi-value {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+    .pcr-kpi.is-emphasis .pcr-kpi-value { font-size: 22px; }
+    .pcr-kpi-notes {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .pcr-kpi-notes li {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
       line-height: 1.4;
     }
-    .create-precheck-report-empty-text {
+    .pcr-kpi-link {
+      margin-top: 2px;
+      align-self: flex-start;
+      border: none;
+      background: none;
+      padding: 0;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .pcr-kpi-link:hover { color: var(--navy-dark); }
+
+    .pcr-reliability-summary {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
       margin: 0;
-      max-width: 320px;
-      font-size: 14px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-light);
+      background: #F8F9FB;
+    }
+    .pcr-reliability-summary-text {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.3;
+    }
+    .pcr-reliability-score {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 9px;
+      border-radius: var(--radius-sm);
+      background: var(--green-bg);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+    .pcr-reliability-list {
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+    }
+    .pcr-reliability-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      background: #fff;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .pcr-reliability-row:last-child { border-bottom: none; }
+    .pcr-reliability-row:nth-child(even) { background: #F8F9FB; }
+    .pcr-reliability-copy {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .pcr-reliability-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.35;
+    }
+    .pcr-reliability-detail {
+      margin: 0;
+      font-size: 12.5px;
+      font-weight: 500;
       color: var(--text-muted);
-      line-height: 1.5;
+      line-height: 1.45;
+    }
+    .pcr-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.3;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .pcr-status-pill::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+    .pcr-status-pill.is-ok { background: var(--green-bg); color: var(--green); }
+    .pcr-status-pill.is-warn { background: var(--orange-bg); color: var(--orange); }
+    .pcr-status-pill.is-block { background: var(--red-bg); color: var(--red); }
+    .pcr-status-pill.is-info { background: var(--navy-50); color: var(--navy); }
+    .pcr-section-cta {
+      border: none;
+      background: none;
+      padding: 0;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .pcr-section-cta:hover { color: var(--navy-dark); }
+
+    .pcr-exception-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pcr-exception {
+      border: none;
+      border-radius: var(--radius);
+      background: #F8F9FB;
+      padding: 11px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .pcr-exception.is-block {
+      background: var(--red-bg);
+    }
+    .pcr-exception.is-warn {
+      background: var(--orange-bg);
+    }
+    .pcr-exception-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .pcr-exception-title {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.35;
+    }
+    .pcr-exception-text {
+      margin: 0;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-body);
+      line-height: 1.45;
+    }
+    .pcr-exception-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .pcr-exception-btn {
+      height: 30px;
+      padding: 0 12px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      background: #fff;
+      color: var(--navy);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .pcr-exception-btn:hover {
+      background: var(--navy-50);
+      border-color: var(--navy-100);
+    }
+    .pcr-exception-history {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .pcr-exception-history-text {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .pcr-overview-action {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 24px;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      position: relative;
+      z-index: 3;
+    }
+    .pcr-overview-action-copy { min-width: 0; }
+    .pcr-overview-action-title {
+      margin: 0 0 2px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.3;
+    }
+    .pcr-overview-action-text {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .pcr-overview-action-btn {
+      flex-shrink: 0;
+      height: 36px;
+      padding: 0 16px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--navy);
+      color: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .pcr-overview-action-btn:hover { background: var(--navy-dark); }
+    .pcr-section.is-flash .pcr-section-body {
+      box-shadow: inset 0 0 0 2px var(--yellow);
     }
     .add-doc-btn {
       height: 28px;
@@ -5079,7 +5603,7 @@
           <span class="hero-flow-note">הושלם</span>
         </span>
       </button>
-      <button type="button" class="hero-flow-btn is-done" id="heroFlowPrecheckBtn" aria-label="דו״ח בדיקת קדם — לצפייה" onclick="openCaseEditModal(3)">
+      <button type="button" class="hero-flow-btn is-done" id="heroFlowPrecheckBtn" aria-label="דו״ח בדיקת קדם — לצפייה" onclick="viewPrecheckReport()">
         <span class="hero-flow-mark" aria-hidden="true">
           <svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2 4.8 8.5 9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
@@ -6439,9 +6963,193 @@
           <span class="precheck-step-generating-typed" id="createPrecheckReportTyped"></span>
         </p>
       </div>
-      <div class="create-precheck-report-empty" id="createPrecheckReportEmpty" hidden>
-        <p class="create-precheck-report-empty-title">כאן יופיע דו״ח בדיקת קדם</p>
-        <p class="create-precheck-report-empty-text">הדו״ח יוצג כאן לאחר השלמת היצירה</p>
+      <div class="create-precheck-report-overview" id="createPrecheckReportOverview" hidden>
+        <div class="pcr-overview-scroll">
+          <!-- 1. Meta + Verdict -->
+          <section class="pcr-meta pcr-block" aria-label="פרטי הדוח">
+            <h3 class="pcr-meta-title">פרטי התיק</h3>
+            <div class="pcr-meta-grid">
+              <div class="pcr-meta-item">
+                <span class="pcr-meta-label">שם לקוח</span>
+                <span class="pcr-meta-value">דנה לוי</span>
+              </div>
+              <div class="pcr-meta-item">
+                <span class="pcr-meta-label">מספר בקשה</span>
+                <span class="pcr-meta-value">245891</span>
+              </div>
+              <div class="pcr-meta-item">
+                <span class="pcr-meta-label">סוג הכנסה</span>
+                <span class="pcr-meta-value">שכירה בעלת הכנסה משתנה</span>
+              </div>
+              <div class="pcr-meta-item">
+                <span class="pcr-meta-label">סכום הלוואה</span>
+                <span class="pcr-meta-value">₪1,200,000</span>
+              </div>
+              <div class="pcr-meta-item">
+                <span class="pcr-meta-label">תקופה</span>
+                <span class="pcr-meta-value">25 שנה</span>
+              </div>
+              <div class="pcr-meta-item">
+                <span class="pcr-meta-label">תאריך יצירת הדוח</span>
+                <span class="pcr-meta-value" id="pcrReportCreatedAt">08/08/2026</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="pcr-verdict pcr-block" aria-label="מסקנה ראשית">
+            <div class="pcr-verdict-main">
+              <p class="pcr-verdict-eyebrow">מסקנת בדיקת קדם</p>
+              <h3 class="pcr-verdict-title">ניתן להתקדם לאחר השלמת 2 בירורים</h3>
+              <p class="pcr-verdict-text">מרבית הבדיקות נמצאו תקינות. קיימת אי-התאמה אחת החוסמת את השלמת הבדיקה ונקודה נוספת הדורשת בירור.</p>
+            </div>
+            <div class="pcr-verdict-chips" role="group" aria-label="סיכום מהיר">
+              <button type="button" class="pcr-verdict-chip is-ok" onclick="openPrecheckReportDetail(event, 'reliability')">
+                <span class="pcr-verdict-chip-value">9 מתוך 10</span>
+                <span class="pcr-verdict-chip-label">בדיקות תקינות</span>
+              </button>
+              <button type="button" class="pcr-verdict-chip is-warn" onclick="openPrecheckReportDetail(event, 'exceptions')">
+                <span class="pcr-verdict-chip-value">2</span>
+                <span class="pcr-verdict-chip-label">חריגים פתוחים</span>
+              </button>
+              <button type="button" class="pcr-verdict-chip is-info" onclick="openPrecheckReportDetail(event, 'documents')">
+                <span class="pcr-verdict-chip-value">8 מתוך 9</span>
+                <span class="pcr-verdict-chip-label">מסמכים שהתקבלו</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- 2. Financial snapshot -->
+          <section class="pcr-section pcr-block" id="pcrFinanceSection" aria-label="תמונת מצב פיננסית">
+            <div class="pcr-section-header">
+              <div class="pcr-section-heading">
+                <h3 class="pcr-section-title">תמונת מצב פיננסית</h3>
+              </div>
+            </div>
+            <div class="pcr-section-body">
+              <div class="pcr-kpi-grid">
+                <article class="pcr-kpi">
+                  <p class="pcr-kpi-label">הכנסה מוכרת</p>
+                  <p class="pcr-kpi-value">₪18,450</p>
+                  <ul class="pcr-kpi-notes">
+                    <li>ממוצע נטו: ₪19,994</li>
+                    <li>לאחר התאמות לרכיבים שאינם מוכרים</li>
+                  </ul>
+                  <button type="button" class="pcr-kpi-link" onclick="openPrecheckReportDetail(event, 'income')">צפייה בחישוב ההכנסה</button>
+                </article>
+                <article class="pcr-kpi">
+                  <p class="pcr-kpi-label">התחייבויות מוכרות</p>
+                  <p class="pcr-kpi-value">₪2,350</p>
+                  <ul class="pcr-kpi-notes">
+                    <li>3 מתוך 4 התחייבויות נכללו בחישוב</li>
+                  </ul>
+                  <button type="button" class="pcr-kpi-link" onclick="openPrecheckReportDetail(event, 'liabilities')">צפייה בהתחייבויות</button>
+                </article>
+                <article class="pcr-kpi">
+                  <p class="pcr-kpi-label">החזר חודשי מבוקש</p>
+                  <p class="pcr-kpi-value">₪6,850</p>
+                  <ul class="pcr-kpi-notes">
+                    <li>הלוואה של ₪1,200,000 ל־25 שנה</li>
+                  </ul>
+                  <button type="button" class="pcr-kpi-link" onclick="openPrecheckReportDetail(event, 'loan')">פרטי ההלוואה</button>
+                </article>
+                <article class="pcr-kpi is-emphasis">
+                  <p class="pcr-kpi-label">יחס החזר</p>
+                  <p class="pcr-kpi-value">37%</p>
+                  <ul class="pcr-kpi-notes">
+                    <li>הכנסה פנויה לאחר ההחזר: ₪9,250</li>
+                  </ul>
+                  <button type="button" class="pcr-kpi-link" onclick="openPrecheckReportDetail(event, 'pti')">צפייה בחישוב יכולת ההחזר</button>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. Reliability -->
+          <section class="pcr-section pcr-block" id="pcrReliabilitySection" aria-label="בדיקות ואמינות">
+            <div class="pcr-section-header">
+              <div class="pcr-section-heading">
+                <h3 class="pcr-section-title">בדיקות ואמינות</h3>
+                <span class="pcr-reliability-score">אמינות כללית: 94%</span>
+              </div>
+              <button type="button" class="pcr-section-expand" onclick="openPrecheckReportDetail(event, 'reliability')">לכל הבדיקות</button>
+            </div>
+            <div class="pcr-section-body">
+              <div class="pcr-reliability-summary">
+                <span class="pcr-reliability-summary-text">9/10 בדיקות תקינות</span>
+              </div>
+              <div class="pcr-reliability-list">
+                <div class="pcr-reliability-row">
+                  <div class="pcr-reliability-copy">
+                    <span class="pcr-reliability-name">שלמות ואותנטיות מסמכים</span>
+                    <p class="pcr-reliability-detail">לא נמצאו כפילויות, עריכות חריגות או סימנים לחוסר שלמות.</p>
+                  </div>
+                  <span class="pcr-status-pill is-ok">תקין</span>
+                </div>
+                <div class="pcr-reliability-row">
+                  <div class="pcr-reliability-copy">
+                    <span class="pcr-reliability-name">עקביות בין מסמכים ומקורות</span>
+                    <p class="pcr-reliability-detail">פרטי הלקוח, המעסיק והחשבון נמצאו עקביים בין המקורות.</p>
+                  </div>
+                  <span class="pcr-status-pill is-ok">תקין</span>
+                </div>
+                <div class="pcr-reliability-row">
+                  <div class="pcr-reliability-copy">
+                    <span class="pcr-reliability-name">התאמת הכנסה והפקדות</span>
+                    <p class="pcr-reliability-detail">11 מתוך 12 חודשי השכר הותאמו להפקדות בחשבון.</p>
+                  </div>
+                  <span class="pcr-status-pill is-warn">דורש בירור</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. Needs attention -->
+          <section class="pcr-section pcr-block" id="pcrExceptionsSection" aria-label="דורש את תשומת לבך">
+            <div class="pcr-section-header">
+              <div class="pcr-section-heading">
+                <h3 class="pcr-section-title">דורש את תשומת לבך</h3>
+                <span class="pcr-section-summary">2 חריגים פתוחים</span>
+              </div>
+              <button type="button" class="pcr-section-expand" onclick="openPrecheckReportDetail(event, 'exception-history')">היסטוריית חריגים</button>
+            </div>
+            <div class="pcr-section-body">
+              <div class="pcr-exception-list">
+                <article class="pcr-exception is-block">
+                  <div class="pcr-exception-top">
+                    <h4 class="pcr-exception-title">הפקדת שכר לא נמצאה – 07/2025</h4>
+                    <span class="pcr-status-pill is-block">חוסם אישור</span>
+                  </div>
+                  <p class="pcr-exception-text">צפויה הפקדה של ₪19,260, אך לא נמצאה התאמה בחשבון.</p>
+                  <div class="pcr-exception-actions">
+                    <button type="button" class="pcr-exception-btn" onclick="openPrecheckReportDetail(event, 'exception-salary-deposit')">בדיקה וטיפול</button>
+                  </div>
+                </article>
+                <article class="pcr-exception is-warn">
+                  <div class="pcr-exception-top">
+                    <h4 class="pcr-exception-title">בונוס חד־פעמי אפשרי – 12/2025</h4>
+                    <span class="pcr-status-pill is-warn">דורש בירור</span>
+                  </div>
+                  <p class="pcr-exception-text">זוהה בונוס של ₪6,000. נדרש לוודא האם ניתן להכיר בו כהכנסה קבועה.</p>
+                  <div class="pcr-exception-actions">
+                    <button type="button" class="pcr-exception-btn" onclick="openPrecheckReportDetail(event, 'exception-bonus')">בדיקה וטיפול</button>
+                  </div>
+                </article>
+              </div>
+              <div class="pcr-exception-history">
+                <p class="pcr-exception-history-text">1 חריג נוסף טופל ונסגר</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- 5. Bottom action -->
+        <div class="pcr-overview-action">
+          <div class="pcr-overview-action-copy">
+            <p class="pcr-overview-action-title">לא ניתן להשלים את בדיקת הקדם</p>
+            <p class="pcr-overview-action-text">יש לטפל בחריג חוסם אחד לפני שניתן יהיה לאשר את הבדיקה.</p>
+          </div>
+          <button type="button" class="pcr-overview-action-btn" onclick="openPrecheckReportDetail(event, 'exceptions')">טיפול בחריגים</button>
+        </div>
       </div>
     </div>
   </div>
@@ -7356,6 +8064,10 @@
   }
 
   function viewPrecheckReport() {
+    if (precheckReportCreated) {
+      openCreatePrecheckReportOverviewModal();
+      return;
+    }
     openCaseEditModal(3);
   }
 
@@ -7364,7 +8076,7 @@
     if (btn?.disabled) return;
     capturePrecheckDocsBaseline();
     markHeroPrecheckDone();
-    openCaseEditModal(3);
+    openCreatePrecheckReportModal();
   }
 
   function createPrecheckReport() {
@@ -7487,18 +8199,28 @@
     runCreatePrecheckReportDocCycle(names, 0, typedEl);
   }
 
-  function showCreatePrecheckReportEmptyState() {
+  function showCreatePrecheckReportOverview() {
     const generating = document.getElementById('createPrecheckReportGenerating');
-    const empty = document.getElementById('createPrecheckReportEmpty');
+    const overview = document.getElementById('createPrecheckReportOverview');
     const title = document.getElementById('createPrecheckReportModalTitle');
+    const scroll = overview?.querySelector('.pcr-overview-scroll');
+    const createdAt = document.getElementById('pcrReportCreatedAt');
     stopCreatePrecheckReportSubtitleCycle();
     clearCreatePrecheckReportTimer();
     if (createPrecheckReportLottie) {
       try { createPrecheckReportLottie.pause(); } catch (_) {}
     }
     if (generating) generating.hidden = true;
-    if (empty) empty.hidden = false;
+    if (overview) overview.hidden = false;
     if (title) title.textContent = 'דו״ח בדיקת קדם';
+    if (createdAt) {
+      createdAt.textContent = new Date().toLocaleDateString('he-IL', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
+    if (scroll) scroll.scrollTop = 0;
     precheckReportCreated = true;
     capturePrecheckDocsBaseline();
     markHeroPrecheckDone();
@@ -7509,11 +8231,11 @@
     const modal = document.getElementById('createPrecheckReportModal');
     if (!modal) return;
     const generating = document.getElementById('createPrecheckReportGenerating');
-    const empty = document.getElementById('createPrecheckReportEmpty');
+    const overview = document.getElementById('createPrecheckReportOverview');
     const title = document.getElementById('createPrecheckReportModalTitle');
     const typedEl = document.getElementById('createPrecheckReportTyped');
     if (generating) generating.hidden = false;
-    if (empty) empty.hidden = true;
+    if (overview) overview.hidden = true;
     if (title) title.textContent = 'יצירת דו״ח בדיקת קדם';
     if (typedEl) {
       typedEl.textContent = '';
@@ -7529,7 +8251,52 @@
     }
     startCreatePrecheckReportSubtitleCycle();
     clearCreatePrecheckReportTimer();
-    createPrecheckReportTimer = window.setTimeout(showCreatePrecheckReportEmptyState, CREATE_PRECHECK_REPORT_MS);
+    createPrecheckReportTimer = window.setTimeout(showCreatePrecheckReportOverview, CREATE_PRECHECK_REPORT_MS);
+  }
+
+  function openCreatePrecheckReportOverviewModal() {
+    const modal = document.getElementById('createPrecheckReportModal');
+    if (!modal) return;
+    const generating = document.getElementById('createPrecheckReportGenerating');
+    const overview = document.getElementById('createPrecheckReportOverview');
+    const title = document.getElementById('createPrecheckReportModalTitle');
+    stopCreatePrecheckReportSubtitleCycle();
+    clearCreatePrecheckReportTimer();
+    if (createPrecheckReportLottie) {
+      try { createPrecheckReportLottie.pause(); } catch (_) {}
+    }
+    if (generating) generating.hidden = true;
+    if (overview) overview.hidden = false;
+    if (title) title.textContent = 'דו״ח בדיקת קדם';
+    closeAllCapsuleMenus();
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    const scroll = overview?.querySelector('.pcr-overview-scroll');
+    if (scroll) scroll.scrollTop = 0;
+  }
+
+  function openPrecheckReportDetail(event, section) {
+    event?.stopPropagation?.();
+    // Future: navigate to detail screens (income / liabilities / loan / pti / reliability / exceptions / documents).
+    const map = {
+      income: 'pcrFinanceSection',
+      liabilities: 'pcrFinanceSection',
+      loan: 'pcrFinanceSection',
+      pti: 'pcrFinanceSection',
+      reliability: 'pcrReliabilitySection',
+      documents: 'pcrReliabilitySection',
+      exceptions: 'pcrExceptionsSection',
+      'exception-salary-deposit': 'pcrExceptionsSection',
+      'exception-bonus': 'pcrExceptionsSection',
+      'exception-history': 'pcrExceptionsSection'
+    };
+    const targetId = map[section];
+    const el = targetId ? document.getElementById(targetId) : null;
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.classList.add('is-flash');
+      window.setTimeout(() => el.classList.remove('is-flash'), 900);
+    }
   }
 
   function closeCreatePrecheckReportModal() {
@@ -7632,6 +8399,7 @@
   function markHeroPrecheckPending() {
     const btn = document.getElementById('heroFlowPrecheckBtn');
     if (!btn) return;
+    btn.hidden = true;
     btn.classList.remove('is-done');
     btn.classList.add('is-pending');
     btn.setAttribute('aria-label', 'דו״ח בדיקת קדם — טרם הושלם');
@@ -10280,6 +11048,7 @@
   function markHeroPrecheckDone() {
     const btn = document.getElementById('heroFlowPrecheckBtn');
     if (!btn) return;
+    btn.hidden = false;
     btn.classList.remove('is-pending');
     btn.classList.add('is-done');
     btn.setAttribute('aria-label', 'דו״ח בדיקת קדם — לצפייה');
