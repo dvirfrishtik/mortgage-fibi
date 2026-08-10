@@ -1390,6 +1390,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+      margin-top: 2px;
     }
     .new-case-modal .employment-capsule {
       display: inline-flex;
@@ -3352,7 +3353,7 @@
       const data = JSON.parse(raw);
       newCaseMode = 'edit';
       newCaseStep = 1;
-      newCaseMaxStep = 3;
+      newCaseMaxStep = 1;
       populateNewCaseFormFromData(data);
       const modal = document.getElementById('newCaseModal');
       syncNewCaseStepUi();
@@ -3371,11 +3372,6 @@
     <button type="button" class="new-case-modal-close" onclick="closeNewCaseModal()" aria-label="סגור">&times;</button>
     <div class="new-case-modal-header">
       <h2 class="new-case-modal-title" id="newCaseModalTitle">פתיחת תיק חדש</h2>
-      <div class="new-case-steps" id="newCaseSteps">
-        <button type="button" class="new-case-step-item is-active" data-step="1" onclick="newCaseGoToStep(1)">פרטי תיק</button>
-        <span class="new-case-step-arrow" aria-hidden="true"></span>
-        <button type="button" class="new-case-step-item" data-step="2" onclick="newCaseGoToStep(2)">שאלון לביצוע</button>
-      </div>
     </div>
     <div class="new-case-modal-body">
       <div class="new-case-pane is-active" data-pane="1">
@@ -3433,105 +3429,22 @@
                 <input type="text" class="form-input" id="newCasePropertyLocation" placeholder="עיר / טאבו / רמ״י">
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="new-case-pane" data-pane="2">
-        <div class="question-card">
-          <div class="question-text">פרופיל תעסוקתי</div>
-          <div class="employment-capsule-group" role="radiogroup" aria-label="פרופיל תעסוקתי">
-            <button type="button" class="employment-capsule" data-value="employee" onclick="newCaseSelectEmploymentProfile(this)">שכיר</button>
-            <button type="button" class="employment-capsule" data-value="self-employed" onclick="newCaseSelectEmploymentProfile(this)">עצמאי</button>
-            <button type="button" class="employment-capsule" data-value="controlling" onclick="newCaseSelectEmploymentProfile(this)">בעל שליטה</button>
-            <button type="button" class="employment-capsule" data-value="other" onclick="newCaseSelectEmploymentProfile(this)">אחר</button>
-          </div>
-          <div class="employment-other-field" id="employmentOtherField" hidden>
-            <label class="form-label" for="employmentOtherInput">פירוט</label>
-            <input type="text" class="form-input" id="employmentOtherInput" placeholder="פרט את הפרופיל התעסוקתי">
-          </div>
-        </div>
-        <p class="new-case-questionnaire-more">שאר השאלות יופיעו כאן בהמשך.</p>
-      </div>
-
-      <div class="new-case-pane" data-pane="3">
-        <div class="precheck-step">
-          <aside class="precheck-step-docs" aria-label="מסמכים לבדיקת קדם">
-            <div class="precheck-step-docs-scroll">
-              <p class="precheck-step-docs-label">מסמכים נדרשים (6)</p>
-              <div class="precheck-doc-list">
-                <div class="precheck-doc-item is-selected" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
-                  <div class="precheck-doc-info">
-                    <div class="precheck-doc-name">תעודת זהות</div>
-                  </div>
-                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
+            <div class="form-row single">
+              <div class="form-group">
+                <label class="form-label">פרופיל תעסוקתי <span class="required">*</span></label>
+                <div class="employment-capsule-group" role="radiogroup" aria-label="פרופיל תעסוקתי">
+                  <button type="button" class="employment-capsule" data-value="employee" onclick="newCaseSelectEmploymentProfile(this)">שכיר</button>
+                  <button type="button" class="employment-capsule" data-value="self-employed" onclick="newCaseSelectEmploymentProfile(this)">עצמאי</button>
+                  <button type="button" class="employment-capsule" data-value="controlling" onclick="newCaseSelectEmploymentProfile(this)">בעל שליטה</button>
+                  <button type="button" class="employment-capsule" data-value="other" onclick="newCaseSelectEmploymentProfile(this)">אחר</button>
                 </div>
-                <div class="precheck-doc-item" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
-                  <div class="precheck-doc-info">
-                    <div class="precheck-doc-name">אישור יתרות בנקאי</div>
-                  </div>
-                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
-                </div>
-                <div class="precheck-doc-item" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
-                  <div class="precheck-doc-info">
-                    <div class="precheck-doc-name">נסח טאבו</div>
-                  </div>
-                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
-                </div>
-                <div class="precheck-doc-item" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
-                  <div class="precheck-doc-info">
-                    <div class="precheck-doc-name">חוזה רכישה חתום</div>
-                  </div>
-                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
-                </div>
-                <div class="precheck-doc-item" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
-                  <div class="precheck-doc-info">
-                    <div class="precheck-doc-name">אישור משכורת</div>
-                  </div>
-                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
-                </div>
-                <div class="precheck-doc-item" role="option" tabindex="0" onclick="selectPrecheckDocRow(this)">
-                  <div class="precheck-doc-info">
-                    <div class="precheck-doc-name">דוח ריכוז נתונים</div>
-                  </div>
-                  <button type="button" class="precheck-doc-upload-btn" onclick="handlePrecheckDocUpload(event)">+ הוספת המסמך</button>
-                </div>
-              </div>
-              <button type="button" class="precheck-add-extra-btn" id="precheckAddExtraBtn" onclick="addPrecheckExtraDoc(event)">+ הוספת מסמך נוסף</button>
-            </div>
-            <div class="precheck-step-docs-footer">
-              <button type="button" class="precheck-submit-btn" onclick="handlePrecheckSubmit(event)">הגשת בדיקת קדם</button>
-            </div>
-          </aside>
-          <section class="precheck-step-main" aria-label="תוכן בדיקת קדם">
-            <div class="precheck-step-main-idle" id="precheckMainIdle">
-              <p class="precheck-step-main-idle-text">לאחר ההגשה, כאן יופיע דו״ח AI לבדיקת קדם</p>
-            </div>
-            <div class="precheck-step-main-generating" id="precheckMainGenerating" hidden>
-              <div class="precheck-step-loader" id="precheckStepLottie" aria-hidden="true"></div>
-              <p class="precheck-step-generating-title">מייצר דו"ח AI...</p>
-              <p class="precheck-step-generating-subtitle" id="precheckGeneratingSubtitle" aria-live="polite"><span class="precheck-step-generating-prefix">בודק את </span><span class="precheck-step-generating-typed" id="precheckGeneratingTyped"></span></p>
-            </div>
-            <div class="precheck-step-main-report" id="precheckMainReport" hidden>
-              <div class="precheck-report-doc" aria-label="דוח AI לבדיקת קדם">
-                <button type="button" class="precheck-report-download" onclick="downloadPrecheckReportPdf(event)">
-                  <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 1.75v7.5M4.25 6.5 7 9.25 9.75 6.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.25 11.5h9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-                  <span>הורדה כ-PDF</span>
-                </button>
-                <div class="precheck-report-result" aria-label="תוצאת בדיקה: תקין">
-                  <span class="precheck-report-result-label">תוצאת בדיקה:</span>
-                  <span class="precheck-report-result-value">
-                    <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.4"/><path d="M4.4 7.1 6.1 8.8 9.6 5.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    תקין
-                  </span>
-                </div>
-                <div class="precheck-report-doc-inner">
-                  <svg class="precheck-report-doc-icon" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M14 8h14l10 10v22a4 4 0 01-4 4H14a4 4 0 01-4-4V12a4 4 0 014-4z" stroke="currentColor" stroke-width="2"/><path d="M28 8v10h10" stroke="currentColor" stroke-width="2"/></svg>
-                  <p class="precheck-report-doc-text">כאן יופיע דוח AI</p>
+                <div class="employment-other-field" id="employmentOtherField" hidden>
+                  <label class="form-label" for="employmentOtherInput">פירוט</label>
+                  <input type="text" class="form-input" id="employmentOtherInput" placeholder="פרט את הפרופיל התעסוקתי">
                 </div>
               </div>
             </div>
-          </section>
+          </div>
         </div>
       </div>
 
@@ -3555,7 +3468,7 @@
     <div class="new-case-modal-footer">
       <button type="button" class="new-case-btn-back" id="newCaseBackBtn" hidden onclick="newCasePrevStep()">חזרה</button>
       <div class="new-case-footer-actions" id="newCaseFooterActions">
-        <button type="button" class="new-case-btn-next" id="newCaseNextBtn" onclick="newCaseNextStep()">המשך לשאלון</button>
+        <button type="button" class="new-case-btn-next" id="newCaseNextBtn" onclick="newCaseNextStep()">סיום ופתיחת תיק</button>
       </div>
     </div>
   </div>
@@ -3584,7 +3497,7 @@
     if (!modal) return;
     newCaseMode = 'edit';
     newCaseStep = 1;
-    newCaseMaxStep = 2;
+    newCaseMaxStep = 1;
     populateNewCaseFormFromRow(row);
     syncNewCaseStepUi();
     resetPrecheckSubmitState();
@@ -3615,7 +3528,7 @@
     }
 
     const stepsEl = document.getElementById('newCaseSteps');
-    if (stepsEl) stepsEl.hidden = isSuccess;
+    if (stepsEl) stepsEl.hidden = true;
 
     if (isSuccess) {
       const numEl = document.getElementById('newCaseSuccessNumber');
@@ -3634,41 +3547,13 @@
     document.querySelectorAll('.new-case-pane').forEach((pane) => {
       pane.classList.toggle('is-active', Number(pane.dataset.pane) === newCaseStep);
     });
-    document.querySelectorAll('.new-case-step-item').forEach((item) => {
-      const step = Number(item.dataset.step);
-      if (isSuccess) {
-        item.classList.add('is-done');
-        item.classList.remove('is-active', 'is-clickable');
-        item.setAttribute('aria-current', 'false');
-        item.disabled = true;
-        return;
-      }
-      if (isEdit) {
-        const isActive = step === newCaseStep;
-        item.classList.toggle('is-active', isActive);
-        item.classList.toggle('is-done', false);
-        item.classList.toggle('is-clickable', !isActive);
-        item.setAttribute('aria-current', isActive ? 'step' : 'false');
-        item.disabled = false;
-        return;
-      }
-      const isActive = step === newCaseStep;
-      const isReached = step <= newCaseMaxStep;
-      item.classList.toggle('is-active', isActive);
-      item.classList.toggle('is-done', isReached && !isActive);
-      item.classList.toggle('is-clickable', isReached && !isActive);
-      item.setAttribute('aria-current', isActive ? 'step' : 'false');
-      item.disabled = !isReached;
-    });
     const backBtn = document.getElementById('newCaseBackBtn');
     const nextBtn = document.getElementById('newCaseNextBtn');
-    if (backBtn) backBtn.hidden = newCaseStep === 1 || isSuccess;
+    if (backBtn) backBtn.hidden = true;
     if (nextBtn) {
       nextBtn.hidden = isSuccess;
       nextBtn.disabled = false;
-      if (isEdit) nextBtn.textContent = 'שמירה';
-      else if (newCaseStep === 1) nextBtn.textContent = 'המשך לשאלון';
-      else nextBtn.textContent = 'סיום ופתיחת תיק';
+      nextBtn.textContent = isEdit ? 'שמירה' : 'סיום ופתיחת תיק';
     }
     document.querySelector('.new-case-modal-body')?.scrollTo({ top: 0 });
   }
@@ -3679,15 +3564,6 @@
     icon.classList.remove('is-animating');
     void icon.offsetWidth;
     icon.classList.add('is-animating');
-  }
-
-  function newCaseGoToStep(step) {
-    if (newCaseStep === 4) return;
-    if (step < 1 || step > 2) return;
-    if (newCaseMode !== 'edit' && step > newCaseMaxStep) return;
-    if (step === newCaseStep) return;
-    newCaseStep = step;
-    syncNewCaseStepUi();
   }
 
   function selectPrecheckDocRow(row) {
@@ -4098,33 +3974,33 @@
     runPrecheckFillThenGenerate();
   }
 
+  function newCaseGoToStep(step) {
+    if (newCaseStep === 4) return;
+    if (step !== 1) return;
+    if (step === newCaseStep) return;
+    newCaseStep = step;
+    syncNewCaseStepUi();
+  }
+
   function newCaseNextStep() {
     if (newCaseMode === 'edit') {
       closeNewCaseModal();
       return;
     }
     if (newCaseStep === 1) {
-      newCaseStep = 2;
-      newCaseMaxStep = Math.max(newCaseMaxStep, newCaseStep);
-      syncNewCaseStepUi();
-      return;
-    }
-    if (newCaseStep === 2) {
       newCaseStep = 4;
       syncNewCaseStepUi();
     }
   }
 
   function newCaseSkipAndOpen() {
-    if (newCaseStep !== 2) return;
+    if (newCaseStep !== 1) return;
     newCaseStep = 4;
     syncNewCaseStepUi();
   }
 
   function newCasePrevStep() {
-    if (newCaseStep === 4 || newCaseStep <= 1) return;
-    newCaseStep -= 1;
-    syncNewCaseStepUi();
+    return;
   }
 
   function openMortgageCase(event) {

@@ -2519,30 +2519,37 @@
       flex-shrink: 0;
       position: relative;
       background: var(--navy);
-      border-bottom: 1px solid rgba(255,255,255,0.15);
-      gap: 10px;
+      border-bottom: none;
+      gap: 0;
       align-items: stretch;
+      justify-content: stretch;
+      padding: 0;
     }
     .docs-sidebar .card-title { color: white; font-size: 15px; }
     .docs-sidebar-tabs {
       display: flex;
       align-items: stretch;
-      gap: 4px;
+      justify-content: stretch;
+      gap: 0;
       flex: 1;
+      width: 100%;
       min-width: 0;
-      margin: -14px 0 -15px;
+      margin: 0;
     }
     .docs-sidebar-tab {
       position: relative;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 5px;
-      padding: 16px 18px;
+      flex: 1 1 0;
+      min-width: 0;
+      padding: 16px 14px;
       border: none;
       background: transparent;
       color: rgba(255, 255, 255, 0.62);
       font-family: inherit;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 500;
       line-height: 1.3;
       cursor: pointer;
@@ -2559,19 +2566,20 @@
     .docs-sidebar-tab.is-active::after {
       content: '';
       position: absolute;
-      left: 6px;
-      right: 6px;
+      left: 10px;
+      right: 10px;
       bottom: 0;
-      height: 3px;
+      height: 4px;
       background: var(--yellow);
-      border-radius: 2px 2px 0 0;
+      border-radius: 3px 3px 0 0;
     }
     .docs-sidebar-tab-count {
       font-weight: 700;
     }
     .inbox-list[hidden],
     .docs-panel[hidden],
-    .docs-precheck-panel[hidden] {
+    .docs-precheck-panel[hidden],
+    .docs-execution-panel[hidden] {
       display: none !important;
     }
     #docsPrecheckCat > .category-header {
@@ -2581,18 +2589,26 @@
     .docs-precheck-panel .inbox-hq-status {
       display: none !important;
     }
+    #docsListPrecheck .inbox-row:not(.inbox-row--missing) .capsule-select:not(.capsule-select--filter),
+    #docsListPrecheck .inbox-row:not(.inbox-row--missing) .status-select,
+    #docsListPrecheck .inbox-row:not(.inbox-row--missing) .inbox-banker-tag,
+    #docsListPrecheck .inbox-row:not(.inbox-row--missing) .inbox-row-actions,
     .docs-precheck-panel .inbox-row--precheck-file .capsule-select:not(.capsule-select--filter),
-    .docs-precheck-panel .inbox-row--precheck-file .status-select {
+    .docs-precheck-panel .inbox-row--precheck-file .status-select,
+    .docs-precheck-panel .inbox-row--precheck-file .inbox-banker-tag,
+    .docs-precheck-panel .inbox-row--precheck-file .inbox-row-actions {
       display: none !important;
     }
     .inbox-uploaded-file {
       display: none;
+      align-items: center;
+      gap: 6px;
       font-size: 12px;
       font-weight: 600;
       color: var(--text-muted);
       direction: ltr;
       text-align: left;
-      max-width: 132px;
+      max-width: 148px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -2601,16 +2617,31 @@
       padding: 2px 0;
     }
     .docs-precheck-panel .inbox-row--precheck-file .inbox-uploaded-file {
-      display: inline-block;
+      display: inline-flex;
     }
-    .docs-precheck-panel {
+    .inbox-file-ok-check {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      color: #4A74D4;
+      opacity: 0.9;
+    }
+    .inbox-uploaded-file-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .docs-precheck-panel,
+    .docs-execution-panel {
       display: flex;
       flex-direction: column;
       flex: 1;
       min-height: 0;
       overflow: hidden;
     }
-    .docs-precheck-panel .inbox-list {
+    .docs-precheck-panel .inbox-list,
+    .docs-execution-panel .inbox-list {
       flex: 1;
       min-height: 0;
     }
@@ -2689,7 +2720,8 @@
       display: none;
     }
     .docs-precheck-panel.is-questionnaire-locked .inbox-list,
-    .docs-precheck-panel.is-questionnaire-locked .docs-precheck-footer {
+    .docs-precheck-panel.is-questionnaire-locked .docs-precheck-footer,
+    .docs-execution-panel.is-questionnaire-locked .inbox-list {
       display: none !important;
     }
     .docs-precheck-questionnaire-gate {
@@ -2704,7 +2736,8 @@
       min-height: 0;
       background: #FAFBFC;
     }
-    .docs-precheck-panel.is-questionnaire-locked .docs-precheck-questionnaire-gate {
+    .docs-precheck-panel.is-questionnaire-locked .docs-precheck-questionnaire-gate,
+    .docs-execution-panel.is-questionnaire-locked .docs-precheck-questionnaire-gate {
       display: flex;
     }
     .docs-precheck-questionnaire-gate-content {
@@ -2841,9 +2874,83 @@
     #precheckQuestionnaireModal .precheck-questionnaire-success .new-case-success-title {
       margin: 0;
     }
+    #executionQuestionnaireModal .new-case-modal-header { padding-bottom: 16px; }
+    #executionQuestionnaireModal .question-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 12px;
+    }
+    #executionQuestionnaireModal .question-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-body);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    #executionQuestionnaireModal .employment-capsule-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    #executionQuestionnaireModal .employment-capsule {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 88px;
+      padding: 8px 16px;
+      border-radius: 99px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    #executionQuestionnaireModal .employment-capsule:hover {
+      background: var(--navy-50);
+      border-color: var(--navy-100);
+    }
+    #executionQuestionnaireModal .employment-capsule.selected {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+    }
+    #executionQuestionnaireModal .new-case-questionnaire-more {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--text-faint);
+    }
+    #executionQuestionnaireModal.is-success .new-case-modal-header { display: none; }
+    #executionQuestionnaireModal.is-success .new-case-modal-footer,
+    #executionQuestionnaireModal.is-success .new-case-modal-close { display: none; }
+    #executionQuestionnaireModal.is-success .new-case-modal-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 360px;
+    }
+    #executionQuestionnaireModal .precheck-questionnaire-success {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 360px;
+      padding: 48px 24px;
+      text-align: center;
+    }
+    #executionQuestionnaireModal.is-success .precheck-questionnaire-form { display: none; }
+    #executionQuestionnaireModal.is-success .precheck-questionnaire-success { display: flex; }
+    #executionQuestionnaireModal .precheck-questionnaire-success .new-case-success-title { margin: 0; }
     .docs-precheck-panel.is-docs-loading .docs-precheck-questionnaire-gate,
     .docs-precheck-panel.is-docs-loading .inbox-list,
-    .docs-precheck-panel.is-docs-loading .docs-precheck-footer {
+    .docs-precheck-panel.is-docs-loading .docs-precheck-footer,
+    .docs-execution-panel.is-docs-loading .docs-precheck-questionnaire-gate,
+    .docs-execution-panel.is-docs-loading .inbox-list {
       display: none !important;
     }
     .docs-precheck-loading {
@@ -2858,7 +2965,8 @@
       text-align: center;
       background: #FAFBFC;
     }
-    .docs-precheck-panel.is-docs-loading .docs-precheck-loading {
+    .docs-precheck-panel.is-docs-loading .docs-precheck-loading,
+    .docs-execution-panel.is-docs-loading .docs-precheck-loading {
       display: flex;
     }
     .docs-precheck-loading-lottie {
@@ -3439,8 +3547,8 @@
       height: 28px;
       border-radius: 99px;
       border: none;
-      background: var(--yellow);
-      color: var(--navy);
+      background: var(--navy);
+      color: #fff;
       font-size: 12px;
       font-weight: 700;
       font-family: inherit;
@@ -3455,13 +3563,14 @@
       transition: background 0.2s;
       white-space: nowrap;
     }
-    .add-doc-btn:hover { background: var(--yellow-dark); }
+    .add-doc-btn:hover { background: var(--navy-dark); }
     .add-doc-icon {
       width: 14px;
       height: 14px;
       display: block;
       flex-shrink: 0;
       object-fit: contain;
+      filter: brightness(0) invert(1);
     }
     .add-doc-btn-label-full {
       display: none;
@@ -3484,6 +3593,10 @@
       border-bottom: 1px solid var(--border-light);
       background: var(--surface);
       overflow: visible;
+    }
+    .inbox-filters .add-doc-btn {
+      height: 34px;
+      padding: 0 12px 0 10px;
     }
 
     .inbox-search {
@@ -5594,7 +5707,7 @@
       </div>
     </div>
     <div class="hero-flow-actions">
-      <button type="button" class="hero-flow-btn is-done" id="heroFlowQuestionnaireBtn" aria-label="שאלון לביצוע — הושלם" onclick="openCaseEditModal(2)">
+      <button type="button" class="hero-flow-btn is-done" id="heroFlowQuestionnaireBtn" aria-label="שאלון לביצוע — הושלם" onclick="openExecutionQuestionnaireFromHero()">
         <span class="hero-flow-mark" aria-hidden="true">
           <svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2 4.8 8.5 9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
@@ -6128,11 +6241,6 @@
         בדיקת קדם <span class="docs-sidebar-tab-count" id="docsTabPrecheckCount">(7)</span>
       </button>
     </div>
-    <button class="add-doc-btn" type="button" title="העלאת מסמכים" onclick="handleUploadDocuments()">
-      <img class="add-doc-icon" src="assets/attachment-icon.png" alt="" width="14" height="14" aria-hidden="true">
-      <span class="add-doc-btn-label-short">העלאה</span>
-      <span class="add-doc-btn-label-full">העלאת מסמכים</span>
-    </button>
   </div>
   <div class="inbox-filters">
     <div class="inbox-search">
@@ -6185,8 +6293,27 @@
         <button type="button" class="status-multi-filter-clear" onclick="clearStatusFilter(event)">נקה בחירה</button>
       </div>
     </div>
+    <button class="add-doc-btn" type="button" title="העלאת מסמכים" onclick="handleUploadDocuments()">
+      <img class="add-doc-icon" src="assets/attachment-icon.png" alt="" width="14" height="14" aria-hidden="true">
+      <span class="add-doc-btn-label-short">העלאה</span>
+      <span class="add-doc-btn-label-full">העלאת מסמכים</span>
+    </button>
   </div>
-  <div class="inbox-list" id="docsListExecution" data-docs-panel="execution" role="tabpanel" aria-labelledby="docsTabExecution">
+  <div class="docs-execution-panel" id="docsExecutionPanel" data-docs-panel="execution" role="tabpanel" aria-labelledby="docsTabExecution">
+  <div class="docs-precheck-questionnaire-gate" id="executionQuestionnaireGate">
+    <div class="docs-precheck-questionnaire-gate-content">
+      <div class="docs-precheck-questionnaire-gate-icon" aria-hidden="true">
+        <img src="assets/icon-sig-form.png" alt="">
+      </div>
+      <p class="docs-precheck-questionnaire-gate-title">כדי לטפל במסמכים לביצוע,<br>יש למלא שאלון לביצוע</p>
+    </div>
+    <button type="button" class="docs-precheck-questionnaire-gate-btn" onclick="openExecutionQuestionnaireModal()">למילוי שאלון לביצוע</button>
+  </div>
+  <div class="docs-precheck-loading" id="docsExecutionLoading" aria-hidden="true">
+    <div class="docs-precheck-loading-lottie" id="docsExecutionLoadingLottie" role="status" aria-label="טוען מסמכים לטיפול"></div>
+    <p class="docs-precheck-loading-text">טוען מסמכים לטיפול</p>
+  </div>
+  <div class="inbox-list" id="docsListExecution">
     <div class="category" id="docsDeliveryCat">
       <div class="category-header" onclick="toggleCat('docsDeliveryCat')">
         <div class="category-name">מיועדים למסירה ללקוח <span class="category-badge">9</span></div>
@@ -6446,6 +6573,7 @@
       </div>
     </div>
   </div><!-- /#docsListExecution -->
+  </div><!-- /#docsExecutionPanel -->
   <div class="docs-precheck-panel" id="docsPrecheckPanel" data-docs-panel="precheck" role="tabpanel" aria-labelledby="docsTabPrecheck" hidden>
   <div class="docs-precheck-questionnaire-gate" id="precheckQuestionnaireGate">
     <div class="docs-precheck-questionnaire-gate-content">
@@ -6779,24 +6907,26 @@
                 <input type="text" class="form-input" id="newCasePropertyLocation" placeholder="עיר / טאבו / רמ״י">
               </div>
             </div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label class="form-label">פרופיל תעסוקתי <span class="required">*</span></label>
+                <div class="employment-capsule-group" role="radiogroup" aria-label="פרופיל תעסוקתי">
+                  <button type="button" class="employment-capsule selected" data-value="employee" onclick="caseEditSelectEmploymentProfile(this)">שכיר</button>
+                  <button type="button" class="employment-capsule" data-value="self-employed" onclick="caseEditSelectEmploymentProfile(this)">עצמאי</button>
+                  <button type="button" class="employment-capsule" data-value="controlling" onclick="caseEditSelectEmploymentProfile(this)">בעל שליטה</button>
+                  <button type="button" class="employment-capsule" data-value="other" onclick="caseEditSelectEmploymentProfile(this)">אחר</button>
+                </div>
+                <div class="employment-other-field" id="employmentOtherField" hidden>
+                  <label class="form-label" for="employmentOtherInput">פירוט</label>
+                  <input type="text" class="form-input" id="employmentOtherInput" placeholder="פרט את הפרופיל התעסוקתי">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="new-case-pane" data-pane="2">
-        <div class="question-card">
-          <div class="question-text">פרופיל תעסוקתי</div>
-          <div class="employment-capsule-group" role="radiogroup" aria-label="פרופיל תעסוקתי">
-            <button type="button" class="employment-capsule selected" data-value="employee" onclick="caseEditSelectEmploymentProfile(this)">שכיר</button>
-            <button type="button" class="employment-capsule" data-value="self-employed" onclick="caseEditSelectEmploymentProfile(this)">עצמאי</button>
-            <button type="button" class="employment-capsule" data-value="controlling" onclick="caseEditSelectEmploymentProfile(this)">בעל שליטה</button>
-            <button type="button" class="employment-capsule" data-value="other" onclick="caseEditSelectEmploymentProfile(this)">אחר</button>
-          </div>
-          <div class="employment-other-field" id="employmentOtherField" hidden>
-            <label class="form-label" for="employmentOtherInput">פירוט</label>
-            <input type="text" class="form-input" id="employmentOtherInput" placeholder="פרט את הפרופיל התעסוקתי">
-          </div>
-        </div>
         <p class="new-case-questionnaire-more">שאר השאלות יופיעו כאן בהמשך.</p>
       </div>
 
@@ -6942,6 +7072,54 @@
     <div class="new-case-modal-footer" id="precheckQuestionnaireFooter">
       <div class="new-case-footer-actions">
         <button type="button" class="new-case-btn-next" onclick="savePrecheckQuestionnaire()">שמירה</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="new-case-modal" id="executionQuestionnaireModal" aria-hidden="true">
+  <div class="new-case-modal-backdrop" onclick="closeExecutionQuestionnaireModal()"></div>
+  <div class="new-case-modal-card" role="dialog" aria-modal="true" aria-labelledby="executionQuestionnaireModalTitle">
+    <button type="button" class="new-case-modal-close" onclick="closeExecutionQuestionnaireModal()" aria-label="סגור">&times;</button>
+    <div class="new-case-modal-header">
+      <h2 class="new-case-modal-title" id="executionQuestionnaireModalTitle">שאלון לביצוע</h2>
+    </div>
+    <div class="new-case-modal-body">
+      <div class="precheck-questionnaire-form" id="executionQuestionnaireForm">
+        <div class="question-card">
+          <div class="question-text">האם הלקוח מעוניין במסלול קבוע או משתנה?</div>
+          <div class="employment-capsule-group" role="radiogroup" aria-label="מסלול ריבית">
+            <button type="button" class="employment-capsule selected" data-value="fixed" onclick="selectPrecheckQuestionnaireCapsule(this)">קבוע</button>
+            <button type="button" class="employment-capsule" data-value="variable" onclick="selectPrecheckQuestionnaireCapsule(this)">משתנה</button>
+            <button type="button" class="employment-capsule" data-value="mixed" onclick="selectPrecheckQuestionnaireCapsule(this)">משולב</button>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-text">האם נדרשת חתימה דיגיטלית של הלקוח?</div>
+          <div class="employment-capsule-group" role="radiogroup" aria-label="חתימה דיגיטלית">
+            <button type="button" class="employment-capsule selected" data-value="yes" onclick="selectPrecheckQuestionnaireCapsule(this)">כן</button>
+            <button type="button" class="employment-capsule" data-value="no" onclick="selectPrecheckQuestionnaireCapsule(this)">לא</button>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-text">האם יש מסמכים נוספים שיש להכין למסירה?</div>
+          <div class="employment-capsule-group" role="radiogroup" aria-label="מסמכים נוספים">
+            <button type="button" class="employment-capsule" data-value="yes" onclick="selectPrecheckQuestionnaireCapsule(this)">כן</button>
+            <button type="button" class="employment-capsule selected" data-value="no" onclick="selectPrecheckQuestionnaireCapsule(this)">לא</button>
+          </div>
+        </div>
+        <p class="new-case-questionnaire-more">שאר השאלות יופיעו כאן בהמשך.</p>
+      </div>
+      <div class="precheck-questionnaire-success" id="executionQuestionnaireSuccess" aria-live="polite">
+        <div class="new-case-success-icon" id="executionQuestionnaireSuccessIcon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5 9.5 17 19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="new-case-success-title">השאלון מולא בהצלחה</h3>
+      </div>
+    </div>
+    <div class="new-case-modal-footer" id="executionQuestionnaireFooter">
+      <div class="new-case-footer-actions">
+        <button type="button" class="new-case-btn-next" onclick="saveExecutionQuestionnaire()">שמירה</button>
       </div>
     </div>
   </div>
@@ -7860,6 +8038,29 @@
   let precheckDocsBaseline = '';
   let precheckReportCreated = !window.__CASE_PAGE_EMPTY__;
   let precheckQuestionnaireDone = !window.__CASE_PAGE_EMPTY__;
+  let executionQuestionnaireDone = !window.__CASE_PAGE_EMPTY__;
+
+  function syncExecutionQuestionnaireGate() {
+    const panel = document.getElementById('docsExecutionPanel');
+    if (!panel) return;
+    const locked = window.__CASE_PAGE_EMPTY__ && !executionQuestionnaireDone;
+    const loading = panel.classList.contains('is-docs-loading');
+    const onExecTab = getActiveDocsTab() === 'execution';
+    const showPreviewEmpty = onExecTab && (locked || loading);
+    panel.classList.toggle('is-questionnaire-locked', locked);
+    if (showPreviewEmpty) {
+      const centerCol = document.querySelector('.center-col');
+      if (centerCol) centerCol.classList.toggle('is-preview-doc-empty', true);
+      const emptyState = document.getElementById('docPreviewEmptyState');
+      if (emptyState) emptyState.setAttribute('aria-hidden', 'false');
+      document.querySelectorAll('.inbox-row').forEach((r) => r.classList.remove('active'));
+      const titleEl = document.getElementById('previewTitle');
+      if (titleEl) titleEl.textContent = '';
+      document.querySelectorAll('.legal-doc').forEach((p) => { p.style.display = 'none'; });
+      renderPreviewUploadDate(null);
+    }
+    updateDocsSidebarTotalCount();
+  }
 
   function syncPrecheckQuestionnaireGate() {
     const panel = document.getElementById('docsPrecheckPanel');
@@ -7870,9 +8071,22 @@
     const showPreviewEmpty = onPrecheckTab && (locked || loading);
     panel.classList.toggle('is-questionnaire-locked', locked);
     const centerCol = document.querySelector('.center-col');
-    if (centerCol) centerCol.classList.toggle('is-preview-doc-empty', showPreviewEmpty);
+    if (centerCol) {
+      const execPanel = document.getElementById('docsExecutionPanel');
+      const execLocked = window.__CASE_PAGE_EMPTY__ && !executionQuestionnaireDone;
+      const execLoading = !!execPanel?.classList.contains('is-docs-loading');
+      const onExecTab = getActiveDocsTab() === 'execution';
+      const showExecEmpty = onExecTab && (execLocked || execLoading);
+      centerCol.classList.toggle('is-preview-doc-empty', showPreviewEmpty || showExecEmpty);
+    }
     const emptyState = document.getElementById('docPreviewEmptyState');
-    if (emptyState) emptyState.setAttribute('aria-hidden', showPreviewEmpty ? 'false' : 'true');
+    if (emptyState) {
+      const show = showPreviewEmpty
+        || (getActiveDocsTab() === 'execution'
+          && window.__CASE_PAGE_EMPTY__
+          && (!executionQuestionnaireDone || document.getElementById('docsExecutionPanel')?.classList.contains('is-docs-loading')));
+      emptyState.setAttribute('aria-hidden', show ? 'false' : 'true');
+    }
     if (showPreviewEmpty) {
       document.querySelectorAll('.inbox-row').forEach((r) => r.classList.remove('active'));
       const titleEl = document.getElementById('previewTitle');
@@ -7893,6 +8107,9 @@
   let precheckQuestionnaireTransitionTimer = null;
   let docsPrecheckLoadingTimer = null;
   let docsPrecheckLoadingLottie = null;
+  let executionQuestionnaireTransitionTimer = null;
+  let docsExecutionLoadingTimer = null;
+  let docsExecutionLoadingLottie = null;
   const PRECHECK_QUESTIONNAIRE_SUCCESS_MS = 1800;
   const DOCS_PRECHECK_LOADING_MS = 3000;
 
@@ -8003,6 +8220,119 @@
     clearTimeout(precheckQuestionnaireTransitionTimer);
     precheckQuestionnaireTransitionTimer = window.setTimeout(() => {
       finishPrecheckQuestionnaireAndLoadDocs();
+    }, PRECHECK_QUESTIONNAIRE_SUCCESS_MS);
+  }
+
+  function resetExecutionQuestionnaireModalUi() {
+    const modal = document.getElementById('executionQuestionnaireModal');
+    if (!modal) return;
+    modal.classList.remove('is-success');
+    const icon = document.getElementById('executionQuestionnaireSuccessIcon');
+    if (icon) icon.classList.remove('is-animating');
+  }
+
+  function openExecutionQuestionnaireModal() {
+    const modal = document.getElementById('executionQuestionnaireModal');
+    if (!modal) return;
+    if (executionQuestionnaireDone) return;
+    resetExecutionQuestionnaireModalUi();
+    closeAllCapsuleMenus();
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeExecutionQuestionnaireModal() {
+    const modal = document.getElementById('executionQuestionnaireModal');
+    if (!modal) return;
+    if (modal.classList.contains('is-success')) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    resetExecutionQuestionnaireModalUi();
+  }
+
+  function forceCloseExecutionQuestionnaireModal() {
+    const modal = document.getElementById('executionQuestionnaireModal');
+    if (!modal) return;
+    modal.classList.remove('open', 'is-success');
+    modal.setAttribute('aria-hidden', 'true');
+    const icon = document.getElementById('executionQuestionnaireSuccessIcon');
+    if (icon) icon.classList.remove('is-animating');
+  }
+
+  function showExecutionQuestionnaireSuccess() {
+    const modal = document.getElementById('executionQuestionnaireModal');
+    if (!modal) return;
+    modal.classList.add('is-success');
+    const icon = document.getElementById('executionQuestionnaireSuccessIcon');
+    if (icon) {
+      icon.classList.remove('is-animating');
+      void icon.offsetWidth;
+      icon.classList.add('is-animating');
+    }
+  }
+
+  function initDocsExecutionLoadingLottie() {
+    const container = document.getElementById('docsExecutionLoadingLottie');
+    if (!container || typeof lottie === 'undefined') return null;
+    if (docsExecutionLoadingLottie) return docsExecutionLoadingLottie;
+    docsExecutionLoadingLottie = lottie.loadAnimation({
+      container,
+      renderer: 'svg',
+      loop: true,
+      autoplay: false,
+      path: 'assets/fibi-loader.json'
+    });
+    return docsExecutionLoadingLottie;
+  }
+
+  function startDocsExecutionLoading() {
+    const panel = document.getElementById('docsExecutionPanel');
+    const loadingEl = document.getElementById('docsExecutionLoading');
+    if (!panel) return;
+    panel.classList.add('is-docs-loading');
+    if (loadingEl) loadingEl.setAttribute('aria-hidden', 'false');
+    syncExecutionQuestionnaireGate();
+    syncPrecheckQuestionnaireGate();
+    const anim = initDocsExecutionLoadingLottie();
+    if (anim) {
+      try { anim.goToAndPlay(0, true); } catch (_) { anim.play(); }
+    }
+    clearTimeout(docsExecutionLoadingTimer);
+    docsExecutionLoadingTimer = window.setTimeout(() => {
+      finishDocsExecutionLoading();
+    }, DOCS_PRECHECK_LOADING_MS);
+  }
+
+  function finishDocsExecutionLoading() {
+    const panel = document.getElementById('docsExecutionPanel');
+    const loadingEl = document.getElementById('docsExecutionLoading');
+    if (panel) panel.classList.remove('is-docs-loading');
+    if (loadingEl) loadingEl.setAttribute('aria-hidden', 'true');
+    if (docsExecutionLoadingLottie) {
+      try { docsExecutionLoadingLottie.pause(); } catch (_) {}
+    }
+    syncExecutionQuestionnaireGate();
+    syncPrecheckQuestionnaireGate();
+    updateDocsSidebarTotalCount();
+    const firstDoc = document.querySelector('#docsListExecution .inbox-row[data-doc]')?.dataset?.doc;
+    if (firstDoc && getActiveDocsTab() === 'execution') selectDocument(firstDoc);
+  }
+
+  function finishExecutionQuestionnaireAndLoadDocs() {
+    executionQuestionnaireDone = true;
+    forceCloseExecutionQuestionnaireModal();
+    markHeroQuestionnaireDone();
+    syncExecutionQuestionnaireGate();
+    startDocsExecutionLoading();
+  }
+
+  function saveExecutionQuestionnaire() {
+    const modal = document.getElementById('executionQuestionnaireModal');
+    if (!modal || modal.classList.contains('is-success')) return;
+    showExecutionQuestionnaireSuccess();
+    clearTimeout(executionQuestionnaireTransitionTimer);
+    executionQuestionnaireTransitionTimer = window.setTimeout(() => {
+      finishExecutionQuestionnaireAndLoadDocs();
     }, PRECHECK_QUESTIONNAIRE_SUCCESS_MS);
   }
 
@@ -8339,25 +8669,12 @@
   function promoteMissingPrecheckDoc(row, docId) {
     if (!row || !docId || !isMissingDocRow(row)) return;
     row.classList.remove('inbox-row--missing');
-    row.classList.add('inbox-row--precheck-file');
     delete row.dataset.uploaded;
     row.querySelector('.inbox-row-actions')?.remove();
     row.querySelector('.inbox-upload-btn')?.remove();
     row.querySelector('.status-select')?.remove();
     row.querySelector('.capsule-select')?.remove();
 
-    const docName = docs[docId]?.name || row.querySelector('.inbox-name')?.textContent?.trim() || '';
-    const filename = precheckFilenameForName(docName);
-    if (!row.querySelector('.inbox-uploaded-file')) {
-      const fileEl = document.createElement('span');
-      fileEl.className = 'inbox-uploaded-file';
-      fileEl.textContent = filename;
-      fileEl.title = filename;
-      fileEl.setAttribute('aria-label', `קובץ שהועלה ${filename}`);
-      row.appendChild(fileEl);
-    }
-
-    delete row.dataset.indicatorsInit;
     if (docs[docId]) {
       docs[docId].uploadedAt = docs[docId].uploadedAt || '15/07/2026';
       if (!docs[docId].code) docs[docId].code = `משכ ${docId}`;
@@ -8370,11 +8687,52 @@
       info.appendChild(code);
     }
 
+    applyPrecheckRowFileMode(row);
     seedPrecheckDocAiNotes(docId);
+    delete row.dataset.indicatorsInit;
     initInboxRowIndicators();
     updateInboxRowIndicators();
     markPrecheckDocsChanged(row);
     syncPrecheckFooterMode();
+  }
+
+  const PRECHECK_FILE_OK_CHECK_SVG = '<svg class="inbox-file-ok-check" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.35"/><path d="M4.75 8.15 6.9 10.2 11.25 5.7" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function ensurePrecheckUploadedFileEl(row, filename) {
+    if (!row || !filename) return null;
+    let fileEl = row.querySelector('.inbox-uploaded-file');
+    if (!fileEl) {
+      fileEl = document.createElement('span');
+      fileEl.className = 'inbox-uploaded-file';
+      row.appendChild(fileEl);
+    }
+    fileEl.title = filename;
+    fileEl.setAttribute('aria-label', `קובץ תקין ${filename}`);
+    fileEl.innerHTML = `${PRECHECK_FILE_OK_CHECK_SVG}<span class="inbox-uploaded-file-name">${escapeHtml(filename)}</span>`;
+    return fileEl;
+  }
+
+  function applyPrecheckRowFileMode(row) {
+    if (!row?.closest?.('#docsListPrecheck')) return;
+    if (isMissingDocRow(row)) return;
+
+    row.classList.add('inbox-row--precheck-file');
+    row.querySelectorAll(
+      '.status-select, .capsule-select, .inbox-banker-tag, .inbox-row-actions, .inbox-hq-status'
+    ).forEach((el) => el.remove());
+
+    const docId = row.dataset.doc;
+    const docName = (docId && docs[docId]?.name)
+      || row.querySelector('.inbox-name')?.textContent?.trim()
+      || '';
+    ensurePrecheckUploadedFileEl(row, precheckFilenameForName(docName));
+  }
+
+  function applyPrecheckDocsFileMode() {
+    document.querySelectorAll('#docsListPrecheck .inbox-row[data-doc]').forEach(applyPrecheckRowFileMode);
+    // Demo: show AI analysis on some precheck docs, not all
+    ['pcId', 'pcTabu', 'pcSalary', 'pcContract'].forEach(seedPrecheckDocAiNotes);
+    updateInboxRowIndicators();
   }
 
   const PRECHECK_AI_NOTE_EXAMPLES = {
@@ -8413,6 +8771,49 @@
     if (note) note.textContent = 'טרם הושלם';
   }
 
+  function markHeroQuestionnairePending() {
+    const btn = document.getElementById('heroFlowQuestionnaireBtn');
+    if (!btn) return;
+    btn.hidden = false;
+    btn.classList.remove('is-done');
+    btn.classList.add('is-pending');
+    btn.setAttribute('aria-label', 'שאלון לביצוע — טרם הושלם');
+    const mark = btn.querySelector('.hero-flow-mark');
+    if (mark) {
+      mark.innerHTML = '<svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.4" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3.2l2.2 1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    }
+    const title = btn.querySelector('.hero-flow-title');
+    if (title) title.textContent = 'שאלון לביצוע';
+    const note = btn.querySelector('.hero-flow-note');
+    if (note) note.textContent = 'טרם הושלם';
+  }
+
+  function markHeroQuestionnaireDone() {
+    const btn = document.getElementById('heroFlowQuestionnaireBtn');
+    if (!btn) return;
+    btn.hidden = false;
+    btn.classList.remove('is-pending');
+    btn.classList.add('is-done');
+    btn.setAttribute('aria-label', 'שאלון לביצוע — הושלם');
+    const mark = btn.querySelector('.hero-flow-mark');
+    if (mark) {
+      mark.innerHTML = '<svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2 4.8 8.5 9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    }
+    const title = btn.querySelector('.hero-flow-title');
+    if (title) title.textContent = 'שאלון לביצוע';
+    const note = btn.querySelector('.hero-flow-note');
+    if (note) note.textContent = 'הושלם';
+  }
+
+  function openExecutionQuestionnaireFromHero() {
+    if (window.__CASE_PAGE_EMPTY__ && !executionQuestionnaireDone) {
+      switchDocsSidebarTab('execution');
+      openExecutionQuestionnaireModal();
+      return;
+    }
+    openCaseEditModal(2);
+  }
+
   function applyNewCasePrecheckFirstLayout() {
     const tabs = document.querySelector('.docs-sidebar-tabs');
     const precheckTab = document.getElementById('docsTabPrecheck');
@@ -8421,13 +8822,18 @@
       tabs.insertBefore(precheckTab, execTab);
     }
     markHeroPrecheckPending();
+    markHeroQuestionnairePending();
+    syncExecutionQuestionnaireGate();
     syncPrecheckQuestionnaireGate();
     syncPrecheckFooterMode();
     switchDocsSidebarTab('precheck');
   }
 
   function updateDocsSidebarTotalCount() {
-    const execCount = document.querySelectorAll('#docsListExecution .inbox-row').length;
+    const execLocked = window.__CASE_PAGE_EMPTY__ && !executionQuestionnaireDone;
+    const execCount = execLocked
+      ? 0
+      : document.querySelectorAll('#docsListExecution .inbox-row').length;
     const precheckLocked = window.__CASE_PAGE_EMPTY__ && !precheckQuestionnaireDone;
     const precheckCount = precheckLocked
       ? 0
@@ -8453,13 +8859,18 @@
     const precheckGateActive = next === 'precheck'
       && window.__CASE_PAGE_EMPTY__
       && (!precheckQuestionnaireDone || panel?.classList.contains('is-docs-loading'));
+    const execGateActive = next === 'execution'
+      && window.__CASE_PAGE_EMPTY__
+      && (!executionQuestionnaireDone || panel?.classList.contains('is-docs-loading'));
 
-    if (precheckGateActive) {
+    if (precheckGateActive || execGateActive) {
+      syncExecutionQuestionnaireGate();
       syncPrecheckQuestionnaireGate();
       filterDocuments();
       return;
     }
 
+    syncExecutionQuestionnaireGate();
     syncPrecheckQuestionnaireGate();
     const activeInPanel = panel?.querySelector('.inbox-row.active');
     const firstVisible = [...(panel?.querySelectorAll('.inbox-row') || [])]
@@ -10458,6 +10869,7 @@
   filterDocuments();
   capturePrecheckDocsBaseline();
   syncPrecheckFooterMode();
+  syncExecutionQuestionnaireGate();
   syncPrecheckQuestionnaireGate();
 
   (function bindSummaryPanelWheel() {
@@ -10684,6 +11096,10 @@
       .replace(/[^\w.\u0590-\u05FF-]/g, '')
       .slice(0, 28);
     return `${slug || 'extra_doc'}.pdf`;
+  }
+
+  if (!window.__CASE_PAGE_EMPTY__) {
+    applyPrecheckDocsFileMode();
   }
 
   function syncPrecheckDocsCount() {
@@ -11195,6 +11611,10 @@
     }
     if (document.getElementById('precheckQuestionnaireModal')?.classList.contains('open')) {
       closePrecheckQuestionnaireModal();
+      return;
+    }
+    if (document.getElementById('executionQuestionnaireModal')?.classList.contains('open')) {
+      closeExecutionQuestionnaireModal();
       return;
     }
     if (document.getElementById('newCaseModal')?.classList.contains('open')) {
