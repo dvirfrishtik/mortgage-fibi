@@ -3044,7 +3044,7 @@
     }
 
     .pcr-block {
-      margin-bottom: 28px;
+      margin-bottom: 36px;
     }
     .pcr-block:last-child {
       margin-bottom: 0;
@@ -3104,30 +3104,55 @@
       text-overflow: ellipsis;
     }
 
-    /* Verdict */
+    /* Verdict — title outside, status dot instead of orange fill */
     .pcr-verdict {
-      border: 1px solid #f0d2a8;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: transparent;
+      border: none;
+      overflow: visible;
+    }
+    .pcr-verdict-header {
+      display: flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 0;
+    }
+    .pcr-verdict-section-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.3;
+    }
+    .pcr-verdict-body {
+      border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      background: var(--orange-bg);
+      background: #fff;
       overflow: hidden;
     }
     .pcr-verdict-main {
       padding: 14px 16px 12px;
-      background: var(--orange-bg);
-      border-bottom: 1px solid #f0d2a8;
-    }
-    .pcr-verdict-eyebrow {
-      margin: 0 0 4px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--orange);
+      background: #fff;
+      border-bottom: 1px solid var(--border-light);
     }
     .pcr-verdict-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       margin: 0 0 6px;
       font-size: 18px;
       font-weight: 700;
       color: var(--navy);
       line-height: 1.3;
+    }
+    .pcr-verdict-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--orange);
+      flex-shrink: 0;
     }
     .pcr-verdict-text {
       margin: 0;
@@ -5716,13 +5741,13 @@
           <span class="hero-flow-note">הושלם</span>
         </span>
       </button>
-      <button type="button" class="hero-flow-btn is-done" id="heroFlowPrecheckBtn" aria-label="דו״ח בדיקת קדם — לצפייה" onclick="viewPrecheckReport()">
+      <button type="button" class="hero-flow-btn is-done" id="heroFlowPrecheckBtn" aria-label="שאלון בדיקת קדם — הושלם" onclick="openPrecheckQuestionnaireFromHero()">
         <span class="hero-flow-mark" aria-hidden="true">
           <svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2 4.8 8.5 9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
         <span class="hero-flow-copy">
-          <span class="hero-flow-title">דו״ח בדיקת קדם</span>
-          <span class="hero-flow-note">לצפייה</span>
+          <span class="hero-flow-title">שאלון בדיקת קדם</span>
+          <span class="hero-flow-note">הושלם</span>
         </span>
       </button>
     </div>
@@ -6580,9 +6605,9 @@
       <div class="docs-precheck-questionnaire-gate-icon" aria-hidden="true">
         <img src="assets/icon-sig-form.png" alt="">
       </div>
-      <p class="docs-precheck-questionnaire-gate-title">כדי לטפל במסמכים לבדיקות קדם,<br>יש למלא שאלון קדם</p>
+      <p class="docs-precheck-questionnaire-gate-title">כדי לטפל במסמכים לבדיקות קדם,<br>יש למלא שאלון בדיקת קדם</p>
     </div>
-    <button type="button" class="docs-precheck-questionnaire-gate-btn" onclick="openPrecheckQuestionnaireModal()">למילוי שאלון קדם</button>
+    <button type="button" class="docs-precheck-questionnaire-gate-btn" onclick="openPrecheckQuestionnaireModal()">למילוי שאלון בדיקת קדם</button>
   </div>
   <div class="docs-precheck-loading" id="docsPrecheckLoading" aria-hidden="true">
     <div class="docs-precheck-loading-lottie" id="docsPrecheckLoadingLottie" role="status" aria-label="טוען מסמכים לטיפול"></div>
@@ -7025,7 +7050,7 @@
   <div class="new-case-modal-card" role="dialog" aria-modal="true" aria-labelledby="precheckQuestionnaireModalTitle">
     <button type="button" class="new-case-modal-close" onclick="closePrecheckQuestionnaireModal()" aria-label="סגור">&times;</button>
     <div class="new-case-modal-header">
-      <h2 class="new-case-modal-title" id="precheckQuestionnaireModalTitle">שאלון קדם</h2>
+      <h2 class="new-case-modal-title" id="precheckQuestionnaireModalTitle">שאלון בדיקת קדם</h2>
     </div>
     <div class="new-case-modal-body">
       <div class="precheck-questionnaire-form" id="precheckQuestionnaireForm">
@@ -7175,24 +7200,31 @@
           </section>
 
           <section class="pcr-verdict pcr-block" aria-label="מסקנה ראשית">
-            <div class="pcr-verdict-main">
-              <p class="pcr-verdict-eyebrow">מסקנת בדיקת קדם</p>
-              <h3 class="pcr-verdict-title">ניתן להתקדם לאחר השלמת 2 בירורים</h3>
-              <p class="pcr-verdict-text">מרבית הבדיקות נמצאו תקינות. קיימת אי-התאמה אחת החוסמת את השלמת הבדיקה ונקודה נוספת הדורשת בירור.</p>
+            <div class="pcr-verdict-header">
+              <h3 class="pcr-verdict-section-title">מסקנת בדיקת קדם</h3>
             </div>
-            <div class="pcr-verdict-chips" role="group" aria-label="סיכום מהיר">
-              <button type="button" class="pcr-verdict-chip is-ok" onclick="openPrecheckReportDetail(event, 'reliability')">
-                <span class="pcr-verdict-chip-value">9 מתוך 10</span>
-                <span class="pcr-verdict-chip-label">בדיקות תקינות</span>
-              </button>
-              <button type="button" class="pcr-verdict-chip is-warn" onclick="openPrecheckReportDetail(event, 'exceptions')">
-                <span class="pcr-verdict-chip-value">2</span>
-                <span class="pcr-verdict-chip-label">חריגים פתוחים</span>
-              </button>
-              <button type="button" class="pcr-verdict-chip is-info" onclick="openPrecheckReportDetail(event, 'documents')">
-                <span class="pcr-verdict-chip-value">8 מתוך 9</span>
-                <span class="pcr-verdict-chip-label">מסמכים שהתקבלו</span>
-              </button>
+            <div class="pcr-verdict-body">
+              <div class="pcr-verdict-main">
+                <h4 class="pcr-verdict-title">
+                  <span class="pcr-verdict-dot" aria-hidden="true"></span>
+                  <span>לא עבר: יש להשלים 2 בירורים</span>
+                </h4>
+                <p class="pcr-verdict-text">מרבית הבדיקות נמצאו תקינות. קיימת אי-התאמה אחת החוסמת את השלמת הבדיקה ונקודה נוספת הדורשת בירור.</p>
+              </div>
+              <div class="pcr-verdict-chips" role="group" aria-label="סיכום מהיר">
+                <button type="button" class="pcr-verdict-chip is-ok" onclick="openPrecheckReportDetail(event, 'reliability')">
+                  <span class="pcr-verdict-chip-value">9 מתוך 10</span>
+                  <span class="pcr-verdict-chip-label">בדיקות תקינות</span>
+                </button>
+                <button type="button" class="pcr-verdict-chip is-warn" onclick="openPrecheckReportDetail(event, 'exceptions')">
+                  <span class="pcr-verdict-chip-value">2</span>
+                  <span class="pcr-verdict-chip-label">חריגים פתוחים</span>
+                </button>
+                <button type="button" class="pcr-verdict-chip is-info" onclick="openPrecheckReportDetail(event, 'documents')">
+                  <span class="pcr-verdict-chip-value">8 מתוך 9</span>
+                  <span class="pcr-verdict-chip-label">מסמכים שהתקבלו</span>
+                </button>
+              </div>
             </div>
           </section>
 
@@ -8209,6 +8241,7 @@
   function finishPrecheckQuestionnaireAndLoadDocs() {
     precheckQuestionnaireDone = true;
     forceClosePrecheckQuestionnaireModal();
+    markHeroPrecheckDone();
     syncPrecheckQuestionnaireGate();
     startDocsPrecheckLoading();
   }
@@ -8757,16 +8790,16 @@
   function markHeroPrecheckPending() {
     const btn = document.getElementById('heroFlowPrecheckBtn');
     if (!btn) return;
-    btn.hidden = true;
+    btn.hidden = false;
     btn.classList.remove('is-done');
     btn.classList.add('is-pending');
-    btn.setAttribute('aria-label', 'דו״ח בדיקת קדם — טרם הושלם');
+    btn.setAttribute('aria-label', 'שאלון בדיקת קדם — טרם הושלם');
     const mark = btn.querySelector('.hero-flow-mark');
     if (mark) {
       mark.innerHTML = '<svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.4" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3.2l2.2 1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     }
     const title = btn.querySelector('.hero-flow-title');
-    if (title) title.textContent = 'דו״ח בדיקת קדם';
+    if (title) title.textContent = 'שאלון בדיקת קדם';
     const note = btn.querySelector('.hero-flow-note');
     if (note) note.textContent = 'טרם הושלם';
   }
@@ -11467,15 +11500,24 @@
     btn.hidden = false;
     btn.classList.remove('is-pending');
     btn.classList.add('is-done');
-    btn.setAttribute('aria-label', 'דו״ח בדיקת קדם — לצפייה');
+    btn.setAttribute('aria-label', 'שאלון בדיקת קדם — הושלם');
     const mark = btn.querySelector('.hero-flow-mark');
     if (mark) {
       mark.innerHTML = '<svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2 4.8 8.5 9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     }
     const title = btn.querySelector('.hero-flow-title');
-    if (title) title.textContent = 'דו״ח בדיקת קדם';
+    if (title) title.textContent = 'שאלון בדיקת קדם';
     const note = btn.querySelector('.hero-flow-note');
-    if (note) note.textContent = 'לצפייה';
+    if (note) note.textContent = 'הושלם';
+  }
+
+  function openPrecheckQuestionnaireFromHero() {
+    if (window.__CASE_PAGE_EMPTY__ && !precheckQuestionnaireDone) {
+      switchDocsSidebarTab('precheck');
+      openPrecheckQuestionnaireModal();
+      return;
+    }
+    switchDocsSidebarTab('precheck');
   }
 
   function saveCaseEditModal() {
