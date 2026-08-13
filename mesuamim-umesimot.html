@@ -2585,20 +2585,6 @@
     #docsPrecheckCat > .category-header {
       display: none;
     }
-    #docsListPrecheck .inbox-hq-status,
-    .docs-precheck-panel .inbox-hq-status {
-      display: none !important;
-    }
-    #docsListPrecheck .inbox-row:not(.inbox-row--missing) .capsule-select:not(.capsule-select--filter),
-    #docsListPrecheck .inbox-row:not(.inbox-row--missing) .status-select,
-    #docsListPrecheck .inbox-row:not(.inbox-row--missing) .inbox-banker-tag,
-    #docsListPrecheck .inbox-row:not(.inbox-row--missing) .inbox-row-actions,
-    .docs-precheck-panel .inbox-row--precheck-file .capsule-select:not(.capsule-select--filter),
-    .docs-precheck-panel .inbox-row--precheck-file .status-select,
-    .docs-precheck-panel .inbox-row--precheck-file .inbox-banker-tag,
-    .docs-precheck-panel .inbox-row--precheck-file .inbox-row-actions {
-      display: none !important;
-    }
     .inbox-uploaded-file {
       display: none;
       align-items: center;
@@ -2615,9 +2601,6 @@
       flex-shrink: 0;
       line-height: 1.3;
       padding: 2px 0;
-    }
-    .docs-precheck-panel .inbox-row--precheck-file .inbox-uploaded-file {
-      display: inline-flex;
     }
     .inbox-file-ok-check {
       width: 14px;
@@ -4154,7 +4137,7 @@
     .inbox-row-indicators {
       display: flex;
       align-items: center;
-      gap: 2px;
+      gap: 6px;
       flex-shrink: 0;
     }
     .inbox-indicator {
@@ -4183,7 +4166,16 @@
       color: var(--navy);
     }
     .inbox-indicator--ai {
-      color: #2563EB;
+      color: #1B4FD8;
+    }
+    .inbox-indicator--ai .inbox-indicator-icon-wrap {
+      width: 18px;
+      height: 18px;
+    }
+    .inbox-indicator--ai .inbox-indicator-icon-wrap svg,
+    .inbox-indicator--ai .inbox-ai-icon {
+      width: 18px;
+      height: 18px;
     }
     .inbox-indicator-count {
       position: absolute;
@@ -4205,7 +4197,9 @@
       box-shadow: 0 0 0 1.5px var(--surface);
     }
     .inbox-indicator--ai .inbox-indicator-count {
-      background: #2563EB;
+      top: -6px;
+      inset-inline-end: -8px;
+      background: #1B4FD8;
     }
 
     /* ── DOCUMENT PREVIEW (center column) ── */
@@ -6693,7 +6687,7 @@
   </div><!-- /#docsListPrecheck -->
   <div class="docs-precheck-footer" aria-label="פעולות דוח בדיקת קדם">
     <div class="docs-precheck-footer-create">
-      <span class="docs-precheck-update-wrap" id="precheckCreateReportWrap" data-tooltip="יש להעלות את כל המסמכים ולוודא שהם תקינים כדי ליצור את הדו״ח">
+      <span class="docs-precheck-update-wrap" id="precheckCreateReportWrap" data-tooltip="יש לטפל בכל המסמכים ולוודא שסטטוס המטה תקין כדי ליצור את הדו״ח">
         <button type="button" class="docs-precheck-footer-btn docs-precheck-footer-btn--primary" id="precheckCreateReportBtn" disabled onclick="createPrecheckReport()">
           <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.2 2.5h5.1L12.5 5.7V13a.8.8 0 0 1-.8.8H4.2a.8.8 0 0 1-.8-.8V3.3a.8.8 0 0 1 .8-.8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9.2 2.7V5.6h2.9" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M5.5 8.2h5M5.5 10.5h3.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
           <span>יצירת דו״ח בדיקת קדם</span>
@@ -7352,7 +7346,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <script>
   const NOTES_ICON_SVG = '<svg class="inbox-notes-icon" width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 2.5h7.2L14.5 5.6V14a1 1 0 01-1 1H4.5a1 1 0 01-1-1V3.5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.5 2.8V5.5H14.2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 8h6M6 10h4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>';
-  const INBOX_AI_ICON_SVG = '<svg class="inbox-ai-icon" width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 1.8 9.95 5.05 13.3 5.05 10.55 7.05 11.5 10.3 9 8.35 6.5 10.3 7.45 7.05 4.7 5.05 8.05 5.05 9 1.8Z" fill="currentColor"/><path d="M14.6 8.2 15.2 9.95 17 10.55 15.2 11.15 14.6 12.9 14 11.15 12.2 10.55 14 9.95 14.6 8.2Z" fill="currentColor" opacity=".75"/><path d="M4.4 11.7 4.85 13 6.1 13.45 4.85 13.9 4.4 15.2 3.95 13.9 2.7 13.45 3.95 13 4.4 11.7Z" fill="currentColor" opacity=".55"/></svg>';
+  const INBOX_AI_ICON_SVG = '<svg class="inbox-ai-icon" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 1.2 10.15 5.35 14.5 5.35 11 7.95 12.25 12.2 9 9.75 5.75 12.2 7 7.95 3.5 5.35 7.85 5.35 9 1.2Z" fill="currentColor"/><path d="M14.35 7.4 15.15 9.7 17.5 10.45 15.15 11.2 14.35 13.5 13.55 11.2 11.2 10.45 13.55 9.7 14.35 7.4Z" fill="currentColor"/><path d="M4.2 11.05 4.8 12.75 6.5 13.3 4.8 13.85 4.2 15.55 3.6 13.85 1.9 13.3 3.6 12.75 4.2 11.05Z" fill="currentColor"/></svg>';
   const AI_ICON_SVG_SM = INBOX_AI_ICON_SVG.replace('inbox-ai-icon', 'doc-note-ai-icon');
   const AI_ICON_SVG_MD = AI_ICON_SVG_SM.replace('width="16" height="16"', 'width="18" height="18"');
 
@@ -8371,7 +8365,13 @@
   function areAllPrecheckDocsReady() {
     const rows = [...document.querySelectorAll('#docsListPrecheck .inbox-row')];
     if (!rows.length) return false;
-    return rows.every((row) => !isMissingDocRow(row));
+    return rows.every((row) => {
+      if (isMissingDocRow(row)) return false;
+      const select = row.querySelector('select.status-select');
+      if (select?.value !== 'done') return false;
+      const docId = row.dataset.doc;
+      return !!(docId && docHqStatusStore[docId] === 'valid');
+    });
   }
 
   function syncPrecheckUpdateReportBtn() {
@@ -8676,21 +8676,61 @@
         window.setTimeout(step, PRECHECK_INBOX_FILL_GAP_MS);
         return;
       }
-      precheckInboxFillAnimating = false;
-      syncPrecheckFooterMode();
-      updateDocsSidebarTotalCount();
+      simulatePrecheckDocsMarkedHandled(() => {
+        precheckInboxFillAnimating = false;
+        syncPrecheckFooterMode();
+        updateDocsSidebarTotalCount();
+        filterDocuments();
+      });
     };
     step();
   }
 
+  function markPrecheckDocHandled(row) {
+    const docId = row?.dataset?.doc;
+    const select = row?.querySelector('select.status-select');
+    if (!docId || !select) return;
+    syncStatusSelect(select, 'done');
+    docHqStatusStore[docId] = 'valid';
+    persistHqStatuses();
+    syncRowHqStatus(row, docId);
+    markPrecheckDocsChanged(row);
+  }
+
+  function simulatePrecheckDocsMarkedHandled(onDone) {
+    const rows = [...document.querySelectorAll('#docsListPrecheck .inbox-row[data-doc]')]
+      .filter((row) => !isMissingDocRow(row));
+    if (!rows.length) {
+      onDone?.();
+      return;
+    }
+    let index = 0;
+    const step = () => {
+      if (index < rows.length) {
+        const row = rows[index];
+        const docId = row.dataset.doc;
+        markPrecheckDocHandled(row);
+        if (docId) selectDocument(docId);
+        index += 1;
+        window.setTimeout(step, PRECHECK_INBOX_FILL_GAP_MS);
+        return;
+      }
+      onDone?.();
+    };
+    window.setTimeout(step, PRECHECK_INBOX_FILL_GAP_MS + 200);
+  }
+
   function promoteMissingPrecheckDoc(row, docId) {
     if (!row || !docId || !isMissingDocRow(row)) return;
-    row.classList.remove('inbox-row--missing');
+    row.classList.remove('inbox-row--missing', 'inbox-row--precheck-file');
     delete row.dataset.uploaded;
     row.querySelector('.inbox-row-actions')?.remove();
     row.querySelector('.inbox-upload-btn')?.remove();
     row.querySelector('.status-select')?.remove();
     row.querySelector('.capsule-select')?.remove();
+    row.querySelector('.inbox-uploaded-file')?.remove();
+    row.querySelector('.inbox-banker-tag')?.remove();
+    row.querySelector('.inbox-hq-status')?.remove();
 
     if (docs[docId]) {
       docs[docId].uploadedAt = docs[docId].uploadedAt || '15/07/2026';
@@ -8704,50 +8744,28 @@
       info.appendChild(code);
     }
 
-    applyPrecheckRowFileMode(row);
+    const select = document.createElement('select');
+    select.className = 'status-select pending';
+    select.dataset.doc = docId;
+    select.setAttribute('onclick', 'event.stopPropagation()');
+    select.setAttribute('onchange', 'updateStatus(this)');
+    select.innerHTML =
+      '<option value="pending" selected>ממתין לבדיקה</option>' +
+      '<option value="returned">חזר לטיפול</option>' +
+      '<option value="done">טופל</option>' +
+      '<option value="notrelevant">לא רלוונטי</option>';
+    row.appendChild(select);
+
     seedPrecheckDocAiNotes(docId);
     delete row.dataset.indicatorsInit;
+    initCapsuleSelects();
     initInboxRowIndicators();
     updateInboxRowIndicators();
     markPrecheckDocsChanged(row);
     syncPrecheckFooterMode();
   }
 
-  const PRECHECK_FILE_OK_CHECK_SVG = '<svg class="inbox-file-ok-check" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.35"/><path d="M4.75 8.15 6.9 10.2 11.25 5.7" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-
-  function ensurePrecheckUploadedFileEl(row, filename) {
-    if (!row || !filename) return null;
-    let fileEl = row.querySelector('.inbox-uploaded-file');
-    if (!fileEl) {
-      fileEl = document.createElement('span');
-      fileEl.className = 'inbox-uploaded-file';
-      row.appendChild(fileEl);
-    }
-    fileEl.title = filename;
-    fileEl.setAttribute('aria-label', `קובץ תקין ${filename}`);
-    fileEl.innerHTML = `${PRECHECK_FILE_OK_CHECK_SVG}<span class="inbox-uploaded-file-name">${escapeHtml(filename)}</span>`;
-    return fileEl;
-  }
-
-  function applyPrecheckRowFileMode(row) {
-    if (!row?.closest?.('#docsListPrecheck')) return;
-    if (isMissingDocRow(row)) return;
-
-    row.classList.add('inbox-row--precheck-file');
-    row.querySelectorAll(
-      '.status-select, .capsule-select, .inbox-banker-tag, .inbox-row-actions, .inbox-hq-status'
-    ).forEach((el) => el.remove());
-
-    const docId = row.dataset.doc;
-    const docName = (docId && docs[docId]?.name)
-      || row.querySelector('.inbox-name')?.textContent?.trim()
-      || '';
-    ensurePrecheckUploadedFileEl(row, precheckFilenameForName(docName));
-  }
-
-  function applyPrecheckDocsFileMode() {
-    document.querySelectorAll('#docsListPrecheck .inbox-row[data-doc]').forEach(applyPrecheckRowFileMode);
-    // Demo: show AI analysis on some precheck docs, not all
+  function seedFullCasePrecheckAiNotes() {
     ['pcId', 'pcTabu', 'pcSalary', 'pcContract'].forEach(seedPrecheckDocAiNotes);
     updateInboxRowIndicators();
   }
@@ -10804,8 +10822,6 @@
       const select = row.querySelector('select.status-select');
       if (!capsule || !select) return;
 
-      const isPrecheckDoc = !!row.closest('#docsListPrecheck');
-
       const bankerTag = document.createElement('span');
       bankerTag.className = 'inbox-banker-tag';
       bankerTag.setAttribute('aria-label', 'סטטוס בנקאי');
@@ -10815,23 +10831,21 @@
       capsule.parentNode.insertBefore(actions, capsule);
       actions.appendChild(bankerTag);
 
-      if (!isPrecheckDoc) {
-        const hqStatus = document.createElement('div');
-        hqStatus.className = 'inbox-hq-status';
-        hqStatus.innerHTML =
-          `<button type="button" class="preview-hq-status-pill inbox-hq-status-btn" aria-haspopup="menu" aria-expanded="false" aria-label="ממתין לבדיקה" title="ממתין לבדיקה" onclick="toggleRowHqStatusMenu(event, this)">` +
-          `<span class="inbox-hq-status-icon">${hqStatusIconHtml('pending')}</span>` +
-          `<span class="inbox-hq-status-label">ממתין לבדיקה</span>` +
-          `<span class="preview-hq-status-caret" aria-hidden="true"></span>` +
-          `</button>` +
-          `<div class="preview-hq-status-menu" role="menu">` +
-          `<button type="button" class="preview-hq-status-option" role="menuitem" onclick="setRowHqStatus(event, 'pending', this)">${hqStatusOptionHtml('pending')}</button>` +
-          `<button type="button" class="preview-hq-status-option" role="menuitem" onclick="setRowHqStatus(event, 'valid', this)">${hqStatusOptionHtml('valid')}</button>` +
-          `<button type="button" class="preview-hq-status-option" role="menuitem" onclick="setRowHqStatus(event, 'invalid', this)">${hqStatusOptionHtml('invalid')}</button>` +
-          `</div>`;
-        actions.appendChild(hqStatus);
-        if (row.dataset.doc) syncRowHqStatus(row, row.dataset.doc);
-      }
+      const hqStatus = document.createElement('div');
+      hqStatus.className = 'inbox-hq-status';
+      hqStatus.innerHTML =
+        `<button type="button" class="preview-hq-status-pill inbox-hq-status-btn" aria-haspopup="menu" aria-expanded="false" aria-label="ממתין לבדיקה" title="ממתין לבדיקה" onclick="toggleRowHqStatusMenu(event, this)">` +
+        `<span class="inbox-hq-status-icon">${hqStatusIconHtml('pending')}</span>` +
+        `<span class="inbox-hq-status-label">ממתין לבדיקה</span>` +
+        `<span class="preview-hq-status-caret" aria-hidden="true"></span>` +
+        `</button>` +
+        `<div class="preview-hq-status-menu" role="menu">` +
+        `<button type="button" class="preview-hq-status-option" role="menuitem" onclick="setRowHqStatus(event, 'pending', this)">${hqStatusOptionHtml('pending')}</button>` +
+        `<button type="button" class="preview-hq-status-option" role="menuitem" onclick="setRowHqStatus(event, 'valid', this)">${hqStatusOptionHtml('valid')}</button>` +
+        `<button type="button" class="preview-hq-status-option" role="menuitem" onclick="setRowHqStatus(event, 'invalid', this)">${hqStatusOptionHtml('invalid')}</button>` +
+        `</div>`;
+      actions.appendChild(hqStatus);
+      if (row.dataset.doc) syncRowHqStatus(row, row.dataset.doc);
 
       actions.appendChild(capsule);
       syncBankerTag(row, select.value);
@@ -11116,7 +11130,7 @@
   }
 
   if (!window.__CASE_PAGE_EMPTY__) {
-    applyPrecheckDocsFileMode();
+    seedFullCasePrecheckAiNotes();
   }
 
   function syncPrecheckDocsCount() {

@@ -678,6 +678,7 @@
     }
     .table-card .progress-mini {
       gap: 10px;
+      cursor: default;
     }
     .table-card .progress-mini-track {
       width: 104px;
@@ -717,9 +718,24 @@
     .dash-status-legend {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 10px;
       text-align: right;
-      min-width: 148px;
+      min-width: 176px;
+    }
+    .dash-status-legend-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .dash-status-legend-group + .dash-status-legend-group {
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .dash-status-legend-group-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      color: rgba(255, 255, 255, 0.62);
     }
     .dash-status-legend-row {
       display: flex;
@@ -753,6 +769,29 @@
       font-variant-numeric: tabular-nums;
       font-weight: 700;
       color: #fff;
+    }
+    .dash-status-legend-empty {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.55);
+    }
+    .dash-upload-legend-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+    .dash-upload-legend-label {
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .dash-upload-legend-count {
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
     }
     .precheck-icon {
       position: relative;
@@ -2859,6 +2898,168 @@
     ]
   };
 
+  const DOC_STAGE_LABELS = {
+    precheck: 'מסמכי בדיקת קדם',
+    execution: 'מסמכים לביצוע'
+  };
+
+  function estimatePrecheckDocTotal(total) {
+    const n = Number(total) || 0;
+    if (n <= 0) return 0;
+    if (n >= 24) return 6;
+    if (n >= 12) return 4;
+    if (n >= 8) return 3;
+    return Math.max(1, Math.round(n * 0.25));
+  }
+
+  function buildUploadStageLegend(uploaded, total) {
+    const safeTotal = Math.max(0, Number(total) || 0);
+    const safeUploaded = Math.max(0, Math.min(Number(uploaded) || 0, safeTotal));
+    const precheckTotal = Math.min(estimatePrecheckDocTotal(safeTotal), safeTotal);
+    const executionTotal = Math.max(0, safeTotal - precheckTotal);
+    const precheckUploaded = Math.min(safeUploaded, precheckTotal);
+    const executionUploaded = Math.max(0, safeUploaded - precheckUploaded);
+    return [
+      {
+        id: 'precheck',
+        title: DOC_STAGE_LABELS.precheck,
+        uploaded: precheckUploaded,
+        total: precheckTotal
+      },
+      {
+        id: 'execution',
+        title: DOC_STAGE_LABELS.execution,
+        uploaded: executionUploaded,
+        total: executionTotal
+      }
+    ];
+  }
+
+  function compressStatusUnits(units) {
+    const order = [];
+    const map = {};
+    units.forEach((unit) => {
+      if (!map[unit.key]) {
+        map[unit.key] = { key: unit.key, label: unit.label, count: 0 };
+        order.push(unit.key);
+      }
+      map[unit.key].count += 1;
+    });
+    return order.map((key) => map[key]).filter((item) => item.count > 0);
+  }
+
+  function flattenStatusLegend(legend) {
+    if (!legend) return [];
+    if (Array.isArray(legend)) {
+      return legend
+        .map((item) => ({
+          key: item.key,
+          label: item.label,
+          count: Number(item.count) || 0
+        }))
+        .filter((item) => item.count > 0);
+    }
+    const map = {};
+    const order = [];
+    (legend.groups || []).forEach((group) => {
+      (group.items || []).forEach((item) => {
+        const count = Number(item.count) || 0;
+        if (!count) return;
+        if (!map[item.key]) {
+          map[item.key] = { key: item.key, label: item.label, count: 0 };
+          order.push(item.key);
+        }
+        map[item.key].count += count;
+      });
+    });
+    return order.map((key) => map[key]);
+  }
+
+  function groupStatusLegendByStages(flatItems, precheckUploaded, executionUploaded) {
+    const units = [];
+    (flatItems || []).forEach((item) => {
+      const count = Number(item.count) || 0;
+      for (let i = 0; i < count; i += 1) {
+        units.push({ key: item.key, label: item.label });
+      }
+    });
+    const precheckCap = Math.max(0, Number(precheckUploaded) || 0);
+    return {
+      groups: [
+        {
+          id: 'precheck',
+          title: DOC_STAGE_LABELS.precheck,
+          items: compressStatusUnits(units.slice(0, precheckCap))
+        },
+        {
+          id: 'execution',
+          title: DOC_STAGE_LABELS.execution,
+          items: compressStatusUnits(units.slice(precheckCap))
+        }
+      ]
+    };
+  }
+
+  function parseProgressMiniRatio(progress) {
+    const text = (progress?.querySelector('.progress-mini-text')?.textContent || '').trim();
+    const match = text.match(/(\d+)\s*\/\s*(\d+)/);
+    if (!match) return { uploaded: 0, total: 0 };
+    return { uploaded: Number(match[1]) || 0, total: Number(match[2]) || 0 };
+  }
+
+  function getUploadStageLegendFromProgress(progress) {
+    if (!progress) return buildUploadStageLegend(0, 0);
+    try {
+      const parsed = JSON.parse(progress.getAttribute('data-upload-legend') || 'null');
+      if (Array.isArray(parsed) && parsed.length) return parsed;
+    } catch (_) {}
+    const { uploaded, total } = parseProgressMiniRatio(progress);
+    return buildUploadStageLegend(uploaded, total);
+  }
+
+  function renderStatusLegendRowsHtml(items) {
+    const normalized = (items || []).filter((item) => Number(item.count) > 0);
+    if (!normalized.length) {
+      return '<div class="dash-status-legend-empty">אין מסמכים בטיפול</div>';
+    }
+    return normalized.map((item) => (
+      `<div class="dash-status-legend-row">` +
+        `<span class="dash-status-legend-label">` +
+          `<span class="dash-status-legend-dot ${item.key}" aria-hidden="true"></span>` +
+          `${item.label}` +
+        `</span>` +
+        `<span class="dash-status-legend-count">${item.count}</span>` +
+      `</div>`
+    )).join('');
+  }
+
+  function renderGroupedStatusLegendHtml(legend) {
+    if (Array.isArray(legend)) {
+      return `<div class="dash-status-legend">${renderStatusLegendRowsHtml(legend)}</div>`;
+    }
+    const groups = legend?.groups || [];
+    if (!groups.length) {
+      return `<div class="dash-status-legend"><div class="dash-status-legend-empty">אין מסמכים בטיפול</div></div>`;
+    }
+    const groupsHtml = groups.map((group) => (
+      `<div class="dash-status-legend-group">` +
+        `<div class="dash-status-legend-group-title">${group.title}</div>` +
+        renderStatusLegendRowsHtml(group.items) +
+      `</div>`
+    )).join('');
+    return `<div class="dash-status-legend">${groupsHtml}</div>`;
+  }
+
+  function renderUploadLegendHtml(items) {
+    const rows = (items || []).map((item) => (
+      `<div class="dash-upload-legend-row">` +
+        `<span class="dash-upload-legend-label">${item.title}</span>` +
+        `<span class="dash-upload-legend-count">${item.uploaded}/${item.total}</span>` +
+      `</div>`
+    )).join('');
+    return `<div class="dash-status-legend">${rows}</div>`;
+  }
+
   function getHqDocumentStatuses(caseId, total) {
     if (HQ_DOCUMENT_STATUS_BY_CASE[caseId]) return HQ_DOCUMENT_STATUS_BY_CASE[caseId];
     if (!total) return [];
@@ -2874,16 +3075,24 @@
 
   function renderDashboardDocumentStatus(dist, statuses, title) {
     if (!dist) return;
-    const normalized = statuses.filter((item) => Number(item.count) > 0);
+    const flat = flattenStatusLegend(statuses);
+    const legendPayload = Array.isArray(statuses)
+      ? {
+          groups: [
+            { id: 'precheck', title: DOC_STAGE_LABELS.precheck, items: flat },
+            { id: 'execution', title: DOC_STAGE_LABELS.execution, items: [] }
+          ]
+        }
+      : (statuses || { groups: [] });
     dist.setAttribute('data-tooltip-title', title);
-    dist.setAttribute('data-status-legend', JSON.stringify(normalized));
+    dist.setAttribute('data-status-legend', JSON.stringify(legendPayload));
     dist.setAttribute(
       'aria-label',
-      normalized.map((item) => `${item.label}: ${item.count}`).join(' · ')
+      flat.map((item) => `${item.label}: ${item.count}`).join(' · ')
     );
     const bar = dist.querySelector('.doc-status-dist-bar');
     if (bar) {
-      bar.innerHTML = normalized
+      bar.innerHTML = flat
         .map((item) => `<span class="seg ${item.key}" style="flex:${item.count}"></span>`)
         .join('');
     }
@@ -2893,9 +3102,15 @@
     document.querySelectorAll('.table-card tbody tr[data-case-view]').forEach((row) => {
       const dist = row.querySelector('.doc-status-dist');
       if (!dist) return;
+      const progress = row.querySelector('.progress-mini');
+      const uploadLegend = getUploadStageLegendFromProgress(progress);
+      const precheckUploaded = uploadLegend.find((item) => item.id === 'precheck')?.uploaded || 0;
+      const executionUploaded = uploadLegend.find((item) => item.id === 'execution')?.uploaded || 0;
 
       if (persona === 'banker') {
-        const bankerLegend = JSON.parse(dist.dataset.bankerLegend || '[]');
+        let bankerLegend;
+        try { bankerLegend = JSON.parse(dist.dataset.bankerLegend || 'null'); } catch (_) { bankerLegend = null; }
+        if (!bankerLegend) bankerLegend = { groups: [] };
         renderDashboardDocumentStatus(
           dist,
           bankerLegend,
@@ -2905,13 +3120,15 @@
       }
 
       const caseId = (row.querySelector('.case-id-num')?.textContent || '').replace('#', '').trim();
-      const bankerLegend = JSON.parse(dist.dataset.bankerLegend || '[]');
-      const total = bankerLegend.reduce((sum, item) => sum + Number(item.count || 0), 0);
-      renderDashboardDocumentStatus(
-        dist,
+      let bankerLegend;
+      try { bankerLegend = JSON.parse(dist.dataset.bankerLegend || 'null'); } catch (_) { bankerLegend = null; }
+      const total = flattenStatusLegend(bankerLegend).reduce((sum, item) => sum + Number(item.count || 0), 0);
+      const hqGrouped = groupStatusLegendByStages(
         getHqDocumentStatuses(caseId, total),
-        'סטטוס מטה'
+        precheckUploaded,
+        executionUploaded
       );
+      renderDashboardDocumentStatus(dist, hqGrouped, 'סטטוס מטה');
     });
   }
 
@@ -2943,10 +3160,31 @@
       row.dataset.opened = opened;
       row.dataset.precheck = precheckDone ? 'done' : 'pending';
       row.dataset.city = CASE_CITY_BY_ID[caseId] || '';
+
+      const progress = row.querySelector('.progress-mini');
+      if (progress) {
+        const { uploaded, total } = parseProgressMiniRatio(progress);
+        const uploadLegend = buildUploadStageLegend(uploaded, total);
+        progress.setAttribute('data-tooltip-title', 'סטטוס העלאה');
+        progress.setAttribute('data-upload-legend', JSON.stringify(uploadLegend));
+        progress.setAttribute(
+          'aria-label',
+          uploadLegend.map((item) => `${item.title}: ${item.uploaded}/${item.total}`).join(' · ')
+        );
+      }
+
       const dist = row.querySelector('.doc-status-dist');
       if (dist && !dist.dataset.bankerLegend) {
-        dist.dataset.bankerLegend = dist.getAttribute('data-status-legend') || '[]';
+        let flat = [];
+        try { flat = JSON.parse(dist.getAttribute('data-status-legend') || '[]'); } catch (_) { flat = []; }
+        if (!Array.isArray(flat)) flat = flattenStatusLegend(flat);
+        const uploadLegend = getUploadStageLegendFromProgress(progress);
+        const precheckUploaded = uploadLegend.find((item) => item.id === 'precheck')?.uploaded || 0;
+        const executionUploaded = uploadLegend.find((item) => item.id === 'execution')?.uploaded || 0;
+        const grouped = groupStatusLegendByStages(flat, precheckUploaded, executionUploaded);
+        dist.dataset.bankerLegend = JSON.stringify(grouped);
         dist.dataset.bankerTitle = dist.getAttribute('data-tooltip-title') || 'סטטוס מסמכים';
+        dist.setAttribute('data-status-legend', JSON.stringify(grouped));
       }
     });
   }
@@ -3283,24 +3521,24 @@
     if (!anchor) return;
     const tip = getDashIconTooltipEl();
     tip.classList.remove('has-legend');
+    const uploadLegendRaw = anchor.getAttribute('data-upload-legend');
     const legendRaw = anchor.getAttribute('data-status-legend');
-    if (legendRaw) {
+    if (uploadLegendRaw) {
       let items = [];
-      try { items = JSON.parse(legendRaw); } catch (_) { items = []; }
-      const title = anchor.getAttribute('data-tooltip-title') || 'סטטוס מסמכים';
-      const rows = items.map((item) => (
-        `<div class="dash-status-legend-row">` +
-          `<span class="dash-status-legend-label">` +
-            `<span class="dash-status-legend-dot ${item.key}" aria-hidden="true"></span>` +
-            `${item.label}` +
-          `</span>` +
-          `<span class="dash-status-legend-count">${item.count}</span>` +
-        `</div>`
-      )).join('');
+      try { items = JSON.parse(uploadLegendRaw); } catch (_) { items = []; }
+      const title = anchor.getAttribute('data-tooltip-title') || 'סטטוס העלאה';
       tip.classList.add('has-legend');
       tip.innerHTML =
         `<span class="dash-icon-tooltip-title">${title}</span>` +
-        `<div class="dash-status-legend">${rows || '<span class="dash-icon-tooltip-text">אין מסמכים בטיפול</span>'}</div>`;
+        renderUploadLegendHtml(items);
+    } else if (legendRaw) {
+      let legend = null;
+      try { legend = JSON.parse(legendRaw); } catch (_) { legend = []; }
+      const title = anchor.getAttribute('data-tooltip-title') || 'סטטוס מסמכים';
+      tip.classList.add('has-legend');
+      tip.innerHTML =
+        `<span class="dash-icon-tooltip-title">${title}</span>` +
+        renderGroupedStatusLegendHtml(legend);
     } else {
       const text = anchor.getAttribute('data-tooltip');
       if (!text) return;
@@ -3316,7 +3554,9 @@
   }
 
   function getDashTooltipAnchor(target) {
-    return target?.closest?.('.precheck-icon[data-tooltip], .row-tasks-badge[data-tooltip], .doc-status-dist[data-status-legend], .doc-status-dist[data-tooltip]');
+    return target?.closest?.(
+      '.precheck-icon[data-tooltip], .row-tasks-badge[data-tooltip], .progress-mini[data-upload-legend], .doc-status-dist[data-status-legend], .doc-status-dist[data-tooltip]'
+    );
   }
 
   document.addEventListener('mouseover', (e) => {
