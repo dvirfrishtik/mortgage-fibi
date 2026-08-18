@@ -3949,6 +3949,24 @@
     .docs-sidebar .category-body { padding: 0; }
     .docs-sidebar .category-body .inbox-row:last-child { border-bottom: none; }
     .docs-sidebar .category:last-child { border-bottom: none; }
+    .precheck-borrower-example-doc {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 16px;
+      border-bottom: 1px solid var(--border-light);
+      cursor: default;
+      transition: background 0.12s;
+    }
+    .precheck-borrower-example-doc:hover { background: transparent; }
+    .precheck-borrower-example-doc:last-child { border-bottom: none; }
+    .precheck-borrower-example-doc .inbox-info { flex: 1; min-width: 0; }
+    .precheck-borrower-example-status {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-faint);
+      white-space: nowrap;
+    }
     .inbox-row {
       display: flex;
       align-items: center;
@@ -6593,6 +6611,143 @@
     <p class="docs-precheck-loading-text">טוען מסמכים לטיפול</p>
   </div>
   <div class="inbox-list" id="docsListPrecheck">
+    <div id="docsPrecheckBorrowerExamples" style="display:none;">
+      <div class="category" id="docsPrecheckBorrower1Cat">
+        <div class="category-header" onclick="toggleCat('docsPrecheckBorrower1Cat')">
+          <div class="category-name">לווה א׳: יונתן לוי <span class="category-badge">3</span></div>
+          <span class="chevron"></span>
+        </div>
+        <div class="category-body">
+          <div class="inbox-row precheck-borrower-example-doc">
+            <div class="inbox-info">
+              <div class="inbox-name">תעודת זהות</div>
+              <div class="inbox-code">משכ 701 · יונתן</div>
+            </div>
+            <select class="status-select pending" disabled>
+              <option value="pending" selected>ממתין לבדיקה</option>
+              <option value="returned">חזר לטיפול</option>
+              <option value="done">טופל</option>
+              <option value="notrelevant">לא רלוונטי</option>
+            </select>
+          </div>
+          <div class="inbox-row precheck-borrower-example-doc">
+            <div class="inbox-info">
+              <div class="inbox-name">אישור יתרות בנקאי</div>
+              <div class="inbox-code">משכ 702 · יונתן</div>
+            </div>
+            <select class="status-select pending" disabled>
+              <option value="pending" selected>ממתין לבדיקה</option>
+              <option value="returned">חזר לטיפול</option>
+              <option value="done">טופל</option>
+              <option value="notrelevant">לא רלוונטי</option>
+            </select>
+          </div>
+          <div class="inbox-row precheck-borrower-example-doc">
+            <div class="inbox-info">
+              <div class="inbox-name">דוח ריכוז נתונים</div>
+              <div class="inbox-code">משכ 706 · יונתן</div>
+            </div>
+            <select class="status-select pending" disabled>
+              <option value="pending" selected>ממתין לבדיקה</option>
+              <option value="returned">חזר לטיפול</option>
+              <option value="done">טופל</option>
+              <option value="notrelevant">לא רלוונטי</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="category" id="docsPrecheckBorrower2Cat">
+        <div class="category-header" onclick="toggleCat('docsPrecheckBorrower2Cat')">
+          <div class="category-name">לווה ב׳: שירה כהן <span class="category-badge">3</span></div>
+          <span class="chevron"></span>
+        </div>
+        <div class="category-body">
+          <div class="inbox-row precheck-borrower-example-doc">
+            <div class="inbox-info">
+              <div class="inbox-name">תעודת זהות</div>
+              <div class="inbox-code">משכ 701 · שירה</div>
+            </div>
+            <select class="status-select pending" disabled>
+              <option value="pending" selected>ממתין לבדיקה</option>
+              <option value="returned">חזר לטיפול</option>
+              <option value="done">טופל</option>
+              <option value="notrelevant">לא רלוונטי</option>
+            </select>
+          </div>
+          <div class="inbox-row precheck-borrower-example-doc">
+            <div class="inbox-info">
+              <div class="inbox-name">אישור יתרות בנקאי</div>
+              <div class="inbox-code">משכ 702 · שירה</div>
+            </div>
+            <select class="status-select pending" disabled>
+              <option value="pending" selected>ממתין לבדיקה</option>
+              <option value="returned">חזר לטיפול</option>
+              <option value="done">טופל</option>
+              <option value="notrelevant">לא רלוונטי</option>
+            </select>
+          </div>
+          <div class="inbox-row precheck-borrower-example-doc">
+            <div class="inbox-info">
+              <div class="inbox-name">דוח ריכוז נתונים</div>
+              <div class="inbox-code">משכ 706 · שירה</div>
+            </div>
+            <select class="status-select pending" disabled>
+              <option value="pending" selected>ממתין לבדיקה</option>
+              <option value="returned">חזר לטיפול</option>
+              <option value="done">טופל</option>
+              <option value="notrelevant">לא רלוונטי</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="category" id="docsPrecheckBorrower3Cat">
+        <div class="category-header" onclick="toggleCat('docsPrecheckBorrower3Cat')">
+          <div class="category-name">לווה ג׳: דניאל ישראלי <span class="category-badge">3</span></div>
+          <span class="chevron"></span>
+        </div>
+        <div class="category-body">
+          <div class="inbox-row precheck-borrower-example-doc">
+            <div class="inbox-info">
+              <div class="inbox-name">תעודת זהות</div>
+              <div class="inbox-code">משכ 701 · דניאל</div>
+            </div>
+            <select class="status-select pending" disabled>
+              <option value="pending" selected>ממתין לבדיקה</option>
+              <option value="returned">חזר לטיפול</option>
+              <option value="done">טופל</option>
+              <option value="notrelevant">לא רלוונטי</option>
+            </select>
+          </div>
+          <div class="inbox-row precheck-borrower-example-doc">
+            <div class="inbox-info">
+              <div class="inbox-name">אישור יתרות בנקאי</div>
+              <div class="inbox-code">משכ 702 · דניאל</div>
+            </div>
+            <select class="status-select pending" disabled>
+              <option value="pending" selected>ממתין לבדיקה</option>
+              <option value="returned">חזר לטיפול</option>
+              <option value="done">טופל</option>
+              <option value="notrelevant">לא רלוונטי</option>
+            </select>
+          </div>
+          <div class="inbox-row precheck-borrower-example-doc">
+            <div class="inbox-info">
+              <div class="inbox-name">דוח ריכוז נתונים</div>
+              <div class="inbox-code">משכ 706 · דניאל</div>
+            </div>
+            <select class="status-select pending" disabled>
+              <option value="pending" selected>ממתין לבדיקה</option>
+              <option value="returned">חזר לטיפול</option>
+              <option value="done">טופל</option>
+              <option value="notrelevant">לא רלוונטי</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="category" id="docsPrecheckCat">
       <div class="category-header">
         <div class="category-name">מסמכים לבדיקת קדם <span class="category-badge">7</span></div>
@@ -8105,6 +8260,9 @@
       renderPreviewUploadDate(null);
     }
     updateDocsSidebarTotalCount();
+
+    const examples = document.getElementById('docsPrecheckBorrowerExamples');
+    if (examples) examples.style.display = locked ? 'none' : '';
   }
 
   function selectPrecheckQuestionnaireCapsule(btn) {
